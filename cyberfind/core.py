@@ -7,13 +7,12 @@ import random
 import sqlite3
 import time
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Set
 from urllib.parse import urlparse
 
-import logging
 import aiohttp
 import cloudscraper
 import pandas as pd
@@ -26,12 +25,14 @@ from fake_useragent import UserAgent
 logger = logging.getLogger("cyberfind")
 
 class SearchMode(Enum):
+    """Search modes for different stealth levels"""
     STANDARD = "standard"
     DEEP = "deep"
     STEALTH = "stealth"
     AGGRESSIVE = "aggressive"
 
 class OutputFormat(Enum):
+    """Output formats for results"""
     TXT = "txt"
     JSON = "json"
     CSV = "csv"
@@ -40,19 +41,26 @@ class OutputFormat(Enum):
     SQLITE = "sqlite"
 
 class SiteCategory(Enum):
+    """Categories for site classification"""
     SOCIAL_MEDIA = "social_media"
     FORUMS = "forums"
     BLOGS = "blogs"
     GAMING = "gaming"
     PROGRAMMING = "programming"
     ECOMMERCE = "ecommerce"
+    RUSSIAN = "russian"
+    ALL = "all"
 
 class CyberFind:
+    """Main class for CyberFind OSINT tool"""
+    
     def __init__(self, config_path: str = "config.yaml"):
+        """Initialize CyberFind with configuration"""
         self.config = self.load_config(config_path)
         self.initialize_components()
     
-    def load_config(self, config_path: str) -> Dict:
+    def load_config(self, config_path: str) -> Dict[str, Any]:
+        """Load configuration from YAML file"""
         default_config = {
             'general': {
                 'timeout': 30,
@@ -74,23 +82,34 @@ class CyberFind:
                 'default_format': 'json',
                 'save_all_results': True,
             },
+            'advanced': {
+                'metadata_extraction': True,
+                'cache_results': True,
+                'verify_ssl': True,
+            }
         }
         
         if os.path.exists(config_path):
-            with open(config_path, 'r', encoding='utf-8') as f:
-                user_config = yaml.safe_load(f) or {}
-            
-            def update_dict(d, u):
-                for k, v in u.items():
-                    if isinstance(v, dict) and k in d and isinstance(d[k], dict):
-                        update_dict(d[k], v)
-                    else:
-                        d[k] = v
-            update_dict(default_config, user_config)
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    user_config = yaml.safe_load(f) or {}
+                
+                def update_dict(d: Dict, u: Dict) -> None:
+                    """Recursively update dictionary"""
+                    for k, v in u.items():
+                        if isinstance(v, dict) and k in d and isinstance(d[k], dict):
+                            update_dict(d[k], v)
+                        else:
+                            d[k] = v
+                
+                update_dict(default_config, user_config)
+            except Exception as e:
+                logger.warning(f"Error loading config file {config_path}: {e}. Using default config.")
         
         return default_config
     
-    def initialize_components(self):
+    def initialize_components(self) -> None:
+        """Initialize all components"""
         self.ua = UserAgent()
         self.session = requests.Session()
         self.cloud_session = cloudscraper.create_scraper()
@@ -100,6 +119,7 @@ class CyberFind:
         
         self.init_database()
         
+        # Initialize statistics
         self.stats = {
             'total_checks': 0,
             'found_accounts': 0,
@@ -112,8 +132,262 @@ class CyberFind:
         
         self.cache = {}
         self.cache_ttl = 300
+        
+        # Load built-in site lists
+        self.builtin_sites = self.load_builtin_sites()
     
-    def init_database(self):
+    def load_builtin_sites(self) -> Dict[str, List[Dict[str, Any]]]:
+        """Load built-in site lists"""
+        
+        # Quick check - 25 most popular sites
+        quick_sites = [
+            # Social Media
+            {'name': 'Facebook', 'url_pattern': 'https://www.facebook.com/{username}', 'category': 'social_media', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'Instagram', 'url_pattern': 'https://www.instagram.com/{username}', 'category': 'social_media', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'Twitter', 'url_pattern': 'https://twitter.com/{username}', 'category': 'social_media', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'LinkedIn', 'url_pattern': 'https://www.linkedin.com/in/{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'TikTok', 'url_pattern': 'https://www.tiktok.com/@{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
+            
+            # Programming & Tech
+            {'name': 'GitHub', 'url_pattern': 'https://github.com/{username}', 'category': 'programming', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'GitLab', 'url_pattern': 'https://gitlab.com/{username}', 'category': 'programming', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Stack Overflow', 'url_pattern': 'https://stackoverflow.com/users/{username}', 'category': 'programming', 'priority': 9, 'check_type': 'status_code'},
+            
+            # Video & Streaming
+            {'name': 'YouTube', 'url_pattern': 'https://www.youtube.com/{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Twitch', 'url_pattern': 'https://www.twitch.tv/{username}', 'category': 'gaming', 'priority': 8, 'check_type': 'status_code'},
+            
+            # Other Social
+            {'name': 'Reddit', 'url_pattern': 'https://www.reddit.com/user/{username}', 'category': 'social_media', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Pinterest', 'url_pattern': 'https://www.pinterest.com/{username}', 'category': 'social_media', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Snapchat', 'url_pattern': 'https://www.snapchat.com/add/{username}', 'category': 'social_media', 'priority': 7, 'check_type': 'status_code'},
+            
+            # Russian Social Media
+            {'name': 'VK', 'url_pattern': 'https://vk.com/{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'OK', 'url_pattern': 'https://ok.ru/{username}', 'category': 'social_media', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Telegram', 'url_pattern': 'https://t.me/{username}', 'category': 'social_media', 'priority': 8, 'check_type': 'status_code'},
+            
+            # Gaming
+            {'name': 'Steam', 'url_pattern': 'https://steamcommunity.com/id/{username}', 'category': 'gaming', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Discord', 'url_pattern': 'https://discord.com/users/{username}', 'category': 'gaming', 'priority': 7, 'check_type': 'status_code'},
+            
+            # Blogging
+            {'name': 'Medium', 'url_pattern': 'https://medium.com/@{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Dev.to', 'url_pattern': 'https://dev.to/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            
+            # Forums
+            {'name': 'Quora', 'url_pattern': 'https://www.quora.com/profile/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
+            
+            # E-commerce
+            {'name': 'Etsy', 'url_pattern': 'https://www.etsy.com/people/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'eBay', 'url_pattern': 'https://www.ebay.com/usr/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            
+            # Audio
+            {'name': 'SoundCloud', 'url_pattern': 'https://soundcloud.com/{username}', 'category': 'social_media', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Spotify', 'url_pattern': 'https://open.spotify.com/user/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+        ]
+        
+        # Social networks (more comprehensive list)
+        social_media = quick_sites + [
+            {'name': 'Flickr', 'url_pattern': 'https://www.flickr.com/people/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Imgur', 'url_pattern': 'https://imgur.com/user/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+            {'name': '500px', 'url_pattern': 'https://500px.com/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'DeviantArt', 'url_pattern': 'https://www.deviantart.com/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Behance', 'url_pattern': 'https://www.behance.net/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Dribbble', 'url_pattern': 'https://dribbble.com/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Vimeo', 'url_pattern': 'https://vimeo.com/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Bandcamp', 'url_pattern': 'https://bandcamp.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Mixcloud', 'url_pattern': 'https://www.mixcloud.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Last.fm', 'url_pattern': 'https://www.last.fm/user/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Goodreads', 'url_pattern': 'https://www.goodreads.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Letterboxd', 'url_pattern': 'https://letterboxd.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Strava', 'url_pattern': 'https://www.strava.com/athletes/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'MyFitnessPal', 'url_pattern': 'https://www.myfitnesspal.com/profile/{username}', 'category': 'social_media', 'priority': 4, 'check_type': 'status_code'},
+            {'name': 'TripAdvisor', 'url_pattern': 'https://www.tripadvisor.com/members/{username}', 'category': 'social_media', 'priority': 4, 'check_type': 'status_code'},
+            {'name': 'Couchsurfing', 'url_pattern': 'https://www.couchsurfing.com/people/{username}', 'category': 'social_media', 'priority': 4, 'check_type': 'status_code'},
+            {'name': 'About.me', 'url_pattern': 'https://about.me/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Linktree', 'url_pattern': 'https://linktr.ee/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Carrd', 'url_pattern': 'https://{username}.carrd.co', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'VSCO', 'url_pattern': 'https://vsco.co/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
+        ]
+        
+        # Programming and IT
+        programming = [
+            {'name': 'GitHub', 'url_pattern': 'https://github.com/{username}', 'category': 'programming', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'GitLab', 'url_pattern': 'https://gitlab.com/{username}', 'category': 'programming', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Bitbucket', 'url_pattern': 'https://bitbucket.org/{username}', 'category': 'programming', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Stack Overflow', 'url_pattern': 'https://stackoverflow.com/users/{username}', 'category': 'programming', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'Stack Exchange', 'url_pattern': 'https://stackexchange.com/users/{username}', 'category': 'programming', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Dev.to', 'url_pattern': 'https://dev.to/{username}', 'category': 'programming', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Hashnode', 'url_pattern': 'https://hashnode.com/@{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Codepen', 'url_pattern': 'https://codepen.io/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'JSFiddle', 'url_pattern': 'https://jsfiddle.net/user/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Replit', 'url_pattern': 'https://replit.com/@{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'CodeSandbox', 'url_pattern': 'https://codesandbox.io/u/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Glitch', 'url_pattern': 'https://glitch.com/@{username}', 'category': 'programming', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'PyPI', 'url_pattern': 'https://pypi.org/user/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'NPM', 'url_pattern': 'https://www.npmjs.com/~{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Docker Hub', 'url_pattern': 'https://hub.docker.com/u/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Hacker News', 'url_pattern': 'https://news.ycombinator.com/user?id={username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Product Hunt', 'url_pattern': 'https://www.producthunt.com/@{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Behance', 'url_pattern': 'https://www.behance.net/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Dribbble', 'url_pattern': 'https://dribbble.com/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Figma', 'url_pattern': 'https://www.figma.com/@{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'HackerOne', 'url_pattern': 'https://hackerone.com/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Bugcrowd', 'url_pattern': 'https://bugcrowd.com/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'TryHackMe', 'url_pattern': 'https://tryhackme.com/p/{username}', 'category': 'programming', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'HackTheBox', 'url_pattern': 'https://app.hackthebox.com/profile/{username}', 'category': 'programming', 'priority': 5, 'check_type': 'status_code'},
+        ]
+        
+        # Gaming platforms
+        gaming = [
+            {'name': 'Steam', 'url_pattern': 'https://steamcommunity.com/id/{username}', 'category': 'gaming', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'Epic Games', 'url_pattern': 'https://www.epicgames.com/account/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Xbox', 'url_pattern': 'https://account.xbox.com/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'PlayStation', 'url_pattern': 'https://my.playstation.com/profile/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Twitch', 'url_pattern': 'https://www.twitch.tv/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Discord', 'url_pattern': 'https://discord.com/users/{username}', 'category': 'gaming', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Roblox', 'url_pattern': 'https://www.roblox.com/user.aspx?username={username}', 'category': 'gaming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Minecraft', 'url_pattern': 'https://www.minecraft.net/profile/{username}', 'category': 'gaming', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Fortnite', 'url_pattern': 'https://fortnitetracker.com/profile/all/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'League of Legends', 'url_pattern': 'https://www.op.gg/summoners/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Valorant', 'url_pattern': 'https://tracker.gg/valorant/profile/riot/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Chess.com', 'url_pattern': 'https://www.chess.com/member/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Lichess', 'url_pattern': 'https://lichess.org/@/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Faceit', 'url_pattern': 'https://www.faceit.com/en/players/{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Game Jolt', 'url_pattern': 'https://gamejolt.com/@{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Itch.io', 'url_pattern': 'https://{username}.itch.io', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'RetroAchievements', 'url_pattern': 'https://retroachievements.org/user/{username}', 'category': 'gaming', 'priority': 4, 'check_type': 'status_code'},
+            {'name': 'Speedrun.com', 'url_pattern': 'https://www.speedrun.com/user/{username}', 'category': 'gaming', 'priority': 4, 'check_type': 'status_code'},
+            {'name': 'Unity Connect', 'url_pattern': 'https://connect.unity.com/u/{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Unreal Engine', 'url_pattern': 'https://www.unrealengine.com/id/{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
+        ]
+        
+        # Blogs and publications
+        blogs = [
+            {'name': 'Medium', 'url_pattern': 'https://medium.com/@{username}', 'category': 'blogs', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Dev.to', 'url_pattern': 'https://dev.to/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'WordPress.com', 'url_pattern': 'https://{username}.wordpress.com', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Blogger', 'url_pattern': 'https://{username}.blogspot.com', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Tumblr', 'url_pattern': 'https://{username}.tumblr.com', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Substack', 'url_pattern': 'https://{username}.substack.com', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Ghost', 'url_pattern': 'https://{username}.ghost.io', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Hashnode', 'url_pattern': 'https://hashnode.com/@{username}', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'FreeCodeCamp', 'url_pattern': 'https://www.freecodecamp.org/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Hackernoon', 'url_pattern': 'https://hackernoon.com/u/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Instagram', 'url_pattern': 'https://www.instagram.com/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'VSCO', 'url_pattern': 'https://vsco.co/{username}', 'category': 'blogs', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Flickr', 'url_pattern': 'https://www.flickr.com/people/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': '500px', 'url_pattern': 'https://500px.com/{username}', 'category': 'blogs', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'LiveJournal', 'url_pattern': 'https://{username}.livejournal.com', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Twitter', 'url_pattern': 'https://twitter.com/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Mastodon', 'url_pattern': 'https://mastodon.social/@{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Bluesky', 'url_pattern': 'https://bsky.app/profile/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Threads', 'url_pattern': 'https://www.threads.net/@{username}', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'SoundCloud', 'url_pattern': 'https://soundcloud.com/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Anchor', 'url_pattern': 'https://anchor.fm/{username}', 'category': 'blogs', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'YouTube', 'url_pattern': 'https://www.youtube.com/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Vimeo', 'url_pattern': 'https://vimeo.com/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
+        ]
+        
+        # E-commerce
+        ecommerce = [
+            {'name': 'Etsy', 'url_pattern': 'https://www.etsy.com/people/{username}', 'category': 'ecommerce', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'eBay', 'url_pattern': 'https://www.ebay.com/usr/{username}', 'category': 'ecommerce', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Amazon', 'url_pattern': 'https://www.amazon.com/gp/profile/{username}', 'category': 'ecommerce', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Redbubble', 'url_pattern': 'https://www.redbubble.com/people/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Society6', 'url_pattern': 'https://society6.com/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Teepublic', 'url_pattern': 'https://www.teepublic.com/user/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Depop', 'url_pattern': 'https://www.depop.com/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Poshmark', 'url_pattern': 'https://poshmark.com/closet/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Mercari', 'url_pattern': 'https://www.mercari.com/u/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Grailed', 'url_pattern': 'https://www.grailed.com/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Gumroad', 'url_pattern': 'https://gumroad.com/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Payhip', 'url_pattern': 'https://payhip.com/{username}', 'category': 'ecommerce', 'priority': 5, 'check_type': 'status_code'},
+            {'name': 'Avito', 'url_pattern': 'https://www.avito.ru/user/{username}', 'category': 'ecommerce', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Yandex.Market', 'url_pattern': 'https://market.yandex.ru/user/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Wildberries', 'url_pattern': 'https://www.wildberries.ru/seller/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Ozon', 'url_pattern': 'https://www.ozon.ru/seller/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'PayPal', 'url_pattern': 'https://www.paypal.com/paypalme/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Venmo', 'url_pattern': 'https://venmo.com/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Cash App', 'url_pattern': 'https://cash.app/${username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Trustpilot', 'url_pattern': 'https://www.trustpilot.com/review/{username}', 'category': 'ecommerce', 'priority': 5, 'check_type': 'status_code'},
+        ]
+        
+        # Forums
+        forums = [
+            {'name': 'Reddit', 'url_pattern': 'https://www.reddit.com/user/{username}', 'category': 'forums', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Quora', 'url_pattern': 'https://www.quora.com/profile/{username}', 'category': 'forums', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Stack Exchange', 'url_pattern': 'https://stackexchange.com/users/{username}', 'category': 'forums', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Hacker News', 'url_pattern': 'https://news.ycombinator.com/user?id={username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Product Hunt', 'url_pattern': 'https://www.producthunt.com/@{username}', 'category': 'forums', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Steam Community', 'url_pattern': 'https://steamcommunity.com/id/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'BitcoinTalk', 'url_pattern': 'https://bitcointalk.org/index.php?action=profile;u={username}', 'category': 'forums', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'XDA Developers', 'url_pattern': 'https://forum.xda-developers.com/m/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Habr', 'url_pattern': 'https://habr.com/ru/users/{username}', 'category': 'forums', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Toster', 'url_pattern': 'https://toster.ru/user/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
+            {'name': '4PDA', 'url_pattern': 'https://4pda.to/forum/index.php?showuser={username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'CodeProject', 'url_pattern': 'https://www.codeproject.com/script/Membership/View.aspx?mid={username}', 'category': 'forums', 'priority': 6, 'check_type': 'status_code'},
+        ]
+        
+        # Russian-language platforms
+        russian = [
+            {'name': 'VK', 'url_pattern': 'https://vk.com/{username}', 'category': 'russian', 'priority': 10, 'check_type': 'status_code'},
+            {'name': 'OK', 'url_pattern': 'https://ok.ru/{username}', 'category': 'russian', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Telegram', 'url_pattern': 'https://t.me/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Yandex.Zen', 'url_pattern': 'https://zen.yandex.ru/user/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Habr', 'url_pattern': 'https://habr.com/ru/users/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Toster', 'url_pattern': 'https://toster.ru/user/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Pikabu', 'url_pattern': 'https://pikabu.ru/@{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'DTF', 'url_pattern': 'https://dtf.ru/u/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'VC.ru', 'url_pattern': 'https://vc.ru/u/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Avito', 'url_pattern': 'https://www.avito.ru/user/{username}', 'category': 'russian', 'priority': 9, 'check_type': 'status_code'},
+            {'name': 'Yandex.Market', 'url_pattern': 'https://market.yandex.ru/user/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Wildberries', 'url_pattern': 'https://www.wildberries.ru/seller/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
+            {'name': 'Ozon', 'url_pattern': 'https://www.ozon.ru/seller/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
+            {'name': '4PDA', 'url_pattern': 'https://4pda.to/forum/index.php?showuser={username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'LiveJournal', 'url_pattern': 'https://{username}.livejournal.com', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'Rutube', 'url_pattern': 'https://rutube.ru/channel/{username}', 'category': 'russian', 'priority': 6, 'check_type': 'status_code'},
+            {'name': 'Kwork', 'url_pattern': 'https://kwork.ru/user/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+            {'name': 'FL.ru', 'url_pattern': 'https://www.fl.ru/users/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
+        ]
+        
+        # All sites together (remove duplicates)
+        all_sites_dict = {}
+        for site in social_media + programming + gaming + blogs + ecommerce + forums + russian:
+            key = (site['name'], site['url_pattern'])
+            if key not in all_sites_dict:
+                all_sites_dict[key] = site
+        all_sites = list(all_sites_dict.values())
+        
+        return {
+            'quick': quick_sites,
+            'social_media': social_media,
+            'programming': programming,
+            'gaming': gaming,
+            'blogs': blogs,
+            'ecommerce': ecommerce,
+            'forums': forums,
+            'russian': russian,
+            'all': all_sites
+        }
+    
+    def get_builtin_site_list(self, list_name: str = 'quick') -> List[Dict[str, Any]]:
+        """Get built-in site list by name"""
+        if list_name in self.builtin_sites:
+            return self.builtin_sites[list_name]
+        else:
+            return self.builtin_sites.get('quick', [])
+    
+    def list_builtin_categories(self) -> Dict[str, int]:
+        """Show available built-in categories and site counts"""
+        categories = {}
+        for name, sites in self.builtin_sites.items():
+            categories[name] = len(sites)
+        return categories
+    
+    def init_database(self) -> None:
+        """Initialize SQLite database"""
         db_path = self.config['database']['sqlite_path']
         
         if db_path:
@@ -126,7 +400,7 @@ class CyberFind:
         else:
             db_path = os.path.join(os.getcwd(), 'cyberfind.db')
         
-        self.conn = sqlite3.connect(db_path)
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
         cursor = self.conn.cursor()
         
         cursor.execute('''
@@ -157,7 +431,8 @@ class CyberFind:
         self.conn.commit()
     
     @staticmethod
-    def _json_serializer(obj):
+    def _json_serializer(obj: Any) -> Any:
+        """JSON serializer for objects not serializable by default json module"""
         if isinstance(obj, (datetime, date)):
             return obj.isoformat()
         elif hasattr(obj, 'isoformat'):
@@ -172,14 +447,31 @@ class CyberFind:
     
     async def search_async(self, usernames: List[str], 
                           sites_file: Optional[str] = None,
+                          builtin_list: Optional[str] = None,
                           mode: SearchMode = SearchMode.STANDARD,
                           output_format: OutputFormat = OutputFormat.JSON,
                           output_file: Optional[str] = None,
-                          max_concurrent: int = 50) -> Dict:
+                          max_concurrent: int = 50) -> Dict[str, Any]:
+        """
+        Main search method
+        
+        Args:
+            usernames: List of usernames to search for
+            sites_file: Path to file with sites list
+            builtin_list: Name of built-in site list to use
+            mode: Search mode (standard, deep, stealth, aggressive)
+            output_format: Format for output results
+            output_file: Filename to save results
+            max_concurrent: Maximum concurrent requests
+            
+        Returns:
+            Dictionary with search results, report and statistics
+        """
         
         self.stats['start_time'] = datetime.now()
         
-        sites = await self.load_sites_async(sites_file)
+        # Load sites from file or built-in list
+        sites = await self.load_sites_async(sites_file, builtin_list)
         
         if not sites:
             logger.error("No sites loaded!")
@@ -193,6 +485,7 @@ class CyberFind:
         
         all_results = {}
         
+        # Search for each username
         for username in usernames:
             print(f"\n🔍 Searching: {username}")
             user_results = await self.search_single_user_async(
@@ -200,14 +493,17 @@ class CyberFind:
             )
             all_results[username] = user_results
             
+            # Save intermediate results if configured
             if self.config['output']['save_all_results']:
                 self.save_results_intermediate(username, user_results)
         
         self.stats['end_time'] = datetime.now()
         
+        # Save results if output file specified
         if output_file:
             await self.save_results_async(all_results, output_format, output_file)
         
+        # Generate report and update statistics
         report = await self.generate_report_async(all_results)
         self.update_statistics()
         
@@ -217,28 +513,74 @@ class CyberFind:
             'statistics': self.stats
         }
     
-    async def load_sites_async(self, sites_file: Optional[str] = None) -> List[Dict]:
+    async def load_sites_async(self, sites_file: Optional[str] = None,
+                              builtin_list: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Load sites from file or built-in list"""
         sites = []
         
-        if sites_file:
-            sites.extend(await self.load_sites_from_file_async(sites_file))
-        else:
-            sites_dir = Path('sites')
-            if sites_dir.exists():
-                for category_file in sites_dir.glob('*.txt'):
-                    sites.extend(
-                        await self.load_sites_from_file_async(category_file)
-                    )
+        # 1. Priority: built-in list
+        if builtin_list:
+            print(f"📋 Using built-in list: {builtin_list}")
+            sites.extend(self.get_builtin_site_list(builtin_list))
         
+        # 2. If file specified
+        elif sites_file:
+            if sites_file.startswith('builtin:'):
+                # Use built-in list
+                list_name = sites_file.replace('builtin:', '')
+                sites.extend(self.get_builtin_site_list(list_name))
+            else:
+                # Load from file
+                sites.extend(await self.load_sites_from_file_async(sites_file))
+        
+        # 3. Default: quick list
+        else:
+            print("📋 Using default built-in list: quick (25 sites)")
+            sites.extend(self.get_builtin_site_list('quick'))
+        
+        # Remove duplicates
         unique_sites = {}
         for site in sites:
             key = (site['name'], site['url_pattern'])
             if key not in unique_sites:
+                # Add standard fields if missing
+                if 'method' not in site:
+                    site['method'] = 'GET'
+                if 'category' not in site:
+                    site['category'] = 'unknown'
+                if 'priority' not in site:
+                    site['priority'] = 5
+                if 'timeout' not in site:
+                    site['timeout'] = self.config['general']['timeout']
+                if 'retry' not in site:
+                    site['retry'] = self.config['general']['retry_attempts']
+                if 'headers' not in site:
+                    site['headers'] = {}
+                if 'cookies' not in site:
+                    site['cookies'] = {}
+                if 'requires_javascript' not in site:
+                    site['requires_javascript'] = False
+                if 'requires_captcha' not in site:
+                    site['requires_captcha'] = False
+                if 'check_strings' not in site:
+                    site['check_strings'] = []
+                if 'error_strings' not in site:
+                    site['error_strings'] = []
+                if 'valid_status_codes' not in site:
+                    site['valid_status_codes'] = [200]
+                if 'invalid_status_codes' not in site:
+                    site['invalid_status_codes'] = [404, 410]
+                if 'check_type' not in site:
+                    site['check_type'] = 'status_code'
+                
                 unique_sites[key] = site
         
-        return list(unique_sites.values())
+        result = list(unique_sites.values())
+        print(f"✅ Loaded {len(result)} unique sites")
+        return result
     
-    async def load_sites_from_file_async(self, file_path: str) -> List[Dict]:
+    async def load_sites_from_file_async(self, file_path: str) -> List[Dict[str, Any]]:
+        """Load sites from file (local or remote)"""
         sites = []
         file_path_str = str(file_path)
         
@@ -248,14 +590,20 @@ class CyberFind:
                     async with session.get(file_path_str) as response:
                         content = await response.text()
             else:
+                if not os.path.exists(file_path_str):
+                    logger.warning(f"File not found: {file_path_str}")
+                    return sites
+                
                 with open(file_path_str, 'r', encoding='utf-8') as f:
                     content = f.read()
             
+            # Parse each line
             for line in content.split('\n'):
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
                 
+                # Handle different delimiters
                 if '|' in line:
                     parts = [p.strip() for p in line.split('|')]
                 elif '\t' in line:
@@ -273,7 +621,8 @@ class CyberFind:
         
         return sites
     
-    def parse_site_line(self, parts: List[str]) -> Optional[Dict]:
+    def parse_site_line(self, parts: List[str]) -> Optional[Dict[str, Any]]:
+        """Parse a line from sites file into site dictionary"""
         try:
             if len(parts) < 2:
                 return None
@@ -281,6 +630,7 @@ class CyberFind:
             name = parts[0].strip()
             url_pattern = parts[1].strip()
 
+            # Ensure URL pattern has {username} placeholder
             if '{username}' not in url_pattern and '${username}' not in url_pattern:
                 if url_pattern.endswith('/'):
                     url_pattern += '{username}'
@@ -303,8 +653,10 @@ class CyberFind:
                 'error_strings': [],
                 'valid_status_codes': [200],
                 'invalid_status_codes': [404, 410],
+                'check_type': 'status_code',
             }
 
+            # Parse optional fields
             if len(parts) >= 3:
                 category = parts[2].strip()
                 if category in [cat.value for cat in SiteCategory]:
@@ -322,9 +674,10 @@ class CyberFind:
             logger.error(f"Error parsing site line: {e}")
             return None
     
-    async def search_single_user_async(self, username: str, sites: List[Dict],
+    async def search_single_user_async(self, username: str, sites: List[Dict[str, Any]],
                                       mode: SearchMode,
-                                      max_concurrent: int) -> Dict:
+                                      max_concurrent: int) -> Dict[str, Any]:
+        """Search for a single user across all sites"""
         
         user_results = {
             'username': username,
@@ -334,11 +687,13 @@ class CyberFind:
             'metadata': {}
         }
         
+        # Sort sites by priority (higher priority first)
         sites_sorted = sorted(sites, key=lambda x: x['priority'], reverse=True)
         semaphore = asyncio.Semaphore(max_concurrent)
         
         print(f"  Checking {len(sites_sorted)} sites...")
         
+        # Create tasks for all sites
         tasks = []
         for i, site in enumerate(sites_sorted):
             task = asyncio.create_task(
@@ -346,15 +701,17 @@ class CyberFind:
             )
             tasks.append(task)
             
-            # Показываем прогресс каждые 10 сайтов
+            # Show progress every 10 sites
             if i % 10 == 0 and i > 0:
                 print(f"    Progress: {i}/{len(sites_sorted)}")
         
+        # Wait for all tasks to complete
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
         found_count = 0
         error_count = 0
         
+        # Process results
         for i, result in enumerate(results):
             site = sites_sorted[i]
             if isinstance(result, Exception):
@@ -373,7 +730,7 @@ class CyberFind:
                 user_results['found'].append(result)
                 self.stats['found_accounts'] += 1
                 found_count += 1
-                # Показываем найденные аккаунты сразу
+                # Show found accounts immediately
                 print(f"    ✓ Found: {result['site']}")
             elif result['error']:
                 user_results['errors'].append(result)
@@ -384,6 +741,7 @@ class CyberFind:
         
         print(f"  Done: {found_count} found, {error_count} errors")
         
+        # Add metadata
         user_results['metadata'] = {
             'search_timestamp': datetime.now().isoformat(),
             'search_mode': mode.value,
@@ -394,8 +752,9 @@ class CyberFind:
         
         return user_results
     
-    async def check_site_async(self, username: str, site: Dict,
-                              mode: SearchMode, semaphore: asyncio.Semaphore) -> Dict:
+    async def check_site_async(self, username: str, site: Dict[str, Any],
+                              mode: SearchMode, semaphore: asyncio.Semaphore) -> Dict[str, Any]:
+        """Check if user exists on a specific site"""
         
         async with semaphore:
             result = {
@@ -414,6 +773,7 @@ class CyberFind:
                 
                 start_time = time.time()
                 
+                # Make request
                 response_data = await self.request_standard_async(url, site, mode)
                 
                 result['response_time'] = time.time() - start_time
@@ -422,12 +782,15 @@ class CyberFind:
                 if response_data['success']:
                     result['status_code'] = response_data['status']
                     
-                    if self.config.get('advanced', {}).get('metadata_extraction', False):
+                    # Extract metadata if enabled
+                    if self.config.get('advanced', {}).get('metadata_extraction', True):
                         metadata = await self.extract_metadata_async(
                             url, response_data['content']
                         )
                         result['metadata'].update(metadata)
+                        result['metadata']['category'] = site['category']
                     
+                    # Check if user exists
                     result['found'] = self.check_user_exists(
                         response_data, site, username
                     )
@@ -440,8 +803,9 @@ class CyberFind:
             
             return result
     
-    async def request_standard_async(self, url: str, site: Dict,
-                                    mode: SearchMode) -> Dict:
+    async def request_standard_async(self, url: str, site: Dict[str, Any],
+                                    mode: SearchMode) -> Dict[str, Any]:
+        """Make HTTP request with retries"""
         
         headers = self.generate_headers(mode)
         headers.update(site.get('headers', {}))
@@ -471,7 +835,8 @@ class CyberFind:
         
         return {'success': False, 'error': 'Max retries exceeded'}
     
-    def generate_headers(self, mode: SearchMode) -> Dict:
+    def generate_headers(self, mode: SearchMode) -> Dict[str, str]:
+        """Generate HTTP headers based on search mode"""
         base_headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.5',
@@ -492,7 +857,7 @@ class CyberFind:
             })
         elif mode == SearchMode.AGGRESSIVE:
             base_headers.update({
-                'User-Agent': 'Mozilla/5.0',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             })
         else:
             base_headers.update({
@@ -501,17 +866,22 @@ class CyberFind:
         
         return base_headers
     
-    def check_user_exists(self, response_data: Dict, site: Dict, username: str) -> bool:
+    def check_user_exists(self, response_data: Dict[str, Any], site: Dict[str, Any], username: str) -> bool:
+        """Determine if user exists based on response"""
         status = response_data['status']
         content = response_data['content'].lower()
         
+        # Check invalid status codes
         if status in site['invalid_status_codes']:
             return False
+        # Check valid status codes
         elif status in site['valid_status_codes']:
+            # Check for error strings in content
             if site['error_strings']:
                 for error_string in site['error_strings']:
                     if error_string.lower() in content:
                         return False
+            # Check for verification strings in content
             if site['check_strings']:
                 for check_string in site['check_strings']:
                     if check_string.lower() in content:
@@ -521,7 +891,8 @@ class CyberFind:
         
         return False
     
-    async def extract_metadata_async(self, url: str, content: str) -> Dict:
+    async def extract_metadata_async(self, url: str, content: str) -> Dict[str, Any]:
+        """Extract metadata from HTML content"""
         metadata = {
             'title': '',
             'description': '',
@@ -533,10 +904,12 @@ class CyberFind:
         try:
             soup = BeautifulSoup(content, 'html.parser')
             
+            # Extract title
             title_tag = soup.find('title')
             if title_tag:
                 metadata['title'] = title_tag.text.strip()
             
+            # Extract meta tags
             for meta in soup.find_all('meta'):
                 name = meta.get('name', '').lower()
                 content_val = meta.get('content', '')
@@ -547,11 +920,13 @@ class CyberFind:
                         k.strip() for k in content_val.split(',')
                     ]
             
+            # Extract links
             for link in soup.find_all('a', href=True):
                 href = link['href']
                 if href.startswith('http'):
                     metadata['links'].append(href)
             
+            # Extract images
             for img in soup.find_all('img', src=True):
                 metadata['images'].append(img['src'])
         
@@ -560,7 +935,8 @@ class CyberFind:
         
         return metadata
     
-    def save_results_intermediate(self, username: str, results: Dict):
+    def save_results_intermediate(self, username: str, results: Dict[str, Any]) -> None:
+        """Save intermediate results to database"""
         try:
             cursor = self.conn.cursor()
             for result in results['found'] + results['not_found'] + results['errors']:
@@ -581,9 +957,10 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving to database: {e}")
     
-    async def save_results_async(self, all_results: Dict, 
+    async def save_results_async(self, all_results: Dict[str, Any], 
                                 output_format: OutputFormat,
-                                output_file: str):
+                                output_file: str) -> None:
+        """Save results in specified format"""
         
         output_path = Path(output_file)
         
@@ -598,9 +975,11 @@ class CyberFind:
         elif output_format == OutputFormat.SQLITE:
             self.save_to_database(all_results)
     
-    async def save_as_json_async(self, results: Dict, output_path: Path):
+    async def save_as_json_async(self, results: Dict[str, Any], output_path: Path) -> None:
+        """Save results as JSON"""
         try:
-            def convert_for_json(obj):
+            def convert_for_json(obj: Any) -> Any:
+                """Convert objects for JSON serialization"""
                 if isinstance(obj, (datetime, date)):
                     return obj.isoformat()
                 elif isinstance(obj, (set, tuple)):
@@ -622,7 +1001,7 @@ class CyberFind:
                 'metadata': {
                     'generated_at': datetime.now().isoformat(),
                     'tool': 'CyberFind',
-                    'version': '1.0.0',
+                    'version': '0.1.0',
                     'statistics': stats_copy
                 },
                 'results': convert_for_json(results)
@@ -634,7 +1013,8 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving JSON: {e}")
     
-    async def save_as_csv_async(self, results: Dict, output_path: Path):
+    async def save_as_csv_async(self, results: Dict[str, Any], output_path: Path) -> None:
+        """Save results as CSV"""
         try:
             with open(f'{output_path}.csv', 'w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
@@ -657,7 +1037,8 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving CSV: {e}")
     
-    async def save_as_html_async(self, results: Dict, output_path: Path):
+    async def save_as_html_async(self, results: Dict[str, Any], output_path: Path) -> None:
+        """Save results as HTML report"""
         try:
             found_count = sum(len(r['found']) for r in results.values())
             not_found_count = sum(len(r['not_found']) for r in results.values())
@@ -730,7 +1111,8 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving HTML: {e}")
     
-    async def save_as_excel_async(self, results: Dict, output_path: Path):
+    async def save_as_excel_async(self, results: Dict[str, Any], output_path: Path) -> None:
+        """Save results as Excel file"""
         try:
             with pd.ExcelWriter(f'{output_path}.xlsx', engine='openpyxl') as writer:
                 data = []
@@ -755,7 +1137,8 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving Excel: {e}")
     
-    def save_to_database(self, results: Dict):
+    def save_to_database(self, results: Dict[str, Any]) -> None:
+        """Save results to SQLite database"""
         try:
             cursor = self.conn.cursor()
             for username, user_results in results.items():
@@ -778,7 +1161,8 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving to database: {e}")
     
-    async def generate_report_async(self, results: Dict) -> Dict:
+    async def generate_report_async(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate comprehensive search report"""
         report = {
             'summary': {
                 'total_users': len(results),
@@ -809,6 +1193,7 @@ class CyberFind:
                 report['summary']['categories_found'][category] += 1
             
             report['summary']['total_accounts_found'] += user_summary['accounts_found']
+            report['summary']['total_errors'] += len(user_results['errors'])
             report['users'][username] = user_summary
         
         report['risk_assessment'] = self.assess_risks(results)
@@ -816,7 +1201,8 @@ class CyberFind:
         
         return report
     
-    def assess_risks(self, results: Dict) -> Dict:
+    def assess_risks(self, results: Dict[str, Any]) -> Dict[str, str]:
+        """Assess privacy and security risks based on found accounts"""
         risks = {
             'privacy_risk': 'low',
             'reputation_risk': 'low',
@@ -825,8 +1211,8 @@ class CyberFind:
             'overall_risk': 'low'
         }
         
-        high_risk_sites = {'linkedin', 'facebook', 'instagram', 'twitter'}
-        medium_risk_sites = {'github', 'gitlab', 'reddit', 'pinterest'}
+        high_risk_sites = {'linkedin', 'facebook', 'instagram', 'twitter', 'vk', 'ok'}
+        medium_risk_sites = {'github', 'gitlab', 'reddit', 'pinterest', 'telegram'}
         
         found_sites = set()
         for user_results in results.values():
@@ -849,7 +1235,8 @@ class CyberFind:
         
         return risks
     
-    def generate_recommendations(self, results: Dict) -> List[str]:
+    def generate_recommendations(self, results: Dict[str, Any]) -> List[str]:
+        """Generate recommendations based on search results"""
         recommendations = []
         total_accounts = sum(len(r['found']) for r in results.values())
         
@@ -861,19 +1248,26 @@ class CyberFind:
             recommendations.append("Many accounts found, check privacy settings")
         
         has_linkedin = False
+        has_vk = False
         for user_results in results.values():
             for result in user_results['found']:
                 if 'linkedin' in result['site'].lower():
                     has_linkedin = True
-                    recommendations.append("LinkedIn profile found - check contacts and connections")
-                    break
+                if 'vk' in result['site'].lower():
+                    has_vk = True
         
-        if not has_linkedin:
+        if has_linkedin:
+            recommendations.append("LinkedIn profile found - check contacts and connections")
+        else:
             recommendations.append("LinkedIn profile not found - user may use different name")
+        
+        if has_vk:
+            recommendations.append("VK profile found - Russian-speaking user identified")
         
         return recommendations
     
-    def update_statistics(self):
+    def update_statistics(self) -> None:
+        """Update statistics in database"""
         try:
             cursor = self.conn.cursor()
             start_time = self.stats.get('start_time', datetime.now())
@@ -918,3 +1312,17 @@ class CyberFind:
             self.conn.commit()
         except Exception as e:
             logger.error(f"Error updating statistics: {e}")
+    
+    def close(self) -> None:
+        """Close connections and clean up resources"""
+        try:
+            if hasattr(self, 'conn'):
+                self.conn.close()
+            if hasattr(self, 'session'):
+                self.session.close()
+        except Exception as e:
+            logger.error(f"Error closing resources: {e}")
+    
+    def __del__(self) -> None:
+        """Destructor to ensure resources are closed"""
+        self.close()

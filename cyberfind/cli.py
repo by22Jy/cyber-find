@@ -1,73 +1,115 @@
 #!/usr/bin/env python3
+"""
+CyberFind CLI - Advanced OSINT search tool
+Built-in site lists support
+"""
 
 import argparse
 import asyncio
-import sys
 import os
+import sys
+from datetime import datetime
 
-# Исправляем путь для импорта
+# Fix import path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
 try:
     from cyberfind import CyberFind, SearchMode, OutputFormat
     from cyberfind import run_gui, run_api_server
-except ImportError as e:
-    print(f"Import error: {e}")
-    print("Trying alternative import...")
-    # Альтернативный импорт
+except ImportError:
+    # Alternative import
     sys.path.insert(0, os.path.join(current_dir, 'cyberfind'))
-    from core import CyberFind, SearchMode, OutputFormat
-    from gui import run_gui
-    from api import run_api_server
+    try:
+        from core import CyberFind, SearchMode, OutputFormat
+        from gui import run_gui
+        from api import run_api_server
+    except ImportError as e:
+        print(f"❌ Import error: {e}")
+        print("Make sure all dependencies are installed:")
+        print("pip install -r requirements.txt")
+        sys.exit(1)
 
-def show_builtin_lists(cybertrace):
-    """Показать доступные встроенные списки"""
+def print_banner():
+    """Show application banner"""
+    banner = """
+    ╔══════════════════════════════════════════════╗
+    ║            🕵️♂️ CYBERFIND v0.1.0           ║
+    ║      Advanced OSINT Search Tool            ║
+    ╚══════════════════════════════════════════════╝
+    """
+    print(banner)
+
+def show_builtin_lists():
+    """Show available built-in site lists"""
     print("\n📚 AVAILABLE BUILT-IN SITE LISTS:")
     print("=" * 50)
     
-    categories = cybertrace.list_builtin_categories()
-    for name, count in sorted(categories.items(), key=lambda x: x[1], reverse=True):
-        print(f"  {name:15} - {count:3d} sites")
+    categories = {
+        'quick': '25 most popular sites (default)',
+        'social_media': '70+ social networks',
+        'programming': '25+ IT and programming',
+        'gaming': '20+ gaming platforms',
+        'blogs': '20+ blogs and publications',
+        'ecommerce': '20+ stores and commerce',
+        'forums': '12+ forums',
+        'russian': '18+ Russian-language platforms',
+        'all': '200+ all sites'
+    }
     
-    print("\nUsage examples:")
-    print("  cyberfind username --list quick")
-    print("  cyberfind username --list social_media")
-    print("  cyberfind username --list all")
-    print("\nOr use from file:")
-    print("  cyberfind username -f sites/social_media.txt")
+    for name, desc in categories.items():
+        print(f"  {name:15} - {desc}")
+    
+    print("\n📖 USAGE EXAMPLES:")
+    print("-" * 40)
+    print("  cyberfind username                    # Quick check")
+    print("  cyberfind username --list all         # All sites")
+    print("  cyberfind username -f sites.txt       # From file")
+    print("  cyberfind --show-lists                # Show lists")
+    print("  cyberfind --gui                       # GUI interface")
 
-def main():
+def parse_arguments():
+    """Parse command line arguments"""
     parser = argparse.ArgumentParser(
-        description='CyberFind - Advanced OSINT search tool',
+        description='CyberFind - search for user accounts by username',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Examples:
-  # Использовать встроенные списки:
+Usage examples:
+  # Quick check (25 most popular sites)
   cyberfind username
-  cyberfind username --list quick
+  
+  # Use built-in lists
   cyberfind username --list social_media
   cyberfind username --list programming
   cyberfind username --list all
   
-  # Использовать файл:
+  # Multiple users
+  cyberfind user1 user2 user3 --list quick
+  
+  # From sites file
   cyberfind username -f sites/social_media.txt
   
-  # Другие опции:
+  # Advanced options
   cyberfind username --mode deep --format html -o report
-  cyberfind username --format csv --threads 50
+  cyberfind username --format csv --threads 50 --timeout 15
+  
+  # Additional commands
+  cyberfind --show-lists
+  cyberfind --gui
+  cyberfind --api
         """
     )
     
+    # Main arguments
     parser.add_argument(
         'usernames',
-        nargs='+',
-        help='Usernames to search'
+        nargs='*',
+        help='Username to search for (multiple can be specified)'
     )
     
     parser.add_argument(
         '-f', '--file',
-        help='File with sites list'
+        help='File with list of sites to check'
     )
     
     parser.add_argument(
@@ -77,37 +119,39 @@ Examples:
         help='Use built-in site list'
     )
     
+    # Search modes
     parser.add_argument(
         '--mode',
         choices=[m.value for m in SearchMode],
         default='standard',
-        help='Search mode'
+        help='Search mode (standard, deep, stealth, aggressive)'
     )
     
     parser.add_argument(
         '--format',
         choices=[f.value for f in OutputFormat],
         default='json',
-        help='Output format'
+        help='Output format for results'
     )
     
     parser.add_argument(
         '-o', '--output',
-        help='Output file name'
+        help='Filename to save results'
     )
     
+    # Performance settings
     parser.add_argument(
         '-t', '--threads',
         type=int,
-        default=20,
-        help='Number of threads'
+        default=30,
+        help='Number of concurrent requests'
     )
     
     parser.add_argument(
         '--timeout',
         type=int,
         default=10,
-        help='Request timeout'
+        help='Request timeout in seconds'
     )
     
     parser.add_argument(
@@ -116,135 +160,220 @@ Examples:
         help='Verbose output'
     )
     
+    # Additional commands
     parser.add_argument(
         '--show-lists',
         action='store_true',
-        help='Show available built-in site lists'
+        help='Show available built-in lists'
     )
     
     parser.add_argument(
         '--gui',
         action='store_true',
-        help='Start GUI'
+        help='Launch graphical interface'
     )
     
     parser.add_argument(
         '--api',
         action='store_true',
-        help='Start API server'
+        help='Launch API server'
     )
     
     parser.add_argument(
         '--config',
         default='config.yaml',
-        help='Config file path'
+        help='Path to configuration file'
     )
     
-    args = parser.parse_args()
+    parser.add_argument(
+        '--version',
+        action='version',
+        version='CyberFind v0.1.0'
+    )
+    
+    return parser.parse_args()
+
+async def run_search(args, cybertrace):
+    """Run search"""
+    try:
+        start_time = datetime.now()
+        
+        # Determine source of sites
+        if args.list:
+            print(f"📋 Using built-in list: {args.list}")
+            builtin_list = args.list
+            sites_file = None
+        elif args.file:
+            print(f"📋 Using file: {args.file}")
+            builtin_list = None
+            sites_file = args.file
+        else:
+            print("📋 Using default list: quick (25 sites)")
+            builtin_list = 'quick'
+            sites_file = None
+        
+        # Run search
+        results = await cybertrace.search_async(
+            usernames=args.usernames,
+            sites_file=sites_file,
+            builtin_list=builtin_list,
+            mode=SearchMode(args.mode),
+            output_format=OutputFormat(args.format),
+            output_file=args.output,
+            max_concurrent=args.threads
+        )
+        
+        end_time = datetime.now()
+        total_time = (end_time - start_time).total_seconds()
+        
+        return results, total_time
+        
+    except KeyboardInterrupt:
+        print("\n\n⏹️ Search interrupted by user")
+        raise
+    except Exception as e:
+        print(f"\n❌ Search error: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        raise
+
+def print_results(results, total_time, args):
+    """Print search results"""
+    print(f"\n{'='*60}")
+    print(f"✅ SEARCH COMPLETED in {total_time:.1f} seconds")
+    print(f"{'='*60}")
+    
+    if 'statistics' in results:
+        stats = results['statistics']
+        print(f"\n📊 STATISTICS:")
+        print(f"  Total checks: {stats.get('total_checks', 0)}")
+        print(f"  Accounts found: {stats.get('found_accounts', 0)}")
+        print(f"  Errors: {stats.get('errors', 0)}")
+    
+    if 'results' in results:
+        for username, data in results['results'].items():
+            print(f"\n👤 USER: {username}")
+            
+            if data and 'found' in data and data['found']:
+                found_count = len(data['found'])
+                print(f"  ✅ FOUND {found_count} accounts:")
+                
+                # Group by categories
+                categories = {}
+                for account in data['found']:
+                    category = account.get('metadata', {}).get('category', 'other')
+                    if category not in categories:
+                        categories[category] = []
+                    categories[category].append(account)
+                
+                # Print by categories
+                for category, accounts in categories.items():
+                    print(f"    📁 {category.upper()}:")
+                    for i, account in enumerate(accounts, 1):
+                        status_code = account.get('status_code', 'N/A')
+                        response_time = account.get('response_time', 0)
+                        print(f"      {i:2d}. {account['site']}")
+                        print(f"          URL: {account.get('url', 'N/A')}")
+                        print(f"          Status: {status_code}, Time: {response_time:.2f}s")
+            else:
+                print(f"  ❌ No accounts found")
+            
+            # Show errors in verbose mode
+            if args.verbose and data and 'errors' in data and data['errors']:
+                error_count = len(data['errors'])
+                if error_count > 0:
+                    print(f"  ⚠️  Errors: {error_count}")
+                    for i, error in enumerate(data['errors'][:5], 1):  # First 5 errors
+                        print(f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}")
+                    if error_count > 5:
+                        print(f"      ... and {error_count - 5} more errors")
+    
+    # Recommendations from report
+    if 'report' in results and 'recommendations' in results['report']:
+        recommendations = results['report']['recommendations']
+        if recommendations:
+            print(f"\n💡 RECOMMENDATIONS:")
+            for i, rec in enumerate(recommendations, 1):
+                print(f"  {i}. {rec}")
+    
+    # Save information
+    if args.output:
+        output_path = args.output
+        if not output_path.endswith(f'.{args.format}'):
+            output_path = f"{output_path}.{args.format}"
+        print(f"\n💾 Results saved to: {output_path}")
+
+def main():
+    """Main function"""
+    args = parse_arguments()
+    
+    if not any([args.usernames, args.show_lists, args.gui, args.api]):
+        print("❌ No username specified for search")
+        print("Use --help for help")
+        return
+    
+    print_banner()
+    
+    if args.show_lists:
+        show_builtin_lists()
+        return
     
     if args.gui:
         run_gui()
-    elif args.api:
+        return
+    
+    if args.api:
         run_api_server()
-    elif args.show_lists:
+        return
+    
+    if not args.usernames:
+        print("❌ No username specified for search")
+        print("Example: cyberfind username")
+        return
+    
+    # Print search information
+    print(f"🔍 Searching users: {', '.join(args.usernames)}")
+    print(f"📊 Mode: {args.mode}, Threads: {args.threads}, Timeout: {args.timeout}s")
+    
+    # Create CyberFind instance
+    try:
         cybertrace = CyberFind(args.config)
-        show_builtin_lists(cybertrace)
-    else:
-        print(f"🔍 CyberFind v0.1.0")
-        print(f"Searching for: {', '.join(args.usernames)}")
         
-        cybertrace = CyberFind(args.config)
-        
-        # Показать информацию о списке сайтов
-        if args.list:
-            sites_count = len(cybertrace.get_builtin_site_list(args.list))
-            print(f"Using built-in list: {args.list} ({sites_count} sites)")
-        elif args.file:
-            print(f"Using sites file: {args.file}")
-        else:
-            sites_count = len(cybertrace.get_builtin_site_list('quick'))
-            print(f"Using default list: quick ({sites_count} sites)")
-        
-        # Обновляем конфиг с аргументами командной строки
+        # Update config
         if args.timeout:
             cybertrace.config['general']['timeout'] = args.timeout
         
-        try:
-            print("Starting search...\n")
-            
-            # Добавляем обработку Ctrl+C
-            async def search_with_progress():
-                import time
-                start_time = time.time()
-                
-                try:
-                    # Определяем источник сайтов
-                    sites_file = args.file
-                    builtin_list = args.list
-                    
-                    results = await cybertrace.search_async(
-                        usernames=args.usernames,
-                        sites_file=sites_file,
-                        builtin_list=builtin_list,
-                        mode=SearchMode(args.mode),
-                        output_format=OutputFormat(args.format),
-                        output_file=args.output,
-                        max_concurrent=args.threads
-                    )
-                    
-                    end_time = time.time()
-                    total_time = end_time - start_time
-                    
-                    print(f"\n{'='*60}")
-                    print(f"✅ SEARCH COMPLETED in {total_time:.1f} seconds")
-                    print(f"{'='*60}")
-                    
-                    if 'statistics' in results:
-                        stats = results['statistics']
-                        print(f"📊 STATISTICS:")
-                        print(f"  Total checks: {stats.get('total_checks', 0)}")
-                        print(f"  Accounts found: {stats.get('found_accounts', 0)}")
-                        print(f"  Errors: {stats.get('errors', 0)}")
-                    
-                    if 'results' in results:
-                        for username, data in results['results'].items():
-                            print(f"\n👤 {username}:")
-                            if data and 'found' in data and data['found']:
-                                print(f"  ✅ FOUND {len(data['found'])} accounts:")
-                                for i, account in enumerate(data['found'], 1):
-                                    print(f"    {i:2d}. {account['site']}: {account['url']}")
-                            else:
-                                print(f"  ❌ No accounts found")
-                            
-                            if data and 'errors' in data and data['errors'] and args.verbose:
-                                print(f"  ⚠️  Errors: {len(data['errors'])}")
-                                for error in data['errors'][:3]:  # Показываем только первые 3 ошибки
-                                    print(f"      • {error.get('site', 'Unknown')}: {error.get('error', 'Unknown error')}")
-                    
-                    if args.output and 'results' in results:
-                        print(f"\n💾 Results saved to: {args.output}")
-                    
-                    return results
-                    
-                except asyncio.CancelledError:
-                    print("\n⚠️ Search cancelled by user")
-                    raise
-                except Exception as e:
-                    print(f"\n❌ Error during search: {e}")
-                    raise
-            
-            # Запускаем с обработкой прерывания
-            try:
-                results = asyncio.run(search_with_progress())
-            except KeyboardInterrupt:
-                print("\n\n⏹️ Search interrupted by user")
-            except Exception as e:
-                print(f"\n❌ Fatal error: {e}")
+        # Run search
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         
+        try:
+            results, total_time = loop.run_until_complete(
+                run_search(args, cybertrace)
+            )
+            
+            # Print results
+            print_results(results, total_time, args)
+            
         except KeyboardInterrupt:
             print("\n\n⏹️ Search interrupted by user")
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f"\n❌ Critical error: {e}")
+            if args.verbose:
+                import traceback
+                traceback.print_exc()
+        finally:
+            try:
+                loop.close()
+            except:
+                pass
+            
+    except Exception as e:
+        print(f"❌ Initialization error: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
 
 if __name__ == "__main__":
     main()
