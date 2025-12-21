@@ -1,15 +1,19 @@
 # 🤝 Contributing to CyberFind
 
-<div align="center">
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-0.0.1-blue?style=for-the-badge&logo=github        " alt="Version">
+  <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python        " alt="Python">
+  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge        " alt="Platform">
+  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative        " alt="License">
+</p>
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](https://github.com/vazor-code/cyber-find/pulls)
-[![GitHub issues](https://img.shields.io/github/issues/vazor-code/cyber-find?style=for-the-badge)](https://github.com/vazor-code/cyber-find/issues)
-[![GitHub forks](https://img.shields.io/github/forks/vazor-code/cyber-find?style=for-the-badge)](https://github.com/vazor-code/cyber-find/network/members)
-[![GitHub stars](https://img.shields.io/github/stars/vazor-code/cyber-find?style=for-the-badge)](https://github.com/vazor-code/cyber-find/stargazers)
+<p align="center">
+  <b>Find user accounts across 200+ platforms in seconds</b>
+</p>
 
-</div>
-
----
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&duration=3000&pause=1000&color=00FF00&center=true&vCenter=true&width=800&height=80&lines=Join+the+Mission.;Build+the+Future.;Stay+Ethical." alt="CyberFind Slogan">
+</p>
 
 ## 🎯 Table of Contents
 
@@ -64,7 +68,7 @@ Click the **Fork** button in the top-right corner of the repository page.
 ### 2. Clone Your Fork
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/cyber-find.git
+git clone https://github.com/YOUR-USERNAME/cyber-find.git      
 cd cyber-find
 ```
 
@@ -269,8 +273,8 @@ Describe how you tested your changes.
 
 ### Need Help?
 
-- **Discussions**: [CyberFind Discussions](https://github.com/vazor-code/cyber-find/discussions)
-- **Issues**: [GitHub Issues](https://github.com/vazor-code/cyber-find/issues)
+- **Discussions**: [CyberFind Discussions](https://github.com/vazor-code/cyber-find/discussions      )
+- **Issues**: [GitHub Issues](https://github.com/vazor-code/cyber-find/issues      )
 - **Email**: [vazorcode@gmail.com]
 
 ### Code of Conduct
@@ -287,7 +291,7 @@ Please read and follow our [Code of Conduct](./CODE_OF_CONDUCT.md). We expect al
 
 <br>
 
-[![](https://contrib.rocks/image?repo=vazor-code/cyber-find)](https://github.com/vazor-code/cyber-find/graphs/contributors)
+[![](https://contrib.rocks/image?repo=vazor-code/cyber-find      )](https://github.com/vazor-code/cyber-find/graphs/contributors      )
 
 <br>
 
