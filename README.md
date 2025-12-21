@@ -53,6 +53,9 @@
 # Clone the repository
 git clone https://github.com/vazor-code/cyber-find.git  
 cd cyber-find
+python -m venv venv
+source venv/bin/activate # Linux/macOS
+venv\Scripts\activate.bat # Windows
 
 # Install dependencies
 pip install -r requirements.txt
