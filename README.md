@@ -1,271 +1,418 @@
-# 🔍 **CyberFind** - Ultimate OSINT Reconnaissance Tool
+# 🕵️♂️ CyberFind - Advanced OSINT Search Tool
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.1.0-blue?style=for-the-badge&logo=github" alt="Version">
-  <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative" alt="License">
-  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" alt="Platform">
+  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge&logo=github  " alt="Version">
+  <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python  " alt="Python">
+  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge  " alt="Platform">
+  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative  " alt="License">
+</p>
+
+<p align="center">
+  <b>Find user accounts across 200+ platforms in seconds</b>
 </p>
 
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&duration=3000&pause=1000&color=00FF00&center=true&vCenter=true&width=800&height=80&lines=Find+Everything.;Track+Everyone.;Stay+Anonymous." alt="CyberFind Slogan">
 </p>
 
-## 🌟 **What is CyberFind?**
+## ✨ Features
 
-**CyberFind** is a next-generation OSINT (Open Source Intelligence) reconnaissance tool designed for cybersecurity professionals, penetration testers, and digital investigators. It allows you to search for users across **hundreds of platforms** with unprecedented speed and accuracy.
+### 🔍 **Comprehensive Search**
+- **200+ built-in sites** across multiple categories
+- **Smart detection** using status codes and content analysis
+- **Metadata extraction** from found profiles
 
+### ⚡ **High Performance**
+- **Async/await architecture** for maximum speed
+- **Concurrent requests** with configurable thread count
+- **Intelligent rate limiting** to avoid blocks
 
-## 🚀 **Features**
+### 🛡️ **Privacy & Security**
+- **Random User-Agents** for each request
+- **Multiple search modes** (Standard, Deep, Stealth, Aggressive)
+- **No data storage** unless explicitly configured
 
-| Feature | Description | 🎯 |
-|---------|-------------|-----|
-| **⚡ Blazing Fast** | Async requests with 50+ concurrent threads | Speed |
-| **🎯 Multi-Format** | JSON, CSV, HTML, Excel, SQLite outputs | Flexibility |
-| **🛡️ Stealth Mode** | Proxy rotation + User-Agent spoofing | Anonymity |
-| **📊 Smart Analytics** | Risk assessment + Statistics | Intelligence |
-| **🧩 Modular** | Plugin system + API support | Extensible |
-| **🌐 Multi-Platform** | 200+ sites across categories | Coverage |
+### 📊 **Multiple Output Formats**
+- **JSON** - Structured data for APIs
+- **CSV** - Spreadsheet compatible format  
+- **HTML** - Beautiful visual reports
+- **Excel** - Professional multi-sheet workbooks
+- **SQLite** - Database storage for large datasets
 
-## 📦 **Installation**
+### 🎯 **Smart Features**
+- **Risk assessment** based on found accounts
+- **Personalized recommendations**
+- **Statistical analysis** of results
+- **Category grouping** of found accounts
 
-### **Quick Install (Recommended)**
-```bash
-pip install cyber-find
-```
+## 🚀 Quick Start
 
-### **From Source**
+### Installation
+
 ```bash
 # Clone the repository
-git clone https://github.com/vazor-code/cyber-find.git
-
-# Navigate to project
+git clone https://github.com/vazor-code/cyber-find.git  
 cd cyber-find
 
 # Install dependencies
 pip install -r requirements.txt
+pip install .
 
-# Run CyberFind
-python cyberfind_cli.py --help
+# Make it executable (Linux/macOS)
+chmod +x cyberfind
 ```
 
-## 🎮 **Usage Examples**
+### Basic Usage
 
-### **Basic Search**
 ```bash
-# Search single user
-cyberfind john_doe
+# Quick search (25 most popular sites)
+cyberfind username
+
+# Search with specific category
+cyberfind username --list social_media
+cyberfind username --list programming
+cyberfind username --list gaming
+
+# Comprehensive search (200+ sites)
+cyberfind username --list all
 
 # Multiple users
-cyberfind john_doe admin_user
-
-# With custom sites file
-cyberfind target -f sites/custom_list.txt
+cyberfind user1 user2 user3 --list quick
 ```
 
-### **Advanced Options**
+## 📚 Usage Examples
+
+### 🔎 Basic Searches
+
 ```bash
-# Deep reconnaissance
+# Quick check on popular platforms
+cyberfind john_doe
+
+# Russian-language platforms only
+cyberfind username --list russian
+
+# Gaming platforms only
+cyberfind username --list gaming
+
+# Blogs and publications
+cyberfind username --list blogs
+```
+
+### ⚙️ Advanced Options
+
+```bash
+# Deep search with HTML report
 cyberfind target --mode deep --format html -o report
 
-# Stealth mode with proxies
-cyberfind target --mode stealth --proxy-list proxies.txt
+# Stealth mode for sensitive searches
+cyberfind target --mode stealth --timeout 15
 
-# Maximum speed (aggressive)
+# Maximum speed (use with caution)
 cyberfind target --mode aggressive --threads 100
+
+# Custom sites file
+cyberfind target -f custom_sites.txt
 ```
 
-### **GUI Interface**
+### 📊 Output Management
+
 ```bash
-# Launch graphical interface
-cyberfind-gui
+# Save as JSON (default)
+cyberfind username -o results
+
+# Save as CSV for Excel
+cyberfind username --format csv -o results
+
+# Save as HTML report
+cyberfind username --format html -o report
+
+# Save to database
+cyberfind username --format sqlite
 ```
 
-### **REST API**
+## 📋 Available Site Lists
+
+| List Name | Sites Count | Description |
+|-----------|-------------|-------------|
+| **quick** | 25 | Most popular platforms (default) |
+| **social_media** | 70+ | All social networks |
+| **programming** | 25+ | IT and development platforms |
+| **gaming** | 20+ | Gaming platforms and communities |
+| **blogs** | 20+ | Blogs and publication platforms |
+| **ecommerce** | 20+ | Shopping and commerce sites |
+| **forums** | 12+ | Discussion forums |
+| **russian** | 18+ | Russian-language platforms |
+| **all** | 200+ | All available platforms |
+
+View all available lists:
 ```bash
-# Start API server
-cyberfind-api
-
-# API will be available at http://localhost:8080
+cyberfind --show-lists
 ```
 
-## 📊 **Output Formats**
+## 🎛️ Configuration
 
-| Format | Description | Use Case |
-|--------|-------------|----------|
-| **JSON** | Structured data | APIs, automation |
-| **HTML** | Interactive report | Presentations |
-| **CSV** | Spreadsheet format | Excel analysis |
-| **Excel** | Multi-sheet workbook | Professional reports |
-| **SQLite** | Database | Long-term storage |
-
-## 🔧 **Configuration**
-
-Create `config.yaml`:
+Create a `config.yaml` file for custom settings:
 
 ```yaml
 # config.yaml
 general:
-  timeout: 30              # Request timeout
-  max_threads: 50          # Concurrent requests
-  retry_attempts: 3        # Retry on failure
-  user_agents_rotation: true
+  timeout: 30                    # Request timeout in seconds
+  max_threads: 50                # Maximum concurrent requests
+  retry_attempts: 3              # Retry attempts on failure
+  retry_delay: 2                 # Delay between retries
+  user_agents_rotation: true     # Rotate User-Agents
+  rate_limit_delay: 0.5          # Delay between requests
 
 proxy:
-  enabled: false
-  list:
-    - http://proxy1:8080
-    - http://proxy2:8080
-  rotation: true
+  enabled: false                 # Enable proxy support
+  list: []                       # List of proxies
+  rotation: true                 # Rotate proxies
 
 database:
-  sqlite_path: "data/cyberfind.db"
+  sqlite_path: 'cyberfind.db'    # SQLite database path
 
 output:
-  default_format: "json"
-  save_all_results: true
-  compress_results: false
+  default_format: 'json'         # Default output format
+  save_all_results: true         # Save all results to DB
+
+advanced:
+  metadata_extraction: true      # Extract metadata from pages
+  cache_results: true            # Cache results
+  verify_ssl: true               # Verify SSL certificates
 ```
 
-## 📁 **Project Structure**
+## 📁 Project Structure
 
 ```
 cyberfind/
-├── cyberfind/           # Core library
-│   ├── core.py         # Main engine
-│   ├── gui.py          # Graphical interface
-│   ├── api.py          # REST API
-│   └── utils.py        # Utilities
-├── sites/              # Site definitions
-│   ├── social_media.txt
-│   ├── programming.txt
-│   └── gaming.txt
-└──  docs/               # Documentation
+├── cyberfind_cli.py          # Main CLI interface
+├── core.py                   # Core search engine
+├── gui.py                    # Graphical interface
+├── api.py                    # REST API server
+├── config.yaml              # Configuration template
+├── requirements.txt         # Python dependencies
+├── README.md               # This file
+└── sites/                  # Site definition files
+    ├── social_media.txt
+    ├── programming.txt
+    ├── gaming.txt
+    └── ...
 ```
 
-## 🚨 **Legal & Ethical Use**
+## 🔧 Development
 
-<div align="center">
+### Running Tests
 
-⚠️ **DISCLAIMER**
+```bash
+# Install development dependencies
+pip install pytest pytest-asyncio pytest-cov
 
-</div>
+# Run tests
+pytest tests/
 
-**CyberFind** is designed for:
+# With coverage
+pytest --cov=cyberfind tests/
+```
 
-✅ **Legal penetration testing**  
-✅ **Security research**  
-✅ **Digital footprint analysis**  
-✅ **Bug bounty hunting**  
-✅ **Personal security audits**
+### Code Style
 
-**⚠️ PROHIBITED USES:**
+```bash
+# Install formatting tools
+pip install black flake8 isort
 
-❌ **Harassment or stalking**  
-❌ **Unauthorized data collection**  
-❌ **Privacy violations**  
-❌ **Illegal investigations**  
-❌ **Malicious activities**
+# Format code
+black cyberfind_cli.py core.py
 
-**You are solely responsible for your actions when using this tool.**
+# Check code style
+flake8 cyberfind_cli.py core.py
 
-## 📈 **Performance Benchmarks**
+# Sort imports
+isort cyberfind_cli.py core.py
+```
 
-| Scenario | Time | Sites | Success Rate |
-|----------|------|-------|--------------|
-| Single User | 45s | 100 | 92% |
-| 5 Users | 2m 15s | 100 | 90% |
-| Deep Search | 3m 30s | 200 | 88% |
+## 🌐 API Usage
 
-## 🛠️ **Advanced Features**
+Start the API server:
+```bash
+cyberfind --api
+# Server starts at http://localhost:8080
+```
 
-### **API Integration**
+Example API request:
 ```python
 import requests
+import json
 
-# Query CyberFind API
-response = requests.post(
-    "http://localhost:8080/search",
-    json={
-        "usernames": ["target_user"],
-        "mode": "deep",
-        "output_format": "json"
-    }
-)
+response = requests.post('http://localhost:8080/api/search', json={
+    'usernames': ['target_user'],
+    'list': 'social_media',
+    'mode': 'standard'
+})
+
+results = response.json()
 ```
 
-## 🤝 **Contributing**
+## 🖥️ Graphical Interface
 
-We love contributors! Here's how you can help:
+```bash
+# Launch the GUI
+cyberfind --gui
+```
+
+The GUI provides:
+- Visual search interface
+- Real-time progress tracking
+- Interactive results display
+- One-click report generation
+
+## 📊 Sample Output
+
+```bash
+$ cyberfind john_doe --list quick
+
+🔍 CyberFind v1.0.0
+Searching for: john_doe
+📋 Using built-in list: quick (25 sites)
+
+🔍 Searching: john_doe
+  Checking 25 sites...
+    ✓ Found: GitHub
+    ✓ Found: Twitter
+    ✓ Found: LinkedIn
+  Done: 3 found, 2 errors
+
+✅ SEARCH COMPLETED in 12.5 seconds
+============================================================
+
+📊 STATISTICS:
+  Total checks: 25
+  Accounts found: 3
+  Errors: 2
+
+👤 USER: john_doe
+  ✅ FOUND 3 accounts:
+    📁 PROGRAMMING:
+      1. GitHub
+          URL: https://github.com/john_doe  
+          Status: 200, Time: 1.23s
+    📁 SOCIAL_MEDIA:
+      2. Twitter
+          URL: https://twitter.com/john_doe  
+          Status: 200, Time: 0.89s
+      3. LinkedIn
+          URL: https://www.linkedin.com/in/john_doe  
+          Status: 200, Time: 1.45s
+
+💡 RECOMMENDATIONS:
+  1. LinkedIn profile found - check contacts and connections
+  2. GitHub profile found - review public repositories
+
+💾 Results saved to: results.json
+```
+
+## 🚨 Legal & Ethical Usage
+
+### ✅ **Permitted Uses:**
+- Security research and penetration testing (with permission)
+- Personal digital footprint analysis
+- Academic research on social media presence
+- Bug bounty hunting and security audits
+- Investigating your own online presence
+
+### ❌ **Prohibited Uses:**
+- Harassment, stalking, or doxxing
+- Unauthorized surveillance
+- Privacy violations
+- Commercial data scraping without permission
+- Any illegal activities
+
+**By using this tool, you agree to use it responsibly and legally. The developers are not responsible for misuse.**
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how:
 
 1. **Fork** the repository
-2. **Create** a feature branch
+2. **Create** a feature branch:
    ```bash
    git checkout -b feature/amazing-feature
    ```
-3. **Commit** your changes
+3. **Commit** your changes:
    ```bash
    git commit -m 'Add amazing feature'
    ```
-4. **Push** to the branch
+4. **Push** to the branch:
    ```bash
    git push origin feature/amazing-feature
    ```
 5. **Open** a Pull Request
 
-### **Development Setup**
-```bash
-# Install dev dependencies
-pip install -r requirements-dev.txt
+### Areas for Contribution:
+- Adding new site definitions
+- Improving detection algorithms
+- Enhancing the GUI
+- Writing documentation
+- Performance optimizations
+- Bug fixes
 
-# Run tests
-pytest tests/
+## 📈 Performance Tips
 
-# Code formatting
-black cyberfind/
-flake8 cyberfind/
-```
+1. **For speed**: Use `--mode aggressive --threads 50`
+2. **For stealth**: Use `--mode stealth --timeout 30`
+3. **For reliability**: Use `--mode standard --retry 3`
+4. **For specific needs**: Create custom site lists
 
-## 📚 **Documentation**
+## 🐛 Troubleshooting
 
-- **[API Documentation](docs/api.md)** - Complete API reference
-- **[User Guide](docs/guide.md)** - Step-by-step tutorials
-- **[Developer Guide](docs/developer.md)** - Contributing guide
-- **[FAQ](docs/faq.md)** - Frequently asked questions
+### Common Issues:
 
-### **Need Help?**
-- 📖 **Documentation:** [docs.cyberfind.dev](https://docs.cyberfind.dev)
-- 🐛 **Bug Reports:** [GitHub Issues](https://github.com/vazor-code/cyber-find/issues)
-- 💡 **Feature Requests:** [Feature Requests](https://github.com/yourusername/cyberfind/issues/new?template=feature_request.md)
-- 💬 **Questions:** [Discussions](https://github.com/vazor-code/cyber-find/discussions)
+1. **"No sites loaded" error**
+   - Ensure you have internet connection
+   - Check if the sites directory exists
 
-## ⭐ **Support the Project**
+2. **Slow performance**
+   - Reduce thread count: `--threads 20`
+   - Increase timeout: `--timeout 30`
+   - Use a faster internet connection
 
-If you find **CyberFind** useful, please consider:
+3. **Many errors**
+   - The target platforms may be blocking requests
+   - Try using stealth mode
+   - Consider using proxies
 
-1. **Star** the repository ⭐
-2. **Share** with colleagues 🔗
-3. **Contribute** code or documentation 💻
-4. **Report** bugs and suggest features 🐛
-5. **Donate** to support development 💰
+### Getting Help:
+- Check the [GitHub Issues](https://github.com/vazor-code/cyber-find/issues  )
+- Review the example configurations
+- Test with a simple search first
 
-<div align="center">
+## 📄 License
 
-### **Stargazers Over Time**
-[![Stargazers](https://starchart.cc/vazor-code/cyber-find.svg)](https://starchart.cc/vazor-code/cyberfind)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### **Made with ❤️ by Security Researchers**
+## 🙏 Acknowledgments
 
-[![GitHub followers](https://img.shields.io/github/followers/vazor-code?style=social)](https://github.com/vazor-code)
+- Built with [aiohttp](https://docs.aiohttp.org/  ) for async HTTP requests
+- Uses [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/  ) for HTML parsing
+- Inspired by various OSINT tools in the security community
 
-**"Knowledge is power, but wisdom is using it responsibly."**
+## 📬 Contact
 
-</div>
+- **GitHub**: [vazor-code](https://github.com/vazor-code  )
+- **Project**: [CyberFind](https://github.com/vazor-code/cyber-find  )
+- **Issues**: [Report a bug](https://github.com/vazor-code/cyber-find/issues  )
 
 ---
 
 <p align="center">
-  <b>CyberFind</b> · Find Everything · Track Everyone · Stay Anonymous
+  <b>CyberFind</b> · Find accounts · Analyze presence · Stay informed
   <br>
-  <sub>Last updated: December 2025 · Version 0.1.0</sub>
+  <sub>Remember: With great power comes great responsibility</sub>
 </p>
+
+<div align="center">
+  
+### ⭐ If you find this useful, please give it a star!
+
+[![GitHub stars](https://img.shields.io/github/stars/vazor-code/cyber-find?style=social  )](https://github.com/vazor-code/cyber-find/stargazers  )
+
+</div>
