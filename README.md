@@ -40,7 +40,7 @@ pip install cyber-find
 git clone https://github.com/vazor-code/cyber-find.git
 
 # Navigate to project
-cd cyberfind
+cd cyber-find
 
 # Install dependencies
 pip install -r requirements.txt
