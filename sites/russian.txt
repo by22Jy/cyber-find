@@ -1,0 +1,23 @@
+# Russian Platforms
+# Format: Name|URL Pattern|Category|Priority
+
+VK|https://vk.com/{username}|social_media|10
+OK|https://ok.ru/{username}|social_media|9
+Telegram|https://t.me/{username}|social_media|8
+Yandex.Zen|https://zen.yandex.ru/user/{username}|blogs|7
+Habr|https://habr.com/ru/users/{username}|programming|8
+Toster|https://toster.ru/user/{username}|programming|7
+Pikabu|https://pikabu.ru/@{username}|social_media|7
+DTF|https://dtf.ru/u/{username}|social_media|7
+VC.ru|https://vc.ru/u/{username}|programming|7
+Avito|https://www.avito.ru/user/{username}|ecommerce|9
+Yandex.Market|https://market.yandex.ru/user/{username}|ecommerce|8
+Wildberries|https://www.wildberries.ru/seller/{username}|ecommerce|8
+Ozon|https://www.ozon.ru/seller/{username}|ecommerce|8
+4PDA|https://4pda.to/forum/index.php?showuser={username}|forums|7
+IXBT|https://forum.ixbt.com/users.cgi?id={username}|forums|6
+LiveJournal|https://{username}.livejournal.com|blogs|7
+Ya.ru|https://ya.ru/{username}|blogs|6
+Rutube|https://rutube.ru/channel/{username}|social_media|6
+Kwork|https://kwork.ru/user/{username}|programming|7
+FL.ru|https://www.fl.ru/users/{username}|programming|7

@@ -1,0 +1,45 @@
+# Forums & Discussion Boards
+# Format: Name|URL Pattern|Category|Priority
+
+Reddit|https://www.reddit.com/user/{username}|forums|10
+Quora|https://www.quora.com/profile/{username}|forums|9
+Stack Exchange|https://stackexchange.com/users/{username}|forums|9
+
+# Tech Forums
+Hacker News|https://news.ycombinator.com/user?id={username}|forums|8
+Product Hunt|https://www.producthunt.com/@{username}|forums|7
+Slashdot|https://slashdot.org/~{username}|forums|6
+Ars Technica|https://arstechnica.com/civis/members/{username}|forums|6
+
+# Gaming Forums
+Steam Community|https://steamcommunity.com/id/{username}|forums|8
+IGN Boards|https://www.ign.com/boards/members/{username}|forums|6
+NeoGAF|https://www.neogaf.com/members/{username}|forums|6
+ResetEra|https://www.resetera.com/members/{username}|forums|6
+
+# Specialized Forums
+BitcoinTalk|https://bitcointalk.org/index.php?action=profile;u={username}|forums|7
+AnandTech|https://forums.anandtech.com/members/{username}|forums|6
+Tom's Hardware|https://forums.tomshardware.com/members/{username}|forums|6
+Overclockers|https://www.overclockers.com/forums/members/{username}|forums|6
+
+# International Forums
+XDA Developers|https://forum.xda-developers.com/m/{username}|forums|8
+Android Central|https://forums.androidcentral.com/members/{username}|forums|7
+MacRumors|https://forums.macrumors.com/members/{username}|forums|7
+Windows Central|https://forums.windowscentral.com/members/{username}|forums|7
+
+# Russian Forums
+Habr|https://habr.com/ru/users/{username}|forums|8
+Toster|https://toster.ru/user/{username}|forums|7
+4PDA|https://4pda.to/forum/index.php?showuser={username}|forums|7
+IXBT|https://forum.ixbt.com/users.cgi?id={username}|forums|6
+
+# Programming Forums
+CodeProject|https://www.codeproject.com/script/Membership/View.aspx?mid={username}|forums|7
+Dream.In.Code|https://www.dreamincode.net/forums/user/{username}|forums|6
+Go4Expert|https://www.go4expert.com/members/{username}|forums|6
+
+# General Discussion
+BodyBuilding.com|https://forum.bodybuilding.com/member.php?username={username}|forums|6
+Something Awful|https://forums.somethingawful.com/member.php?action=getinfo&username={username}|forums|6

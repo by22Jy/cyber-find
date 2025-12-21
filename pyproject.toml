@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cyberfind"
+version = "0.1.0"
+description = "Advanced OSINT tool for searching users across platforms"
+readme = "README.md"
+authors = [{name = "vazor"}]
+license = {text = "MIT"}
+requires-python = ">=3.8"
+keywords = ["osint", "cybersecurity", "search", "social-media"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "aiohttp>=3.9.1",
+    "beautifulsoup4>=4.12.2",
+    "cloudscraper>=1.2.71",
+    "fake-useragent>=1.4.0",
+    "pandas>=2.1.4",
+    "PyYAML>=6.0.1",
+    "requests>=2.31.0",
+    "openpyxl>=3.1.2",
+    "customtkinter>=5.2.0",
+    "fastapi>=0.104.1",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/vazor-code/cyber-find"
+
+[project.scripts]
+cyberfind = "cyberfind.cli:main"
+cyberfind-gui = "cyberfind.gui_main:main"
+cyberfind-api = "cyberfind.api_main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "black>=23.11.0",
+    "flake8>=6.1.0",
+    "mypy>=1.7.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cyberfind*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.yaml", "*.md"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"

@@ -1,0 +1,53 @@
+# E-commerce & Marketplace Profiles
+# Format: Name|URL Pattern|Category|Priority
+
+Etsy|https://www.etsy.com/people/{username}|ecommerce|10
+eBay|https://www.ebay.com/usr/{username}|ecommerce|10
+Amazon|https://www.amazon.com/gp/profile/{username}|ecommerce|9
+
+# Handmade & Crafts
+Handmade at Amazon|https://www.amazon.com/handmade/{username}|ecommerce|8
+ArtFire|https://www.artfire.com/ext/people/{username}|ecommerce|6
+Zibbet|https://www.zibbet.com/{username}|ecommerce|5
+
+# Design & Print-on-Demand
+Redbubble|https://www.redbubble.com/people/{username}|ecommerce|8
+Society6|https://society6.com/{username}|ecommerce|7
+Teepublic|https://www.teepublic.com/user/{username}|ecommerce|7
+Design by Humans|https://www.designbyhumans.com/shop/{username}|ecommerce|6
+
+# Vintage & Used
+Depop|https://www.depop.com/{username}|ecommerce|8
+Poshmark|https://poshmark.com/closet/{username}|ecommerce|7
+Mercari|https://www.mercari.com/u/{username}|ecommerce|7
+Grailed|https://www.grailed.com/{username}|ecommerce|7
+
+# Digital Products
+Gumroad|https://gumroad.com/{username}|ecommerce|8
+Payhip|https://payhip.com/{username}|ecommerce|6
+Selz|https://selz.com/{username}|ecommerce|5
+
+# Russian Marketplaces
+Avito|https://www.avito.ru/user/{username}|ecommerce|9
+Yandex.Market|https://market.yandex.ru/user/{username}|ecommerce|8
+Wildberries|https://www.wildberries.ru/seller/{username}|ecommerce|8
+Ozon|https://www.ozon.ru/seller/{username}|ecommerce|8
+
+# Specialized Marketplaces
+Rebrickable|https://rebrickable.com/users/{username}|ecommerce|6
+BrickLink|https://www.bricklink.com/store.asp?p={username}|ecommerce|6
+Shapeways|https://www.shapeways.com/shops/{username}|ecommerce|6
+
+# Food & Beverage
+Etsy Food|https://www.etsy.com/shop/{username}|ecommerce|7
+Goldbely|https://www.goldbely.com/{username}|ecommerce|5
+
+# Payment Systems
+PayPal|https://www.paypal.com/paypalme/{username}|ecommerce|8
+Venmo|https://venmo.com/{username}|ecommerce|7
+Cash App|https://cash.app/${username}|ecommerce|7
+
+# Reviews & Ratings
+Trustpilot|https://www.trustpilot.com/review/{username}|ecommerce|7
+Sitejabber|https://www.sitejabber.com/reviews/{username}|ecommerce|6
+ResellerRatings|https://www.resellerratings.com/seller/{username}|ecommerce|6

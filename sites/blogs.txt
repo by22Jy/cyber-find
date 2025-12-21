@@ -1,0 +1,53 @@
+# Blogging Platforms & Personal Websites
+# Format: Name|URL Pattern|Category|Priority
+
+Medium|https://medium.com/@{username}|blogs|10
+Dev.to|https://dev.to/{username}|blogs|9
+WordPress.com|https://{username}.wordpress.com|blogs|8
+Blogger|https://{username}.blogspot.com|blogs|8
+Tumblr|https://{username}.tumblr.com|blogs|7
+
+# Newsletter Platforms
+Substack|https://{username}.substack.com|blogs|8
+Ghost|https://{username}.ghost.io|blogs|7
+Buttondown|https://buttondown.email/{username}|blogs|6
+Revue|https://www.getrevue.co/profile/{username}|blogs|6
+
+# Technical Blogs
+Hashnode|https://hashnode.com/@{username}|blogs|8
+DEV Community|https://dev.to/{username}|blogs|9
+FreeCodeCamp|https://www.freecodecamp.org/{username}|blogs|7
+Hackernoon|https://hackernoon.com/u/{username}|blogs|7
+
+# Photo & Visual Blogs
+Instagram|https://www.instagram.com/{username}|blogs|9
+VSCO|https://vsco.co/{username}|blogs|7
+Flickr|https://www.flickr.com/people/{username}|blogs|7
+500px|https://500px.com/{username}|blogs|6
+
+# Russian Blogging
+LiveJournal|https://{username}.livejournal.com|blogs|7
+Ya.ru|https://ya.ru/{username}|blogs|6
+Pikabu|https://pikabu.ru/@{username}|blogs|7
+
+# Microblogging
+Twitter|https://twitter.com/{username}|blogs|9
+Mastodon|https://mastodon.social/@{username}|blogs|7
+Bluesky|https://bsky.app/profile/{username}|blogs|7
+Threads|https://www.threads.net/@{username}|blogs|8
+
+# Portfolio Sites
+Behance|https://www.behance.net/{username}|blogs|8
+Dribbble|https://dribbble.com/{username}|blogs|8
+Carbonmade|https://{username}.carbonmade.com|blogs|6
+Cargo|https://{username}.cargo.site|blogs|6
+
+# Audio Blogs
+SoundCloud|https://soundcloud.com/{username}|blogs|7
+Anchor|https://anchor.fm/{username}|blogs|6
+Mixcloud|https://www.mixcloud.com/{username}|blogs|6
+
+# Video Blogs
+YouTube|https://www.youtube.com/{username}|blogs|9
+Vimeo|https://vimeo.com/{username}|blogs|7
+Twitch|https://www.twitch.tv/{username}|blogs|8
