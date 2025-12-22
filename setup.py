@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="cyberfind",
-    version="0.1.0",
+    version="0.2.0",
     author="vazor",
     author_email="vazorcode@gmail.com",
     description="Advanced OSINT tool for searching users across platforms",
@@ -14,7 +14,7 @@ setup(
     package_data={
         'cyberfind': ['sites/*.txt'],
     },
-    py_modules=['cyberfind_cli', 'cyberfind_gui', 'cyberfind_api'],  # Добавьте это
+    py_modules=['cyberfind_cli', 'cyberfind_gui', 'cyberfind_api'],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Information Technology",

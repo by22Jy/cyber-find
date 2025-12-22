@@ -1,33 +1,33 @@
 # Quick Check - Top 30 Most Popular Sites
-# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+# Format: Name|URL|Category|Priority|Success Strings|Error Strings
 
-Facebook|https://www.facebook.com/{username}|social_media|10||Page not found,Sorry, this page isn't available
-Instagram|https://www.instagram.com/{username}|social_media|10||Page Not Found,Sorry, this page isn't available
-Twitter|https://twitter.com/{username}|social_media|10||Something went wrong,Please disable them and try again
-LinkedIn|https://www.linkedin.com/in/{username}|social_media|9||We’re committed to safety and security. But not for bots.
-GitHub|https://github.com/{username}|programming|10||Build software together,Repositories
-GitLab|https://gitlab.com/{username}|programming|9||Build software with,Trusted by
-Stack Overflow|https://stackoverflow.com/users/{username}|programming|9||Users,Collectives™ on Stack Overflow
-YouTube|https://www.youtube.com/{username}|social_media|9||AboutPressCopyrightContact us
-Twitch|https://www.twitch.tv/{username}|gaming|8||Something went wrong,Please disable them and try again
-Reddit|https://www.reddit.com/user/{username}|social_media|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Pinterest|https://www.pinterest.com/{username}|social_media|7||Page not found,Sorry, this page isn't available
-Snapchat|https://www.snapchat.com/add/{username}|social_media|7||Veja Histórias no Snapchat,Confira as Histórias mais recentes
-VK|https://vk.com/{username}|social_media|9||Veja Histórias no Snapchat,Confira as Histórias mais recentes
-OK|https://ok.ru/{username}|social_media|8||Veja Histórias no Snapchat,Confira as Histórias mais recentes
-Telegram|https://t.me/{username}|social_media|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Steam|https://steamcommunity.com/id/{username}|gaming|8||Something went wrong,Please disable them and try again
-Discord|https://discord.com/users/{username}|gaming|7||Something went wrong,Please disable them and try again
-Medium|https://medium.com/@{username}|blogs|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Dev.to|https://dev.to/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Quora|https://www.quora.com/profile/{username}|forums|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Etsy|https://www.etsy.com/people/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-eBay|https://www.ebay.com/usr/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-SoundCloud|https://soundcloud.com/{username}|social_media|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Spotify|https://open.spotify.com/user/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Flickr|https://www.flickr.com/people/{username}|social_media|6||Page not found,Sorry, this page isn't available
-Imgur|https://imgur.com/user/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-500px|https://500px.com/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-DeviantArt|https://www.deviantart.com/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Behance|https://www.behance.net/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Dribbble|https://dribbble.com/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Facebook|https://www.facebook.com/{username}|social_media|10||404,Page not found
+Instagram|https://www.instagram.com/{username}|social_media|10||404,Page Not Found
+Twitter|https://twitter.com/{username}|social_media|10||404,This account doesn’t exist
+LinkedIn|https://www.linkedin.com/in/{username}|social_media|9||404,Profile not found
+GitHub|https://github.com/{username}|programming|10||
+GitLab|https://gitlab.com/{username}|programming|9||404
+Stack Overflow|https://stackoverflow.com/users/{username}|programming|9||404
+YouTube|https://www.youtube.com/{username}|social_media|9||404
+Twitch|https://www.twitch.tv/{username}|gaming|8||404
+Reddit|https://www.reddit.com/user/{username}|social_media|8||404
+Pinterest|https://www.pinterest.com/{username}|social_media|7||404
+Snapchat|https://www.snapchat.com/add/{username}|social_media|7||404
+VK|https://vk.com/{username}|social_media|9||404
+OK|https://ok.ru/{username}|social_media|8||404
+Telegram|https://t.me/{username}|social_media|8||
+Steam|https://steamcommunity.com/id/{username}|gaming|8||404
+Discord|https://discord.com/users/{username}|gaming|7||
+Medium|https://medium.com/@{username}|blogs|8||404
+Dev.to|https://dev.to/{username}|programming|7||404
+Quora|https://www.quora.com/profile/{username}|forums|7||404
+Etsy|https://www.etsy.com/people/{username}|ecommerce|7||404
+eBay|https://www.ebay.com/usr/{username}|ecommerce|7||404
+SoundCloud|https://soundcloud.com/{username}|social_media|7||404
+Spotify|https://open.spotify.com/user/{username}|social_media|6||404
+Flickr|https://www.flickr.com/people/{username}|social_media|6||404
+Imgur|https://imgur.com/user/{username}|social_media|6||404
+500px|https://500px.com/{username}|social_media|6||404
+DeviantArt|https://www.deviantart.com/{username}|social_media|6||404
+Behance|https://www.behance.net/{username}|programming|7||404
+Dribbble|https://dribbble.com/{username}|programming|7||404

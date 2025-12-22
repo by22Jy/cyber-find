@@ -1,21 +1,21 @@
 # Russian-language platforms
 # Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
 
-VK|https://vk.com/{username}|russian|10||Veja Histórias no Snapchat,Confira as Histórias mais recentes
-OK|https://ok.ru/{username}|russian|9||Veja Histórias no Snapchat,Confira as Histórias mais recentes
-Telegram|https://t.me/{username}|russian|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Yandex.Zen|https://zen.yandex.ru/user/{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Habr|https://habr.com/ru/users/{username}|russian|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Toster|https://toster.ru/user/{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Pikabu|https://pikabu.ru/@{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-DTF|https://dtf.ru/u/{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-VC.ru|https://vc.ru/u/{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Avito|https://www.avito.ru/user/{username}|russian|9||Prove your humanity,We’re committed to safety and security. But not for bots.
-Yandex.Market|https://market.yandex.ru/user/{username}|russian|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Wildberries|https://www.wildberries.ru/seller/{username}|russian|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-Ozon|https://www.ozon.ru/seller/{username}|russian|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-4PDA|https://4pda.to/forum/index.php?showuser={username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-LiveJournal|https://{username}.livejournal.com|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Rutube|https://rutube.ru/channel/{username}|russian|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Kwork|https://kwork.ru/user/{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-FL.ru|https://www.fl.ru/users/{username}|russian|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+VK|https://vk.com/{username}|russian|10||404
+OK|https://ok.ru/{username}|russian|9||404
+Telegram|https://t.me/{username}|russian|8||
+Yandex.Zen|https://zen.yandex.ru/user/{username}|russian|7||404
+Habr|https://habr.com/ru/users/{username}|russian|8||404
+Toster|https://toster.ru/user/{username}|russian|7||404
+Pikabu|https://pikabu.ru/@{username}|russian|7||404
+DTF|https://dtf.ru/u/{username}|russian|7||404
+VC.ru|https://vc.ru/u/{username}|russian|7||404
+Avito|https://www.avito.ru/user/{username}|russian|9||404
+Yandex.Market|https://market.yandex.ru/user/{username}|russian|8||404
+Wildberries|https://www.wildberries.ru/seller/{username}|russian|8||404
+Ozon|https://www.ozon.ru/seller/{username}|russian|8||404
+4PDA|https://4pda.to/forum/index.php?showuser={username}|russian|7||404
+LiveJournal|https://{username}.livejournal.com|russian|7||404
+Rutube|https://rutube.ru/channel/{username}|russian|6||404
+Kwork|https://kwork.ru/user/{username}|russian|7||404
+FL.ru|https://www.fl.ru/users/{username}|russian|7||404

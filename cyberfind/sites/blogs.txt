@@ -1,26 +1,26 @@
 # Blogs & Publications
 # Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
 
-Medium|https://medium.com/@{username}|blogs|9||Prove your humanity,We’re committed to safety and security. But not for bots.
-Dev.to|https://dev.to/{username}|blogs|8||Prove your humanity,We’re committed to safety and security. But not for bots.
-WordPress.com|https://{username}.wordpress.com|blogs|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Blogger|https://{username}.blogspot.com|blogs|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Tumblr|https://{username}.tumblr.com|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Substack|https://{username}.substack.com|blogs|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-Ghost|https://{username}.ghost.io|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Hashnode|https://hashnode.com/@{username}|blogs|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-FreeCodeCamp|https://www.freecodecamp.org/{username}|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Hackernoon|https://hackernoon.com/u/{username}|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Instagram|https://www.instagram.com/{username}|blogs|8||Page Not Found,Sorry, this page isn't available
-VSCO|https://vsco.co/{username}|blogs|5||Prove your humanity,We’re committed to safety and security. But not for bots.
-Flickr|https://www.flickr.com/people/{username}|blogs|6||Page not found,Sorry, this page isn't available
-500px|https://500px.com/{username}|blogs|5||Prove your humanity,We’re committed to safety and security. But not for bots.
-LiveJournal|https://{username}.livejournal.com|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Twitter|https://twitter.com/{username}|blogs|8||Something went wrong,Please disable them and try again
-Mastodon|https://mastodon.social/@{username}|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Bluesky|https://bsky.app/profile/{username}|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Threads|https://www.threads.net/@{username}|blogs|7||Prove your humanity,We’re committed to safety and security. But not for bots.
-SoundCloud|https://soundcloud.com/{username}|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
-Anchor|https://anchor.fm/{username}|blogs|5||Prove your humanity,We’re committed to safety and security. But not for bots.
-YouTube|https://www.youtube.com/{username}|blogs|8||AboutPressCopyrightContact us
-Vimeo|https://vimeo.com/{username}|blogs|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Medium|https://medium.com/@{username}|blogs|9||404
+Dev.to|https://dev.to/{username}|blogs|8||404
+WordPress.com|https://{username}.wordpress.com|blogs|7||404
+Blogger|https://{username}.blogspot.com|blogs|7||404
+Tumblr|https://{username}.tumblr.com|blogs|6||404
+Substack|https://{username}.substack.com|blogs|7||404
+Ghost|https://{username}.ghost.io|blogs|6||404
+Hashnode|https://hashnode.com/@{username}|blogs|7||404
+FreeCodeCamp|https://www.freecodecamp.org/{username}|blogs|6||404
+Hackernoon|https://hackernoon.com/u/{username}|blogs|6||404
+Instagram|https://www.instagram.com/{username}|blogs|8||404
+VSCO|https://vsco.co/{username}|blogs|5||404
+Flickr|https://www.flickr.com/people/{username}|blogs|6||404
+500px|https://500px.com/{username}|blogs|5||404
+LiveJournal|https://{username}.livejournal.com|blogs|6||404
+Twitter|https://twitter.com/{username}|blogs|8||404
+Mastodon|https://mastodon.social/@{username}|blogs|6||404
+Bluesky|https://bsky.app/profile/{username}|blogs|6||404
+Threads|https://www.threads.net/@{username}|blogs|7||404
+SoundCloud|https://soundcloud.com/{username}|blogs|6||404
+Anchor|https://anchor.fm/{username}|blogs|5||404
+YouTube|https://www.youtube.com/{username}|blogs|8||404
+Vimeo|https://vimeo.com/{username}|blogs|6||404

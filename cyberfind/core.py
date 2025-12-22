@@ -160,6 +160,99 @@ class CyberFind:
         # Load built-in site lists
         self.builtin_sites = self.load_builtin_sites()
     
+    def prepare_search_value(self, value: str, value_type: str) -> str:
+        """Prepare value for URL insertion"""
+        if value_type == 'email':
+            import hashlib
+            return hashlib.md5(value.lower().encode('utf-8')).hexdigest()
+        elif value_type == 'phone':
+            import re
+            return re.sub(r'[^\d+]', '', value)
+        else:
+            return value
+    async def passive_search_async(
+        self,
+        queries: List[str],
+        engines: List[str],
+        max_concurrent: int = 10
+    ) -> Dict[str, Any]:
+        """Perform passive reconnaissance using search engines"""
+        import urllib.parse
+        from bs4 import BeautifulSoup
+        
+        async def fetch_engine(query: str, engine: str):
+            query_enc = urllib.parse.quote_plus(query)
+            headers = self.generate_headers(SearchMode.STEALTH)
+            
+            url_map = {
+                'google': f'https://www.google.com/search?q={query_enc}',
+                'bing': f'https://www.bing.com/search?q={query_enc}',
+                'wayback': f'https://web.archive.org/cdx/search/cdx?url=*{urllib.parse.quote(query.split()[-1])}*&output=json'
+            }
+            
+            if engine not in url_map:
+                return engine, query, []
+                
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url_map[engine], headers=headers) as resp:
+                        text = await resp.text()
+                        urls = []
+                        
+                        if engine == 'wayback':
+                            import json
+                            try:
+                                data = json.loads(text)
+                                urls = [f"https://web.archive.org/web/{item[1]}/{item[2]}" 
+                                    for item in data[1:5]]  # top 4
+                            except:
+                                pass
+                        else:
+                            soup = BeautifulSoup(text, 'html.parser')
+                            for a in soup.find_all('a', href=True):
+                                href = a['href']
+                                if href.startswith('/url?q='):
+                                    clean_url = href.split('/url?q=')[1].split('&')[0]
+                                    if 'google.com' not in clean_url and 'bing.com' not in clean_url:
+                                        urls.append(urllib.parse.unquote(clean_url))
+                                        
+                        return engine, query, urls
+            except Exception as e:
+                logger.error(f"Passive error ({engine}): {e}")
+                return engine, query, []
+        
+        # Run all queries
+        tasks = []
+        for query in queries:
+            for engine in engines:
+                tasks.append(fetch_engine(query, engine))
+                
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Process results
+        results = {}
+        for resp in responses:
+            if isinstance(resp, Exception):
+                continue
+            engine, query, urls = resp
+            key = query
+            if key not in results:
+                results[key] = {'found': [], 'errors': 0}
+            results[key]['found'].extend(urls)
+        
+        # Deduplicate
+        for key in results:
+            results[key]['found'] = list(set(results[key]['found']))
+        
+        return {
+            'results': results,
+            'statistics': {
+                'total_checks': len(tasks),
+                'found_accounts': sum(len(r['found']) for r in results.values()),
+                'errors': sum(1 for r in responses if isinstance(r, Exception))
+            }
+        }
+    
     def load_builtin_sites(self) -> Dict[str, List[Dict[str, Any]]]:
         """Load built-in site lists from files"""
         return {}
@@ -237,15 +330,20 @@ class CyberFind:
             return obj.__dict__
         raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
     
-    async def search_async(self, usernames: List[str], 
-                          sites_file: Optional[str] = None,
-                          builtin_list: Optional[str] = None,
-                          mode: SearchMode = SearchMode.STANDARD,
-                          output_format: OutputFormat = OutputFormat.JSON,
-                          output_file: Optional[str] = None,
-                          max_concurrent: int = 50) -> Dict[str, Any]:
+    async def search_async(
+        self,
+        usernames: Optional[List[str]] = None,
+        sites_file: Optional[str] = None,
+        builtin_list: Optional[str] = None,
+        mode: SearchMode = SearchMode.STANDARD,
+        output_format: OutputFormat = OutputFormat.JSON,
+        output_file: Optional[str] = None,
+        max_concurrent: int = 30,
+        email: Optional[str] = None,
+        phone: Optional[str] = None
+    ):
         """
-        Main search method
+        Main search method supporting username, email, and phone
         
         Args:
             usernames: List of usernames to search for
@@ -255,6 +353,8 @@ class CyberFind:
             output_format: Format for output results
             output_file: Filename to save results
             max_concurrent: Maximum concurrent requests
+            email: Email address to search for (mutually exclusive with usernames/phone)
+            phone: Phone number to search for (mutually exclusive with usernames/email)
             
         Returns:
             Dictionary with search results, report and statistics
@@ -262,32 +362,51 @@ class CyberFind:
         
         self.stats['start_time'] = datetime.now()
         
-        # Load sites from file or built-in list
-        sites = await self.load_sites_async(sites_file, builtin_list)
-        
-        if not sites:
-            logger.error("No sites loaded!")
+        # Determine search targets and type
+        if email:
+            search_targets = [email]
+            search_type = 'email'
+        elif phone:
+            search_targets = [phone]
+            search_type = 'phone'
+        elif usernames:
+            search_targets = usernames
+            search_type = 'username'
+        else:
+            logger.error("No search targets provided (usernames, email, or phone)")
             return {
                 'results': {},
                 'report': {},
                 'statistics': self.stats
             }
         
-        print(f"📋 Loaded {len(sites)} sites")
+        # Load and filter sites by search type
+        all_sites = await self.load_sites_async(sites_file, builtin_list)
+        sites = [site for site in all_sites if site.get('value_type', 'username') == search_type]
+        
+        if not sites:
+            logger.error(f"No sites available for {search_type} search")
+            return {
+                'results': {},
+                'report': {},
+                'statistics': self.stats
+            }
+        
+        print(f"📋 Loaded {len(sites)} sites for {search_type} search")
         
         all_results = {}
         
-        # Search for each username
-        for username in usernames:
-            print(f"\n🔍 Searching: {username}")
+        # Search for each target
+        for target in search_targets:
+            print(f"\n🔍 Searching: {target} (type: {search_type})")
             user_results = await self.search_single_user_async(
-                username, sites, mode, max_concurrent
+                target, sites, mode, max_concurrent
             )
-            all_results[username] = user_results
+            all_results[target] = user_results
             
             # Save intermediate results if configured
             if self.config['output']['save_all_results']:
-                self.save_results_intermediate(username, user_results)
+                self.save_results_intermediate(target, user_results)
         
         self.stats['end_time'] = datetime.now()
         
@@ -307,11 +426,10 @@ class CyberFind:
     
     async def load_sites_async(self, sites_file: Optional[str] = None,
                           builtin_list: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Load sites from file or built-in list"""
+        """Load sites from file or built-in list with value type detection"""
         sites = []
 
         if builtin_list:
-            print(f"✅ Using built-in list: {builtin_list}")
             file_path = self.get_builtin_site_path(builtin_list)
             if file_path:
                 sites.extend(await self.load_sites_from_file_async(file_path))
@@ -327,40 +445,49 @@ class CyberFind:
                 return []
 
         else:
-            print("✅ Using default built-in list: quick (25 sites)")
             file_path = self.get_builtin_site_path('quick')
             if file_path:
                 sites.extend(await self.load_sites_from_file_async(file_path))
 
-        # Убираем дубликаты и дополняем полями
-        unique_sites = {}
+        # Process sites and detect value type
+        processed_sites = []
         for site in sites:
             key = (site['name'], site['url_pattern'])
-            if key not in unique_sites:
-                # Убедимся, что все поля присутствуют
-                processed_site = {
-                    'name': site.get('name', 'Unknown'),
-                    'url_pattern': site.get('url_pattern', ''),
-                    'method': site.get('method', 'GET'),
-                    'category': site.get('category', 'unknown'),
-                    'priority': site.get('priority', 5),
-                    'timeout': site.get('timeout', self.config['general']['timeout']),
-                    'retry': site.get('retry', self.config['general']['retry_attempts']),
-                    'headers': site.get('headers', {}),
-                    'cookies': site.get('cookies', {}),
-                    'requires_javascript': site.get('requires_javascript', False),
-                    'requires_captcha': site.get('requires_captcha', False),
-                    'check_strings': site.get('check_strings', []),
-                    'error_strings': site.get('error_strings', []),
-                    'valid_status_codes': site.get('valid_status_codes', [200]),
-                    'invalid_status_codes': site.get('invalid_status_codes', [404, 410]),
-                    'check_type': site.get('check_type', 'content'),
-                }
-                unique_sites[key] = processed_site
+            if any(k == key for k in [ (s['name'], s['url_pattern']) for s in processed_sites ]):
+                continue
+                
+            # Detect value type
+            url_pattern = site['url_pattern']
+            if '{email_hash}' in url_pattern:
+                value_type = 'email'
+            elif '{phone}' in url_pattern:
+                value_type = 'phone'
+            else:
+                value_type = 'username'
+                
+            processed_site = {
+                'name': site.get('name', 'Unknown'),
+                'url_pattern': url_pattern,
+                'method': site.get('method', 'GET'),
+                'category': site.get('category', 'unknown'),
+                'priority': site.get('priority', 5),
+                'timeout': site.get('timeout', self.config['general']['timeout']),
+                'retry': site.get('retry', self.config['general']['retry_attempts']),
+                'headers': site.get('headers', {}),
+                'cookies': site.get('cookies', {}),
+                'requires_javascript': site.get('requires_javascript', False),
+                'requires_captcha': site.get('requires_captcha', False),
+                'check_strings': site.get('check_strings', []),
+                'error_strings': site.get('error_strings', []),
+                'valid_status_codes': site.get('valid_status_codes', [200]),
+                'invalid_status_codes': site.get('invalid_status_codes', [404, 410]),
+                'check_type': site.get('check_type', 'content'),
+                'value_type': value_type,
+            }
+            processed_sites.append(processed_site)
 
-        result = list(unique_sites.values())
-        print(f"✅ Loaded {len(result)} unique sites")
-        return result
+        logger.info(f"Loaded {len(processed_sites)} sites")
+        return processed_sites
     
     async def load_sites_from_file_async(self, file_path: str) -> List[Dict[str, Any]]:
         """Load sites from file (local or remote)"""
@@ -649,32 +776,16 @@ class CyberFind:
         return base_headers
     
     def check_user_exists(self, response_data: Dict[str, Any], site: Dict[str, Any], username: str) -> bool:
-        """Determine if user exists based on response using content + status logic"""
+        """Determine if user exists based ONLY on status code (unless error_strings are defined)"""
         status = response_data['status']
-        content = response_data['content']  # keep original case for regex later if needed
-
         
-        if status in site['invalid_status_codes']:
-            return False
-
-        
-        if status in site['valid_status_codes']:
-            if site['error_strings']:
-                content_lower = content.lower()
-                for err_str in site['error_strings']:
-                    if err_str.lower() in content_lower:
-                        return False
-
-            if site['check_strings']:
-                content_lower = content.lower()
-                for check_str in site['check_strings']:
-                    if check_str.lower() in content_lower:
-                        return True
-                return False
-
+        if status == 200 and site['error_strings']:
+            content_lower = response_data['content'].lower()
+            for err in site['error_strings']:
+                if err.lower() in content_lower:
+                    return False
             return True
-
-        return False
+        return status in site['valid_status_codes']
     
     async def extract_metadata_async(self, url: str, content: str) -> Dict[str, Any]:
         """Extract metadata from HTML content"""

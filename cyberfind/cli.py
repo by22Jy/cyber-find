@@ -34,7 +34,7 @@ def print_banner():
     """Show application banner"""
     banner = """
     ╔══════════════════════════════════════════════╗
-    ║            🕵️♂️ CYBERFIND v0.1.0           ║
+    ║            🕵️♂️ CYBERFIND v0.2.0           ║
     ║      Advanced OSINT Search Tool            ║
     ╚══════════════════════════════════════════════╝
     """
@@ -115,7 +115,7 @@ Usage examples:
     parser.add_argument(
         '-l', '--list',
         choices=['quick', 'social_media', 'programming', 'gaming', 
-                'blogs', 'ecommerce', 'forums', 'russian', 'all'],
+                'blogs', 'ecommerce', 'forums', 'russian', 'email', 'phone', 'all'],
         help='Use built-in site list'
     )
     
@@ -153,12 +153,30 @@ Usage examples:
         default=10,
         help='Request timeout in seconds'
     )
+    # Email / Phone support
+    parser.add_argument(
+        '--email',
+        help='Search by email address'
+    )
+
+    parser.add_argument(
+        '--phone',
+        help='Search by phone number (E.164 format: +1234567890)'
+    )
+
+    # Passive mode
+    parser.add_argument(
+        '--engines',
+        default='google,bing,wayback',
+        help='Comma-separated passive engines: google, bing, wayback'
+    )
     
     parser.add_argument(
         '-v', '--verbose',
         action='store_true',
         help='Verbose output'
     )
+    
     
     # Additional commands
     parser.add_argument(
@@ -238,6 +256,45 @@ async def run_search(args, cybertrace):
             traceback.print_exc()
         raise
 
+async def run_passive_search(args, cybertrace):
+    """Run passive reconnaissance"""
+    try:
+        start_time = datetime.now()
+        
+        # Build queries
+        queries = []
+        if args.usernames:
+            for u in args.usernames:
+                queries.append(f'"{u}"')
+        if args.email:
+            queries.append(f'site:gravatar.com "{args.email}"')
+            queries.append(f'site:haveibeenpwned.com "{args.email}"')
+        if args.phone:
+            queries.append(f'site:t.me "{args.phone}"')
+            queries.append(f'site:wa.me "{args.phone}"')
+        
+        engines = [e.strip() for e in args.engines.split(',')]
+        
+        results = await cybertrace.passive_search_async(
+            queries=queries,
+            engines=engines,
+            max_concurrent=args.threads
+        )
+        
+        end_time = datetime.now()
+        total_time = (end_time - start_time).total_seconds()
+        
+        return results, total_time
+        
+    except KeyboardInterrupt:
+        raise
+    except Exception as e:
+        print(f"\n❌ Passive search error: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        raise
+
 def print_results(results, total_time, args):
     """Print search results"""
     print(f"\n{'='*60}")
@@ -308,8 +365,11 @@ def main():
     """Main function"""
     args = parse_arguments()
     
-    if not any([args.usernames, args.show_lists, args.gui, args.api]):
-        print("❌ No username specified for search")
+    has_search_target = bool(args.usernames or args.email or args.phone)
+    has_command = bool(args.show_lists or args.gui or args.api)
+
+    if not (has_search_target or has_command):
+        print("❌ No search target or command specified")
         print("Use --help for help")
         return
     
@@ -327,33 +387,61 @@ def main():
         run_api_server()
         return
     
-    if not args.usernames:
-        print("❌ No username specified for search")
-        print("Example: cyberfind username")
+    search_targets = []
+    if args.usernames:
+        search_targets.extend(args.usernames)
+    if args.email:
+        search_targets.append(args.email)
+    if args.phone:
+        search_targets.append(args.phone)
+
+    if not search_targets:
+        print("❌ No search target specified")
+        print("Examples:")
+        print("  cyberfind username")
+        print("  cyberfind --email target@example.com --list email")
+        print("  cyberfind --phone +1234567890 --list phone")
+        return
+
+    # Print search information
+    search_type = []
+    if args.usernames:
+        search_type.append(f"users: {', '.join(args.usernames)}")
+    if args.email:
+        search_type.append(f"email: {args.email}")
+    if args.phone:
+        search_type.append(f"phone: {args.phone}")
+    
+    if not search_type:
+        print("❌ No search target specified")
         return
     
     # Print search information
-    print(f"🔍 Searching users: {', '.join(args.usernames)}")
+    print(f"🔍 Searching: {' | '.join(search_type)}")
     print(f"📊 Mode: {args.mode}, Threads: {args.threads}, Timeout: {args.timeout}s")
     
     # Create CyberFind instance
     try:
         cybertrace = CyberFind(args.config)
         
-        # Update config
         if args.timeout:
             cybertrace.config['general']['timeout'] = args.timeout
         
-        # Run search
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         
         try:
-            results, total_time = loop.run_until_complete(
-                run_search(args, cybertrace)
-            )
+            if args.mode == 'passive':
+                # Passive mode
+                results, total_time = loop.run_until_complete(
+                    run_passive_search(args, cybertrace)
+                )
+            else:
+                # Standard or email/phone mode
+                results, total_time = loop.run_until_complete(
+                    run_search(args, cybertrace)
+                )
             
-            # Print results
             print_results(results, total_time, args)
             
         except KeyboardInterrupt:
@@ -368,7 +456,7 @@ def main():
                 loop.close()
             except:
                 pass
-            
+                
     except Exception as e:
         print(f"❌ Initialization error: {e}")
         if args.verbose:

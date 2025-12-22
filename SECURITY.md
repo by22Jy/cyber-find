@@ -32,6 +32,7 @@ We are committed to maintaining security for the following versions of **CyberFi
 
 | Version | Supported          | End of Life Date |
 | ------- | ------------------ | ---------------- |
+| 0.2.x   | :white_check_mark: | TBD             |
 | 0.1.x   | :white_check_mark: | TBD             |
 | 0.0.x   | :white_check_mark: | TBD             |
 | < 0.0   | :x:                | N/A             |
