@@ -108,6 +108,30 @@ class CyberFind:
         
         return default_config
     
+    def get_builtin_site_path(self, list_name: str) -> Optional[Path]:
+        """
+        Get path to built-in site list file.
+        Works both in development and after `pip install`.
+        """
+        filename = f"{list_name}.txt"
+
+        # 1. Try from package resources (works after pip install)
+        try:
+            import importlib.resources as pkg_resources
+            resource_path = pkg_resources.files('cyberfind.sites').joinpath(filename)
+            if resource_path.exists():
+                return Path(str(resource_path))
+        except Exception as e:
+            logger.debug(f"Could not load {filename} from package: {e}")
+
+        # 2. Try local directory (for development)
+        local_path = Path(__file__).parent / "sites" / filename
+        if local_path.exists():
+            return local_path
+
+        logger.error(f"Built-in site list not found: {filename}")
+        return None
+    
     def initialize_components(self) -> None:
         """Initialize all components"""
         self.ua = UserAgent()
@@ -137,240 +161,8 @@ class CyberFind:
         self.builtin_sites = self.load_builtin_sites()
     
     def load_builtin_sites(self) -> Dict[str, List[Dict[str, Any]]]:
-        """Load built-in site lists"""
-        
-        # Quick check - 25 most popular sites
-        quick_sites = [
-            # Social Media
-            {'name': 'Facebook', 'url_pattern': 'https://www.facebook.com/{username}', 'category': 'social_media', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'Instagram', 'url_pattern': 'https://www.instagram.com/{username}', 'category': 'social_media', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'Twitter', 'url_pattern': 'https://twitter.com/{username}', 'category': 'social_media', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'LinkedIn', 'url_pattern': 'https://www.linkedin.com/in/{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'TikTok', 'url_pattern': 'https://www.tiktok.com/@{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
-            
-            # Programming & Tech
-            {'name': 'GitHub', 'url_pattern': 'https://github.com/{username}', 'category': 'programming', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'GitLab', 'url_pattern': 'https://gitlab.com/{username}', 'category': 'programming', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Stack Overflow', 'url_pattern': 'https://stackoverflow.com/users/{username}', 'category': 'programming', 'priority': 9, 'check_type': 'status_code'},
-            
-            # Video & Streaming
-            {'name': 'YouTube', 'url_pattern': 'https://www.youtube.com/{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Twitch', 'url_pattern': 'https://www.twitch.tv/{username}', 'category': 'gaming', 'priority': 8, 'check_type': 'status_code'},
-            
-            # Other Social
-            {'name': 'Reddit', 'url_pattern': 'https://www.reddit.com/user/{username}', 'category': 'social_media', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Pinterest', 'url_pattern': 'https://www.pinterest.com/{username}', 'category': 'social_media', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Snapchat', 'url_pattern': 'https://www.snapchat.com/add/{username}', 'category': 'social_media', 'priority': 7, 'check_type': 'status_code'},
-            
-            # Russian Social Media
-            {'name': 'VK', 'url_pattern': 'https://vk.com/{username}', 'category': 'social_media', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'OK', 'url_pattern': 'https://ok.ru/{username}', 'category': 'social_media', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Telegram', 'url_pattern': 'https://t.me/{username}', 'category': 'social_media', 'priority': 8, 'check_type': 'status_code'},
-            
-            # Gaming
-            {'name': 'Steam', 'url_pattern': 'https://steamcommunity.com/id/{username}', 'category': 'gaming', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Discord', 'url_pattern': 'https://discord.com/users/{username}', 'category': 'gaming', 'priority': 7, 'check_type': 'status_code'},
-            
-            # Blogging
-            {'name': 'Medium', 'url_pattern': 'https://medium.com/@{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Dev.to', 'url_pattern': 'https://dev.to/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            
-            # Forums
-            {'name': 'Quora', 'url_pattern': 'https://www.quora.com/profile/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
-            
-            # E-commerce
-            {'name': 'Etsy', 'url_pattern': 'https://www.etsy.com/people/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'eBay', 'url_pattern': 'https://www.ebay.com/usr/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            
-            # Audio
-            {'name': 'SoundCloud', 'url_pattern': 'https://soundcloud.com/{username}', 'category': 'social_media', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Spotify', 'url_pattern': 'https://open.spotify.com/user/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-        ]
-        
-        # Social networks (more comprehensive list)
-        social_media = quick_sites + [
-            {'name': 'Flickr', 'url_pattern': 'https://www.flickr.com/people/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Imgur', 'url_pattern': 'https://imgur.com/user/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-            {'name': '500px', 'url_pattern': 'https://500px.com/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'DeviantArt', 'url_pattern': 'https://www.deviantart.com/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Behance', 'url_pattern': 'https://www.behance.net/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Dribbble', 'url_pattern': 'https://dribbble.com/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Vimeo', 'url_pattern': 'https://vimeo.com/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Bandcamp', 'url_pattern': 'https://bandcamp.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Mixcloud', 'url_pattern': 'https://www.mixcloud.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Last.fm', 'url_pattern': 'https://www.last.fm/user/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Goodreads', 'url_pattern': 'https://www.goodreads.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Letterboxd', 'url_pattern': 'https://letterboxd.com/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Strava', 'url_pattern': 'https://www.strava.com/athletes/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'MyFitnessPal', 'url_pattern': 'https://www.myfitnesspal.com/profile/{username}', 'category': 'social_media', 'priority': 4, 'check_type': 'status_code'},
-            {'name': 'TripAdvisor', 'url_pattern': 'https://www.tripadvisor.com/members/{username}', 'category': 'social_media', 'priority': 4, 'check_type': 'status_code'},
-            {'name': 'Couchsurfing', 'url_pattern': 'https://www.couchsurfing.com/people/{username}', 'category': 'social_media', 'priority': 4, 'check_type': 'status_code'},
-            {'name': 'About.me', 'url_pattern': 'https://about.me/{username}', 'category': 'social_media', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Linktree', 'url_pattern': 'https://linktr.ee/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Carrd', 'url_pattern': 'https://{username}.carrd.co', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'VSCO', 'url_pattern': 'https://vsco.co/{username}', 'category': 'social_media', 'priority': 5, 'check_type': 'status_code'},
-        ]
-        
-        # Programming and IT
-        programming = [
-            {'name': 'GitHub', 'url_pattern': 'https://github.com/{username}', 'category': 'programming', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'GitLab', 'url_pattern': 'https://gitlab.com/{username}', 'category': 'programming', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Bitbucket', 'url_pattern': 'https://bitbucket.org/{username}', 'category': 'programming', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Stack Overflow', 'url_pattern': 'https://stackoverflow.com/users/{username}', 'category': 'programming', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'Stack Exchange', 'url_pattern': 'https://stackexchange.com/users/{username}', 'category': 'programming', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Dev.to', 'url_pattern': 'https://dev.to/{username}', 'category': 'programming', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Hashnode', 'url_pattern': 'https://hashnode.com/@{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Codepen', 'url_pattern': 'https://codepen.io/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'JSFiddle', 'url_pattern': 'https://jsfiddle.net/user/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Replit', 'url_pattern': 'https://replit.com/@{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'CodeSandbox', 'url_pattern': 'https://codesandbox.io/u/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Glitch', 'url_pattern': 'https://glitch.com/@{username}', 'category': 'programming', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'PyPI', 'url_pattern': 'https://pypi.org/user/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'NPM', 'url_pattern': 'https://www.npmjs.com/~{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Docker Hub', 'url_pattern': 'https://hub.docker.com/u/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Hacker News', 'url_pattern': 'https://news.ycombinator.com/user?id={username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Product Hunt', 'url_pattern': 'https://www.producthunt.com/@{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Behance', 'url_pattern': 'https://www.behance.net/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Dribbble', 'url_pattern': 'https://dribbble.com/{username}', 'category': 'programming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Figma', 'url_pattern': 'https://www.figma.com/@{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'HackerOne', 'url_pattern': 'https://hackerone.com/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Bugcrowd', 'url_pattern': 'https://bugcrowd.com/{username}', 'category': 'programming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'TryHackMe', 'url_pattern': 'https://tryhackme.com/p/{username}', 'category': 'programming', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'HackTheBox', 'url_pattern': 'https://app.hackthebox.com/profile/{username}', 'category': 'programming', 'priority': 5, 'check_type': 'status_code'},
-        ]
-        
-        # Gaming platforms
-        gaming = [
-            {'name': 'Steam', 'url_pattern': 'https://steamcommunity.com/id/{username}', 'category': 'gaming', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'Epic Games', 'url_pattern': 'https://www.epicgames.com/account/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Xbox', 'url_pattern': 'https://account.xbox.com/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'PlayStation', 'url_pattern': 'https://my.playstation.com/profile/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Twitch', 'url_pattern': 'https://www.twitch.tv/{username}', 'category': 'gaming', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Discord', 'url_pattern': 'https://discord.com/users/{username}', 'category': 'gaming', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Roblox', 'url_pattern': 'https://www.roblox.com/user.aspx?username={username}', 'category': 'gaming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Minecraft', 'url_pattern': 'https://www.minecraft.net/profile/{username}', 'category': 'gaming', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Fortnite', 'url_pattern': 'https://fortnitetracker.com/profile/all/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'League of Legends', 'url_pattern': 'https://www.op.gg/summoners/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Valorant', 'url_pattern': 'https://tracker.gg/valorant/profile/riot/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Chess.com', 'url_pattern': 'https://www.chess.com/member/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Lichess', 'url_pattern': 'https://lichess.org/@/{username}', 'category': 'gaming', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Faceit', 'url_pattern': 'https://www.faceit.com/en/players/{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Game Jolt', 'url_pattern': 'https://gamejolt.com/@{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Itch.io', 'url_pattern': 'https://{username}.itch.io', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'RetroAchievements', 'url_pattern': 'https://retroachievements.org/user/{username}', 'category': 'gaming', 'priority': 4, 'check_type': 'status_code'},
-            {'name': 'Speedrun.com', 'url_pattern': 'https://www.speedrun.com/user/{username}', 'category': 'gaming', 'priority': 4, 'check_type': 'status_code'},
-            {'name': 'Unity Connect', 'url_pattern': 'https://connect.unity.com/u/{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Unreal Engine', 'url_pattern': 'https://www.unrealengine.com/id/{username}', 'category': 'gaming', 'priority': 5, 'check_type': 'status_code'},
-        ]
-        
-        # Blogs and publications
-        blogs = [
-            {'name': 'Medium', 'url_pattern': 'https://medium.com/@{username}', 'category': 'blogs', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Dev.to', 'url_pattern': 'https://dev.to/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'WordPress.com', 'url_pattern': 'https://{username}.wordpress.com', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Blogger', 'url_pattern': 'https://{username}.blogspot.com', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Tumblr', 'url_pattern': 'https://{username}.tumblr.com', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Substack', 'url_pattern': 'https://{username}.substack.com', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Ghost', 'url_pattern': 'https://{username}.ghost.io', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Hashnode', 'url_pattern': 'https://hashnode.com/@{username}', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'FreeCodeCamp', 'url_pattern': 'https://www.freecodecamp.org/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Hackernoon', 'url_pattern': 'https://hackernoon.com/u/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Instagram', 'url_pattern': 'https://www.instagram.com/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'VSCO', 'url_pattern': 'https://vsco.co/{username}', 'category': 'blogs', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Flickr', 'url_pattern': 'https://www.flickr.com/people/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': '500px', 'url_pattern': 'https://500px.com/{username}', 'category': 'blogs', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'LiveJournal', 'url_pattern': 'https://{username}.livejournal.com', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Twitter', 'url_pattern': 'https://twitter.com/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Mastodon', 'url_pattern': 'https://mastodon.social/@{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Bluesky', 'url_pattern': 'https://bsky.app/profile/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Threads', 'url_pattern': 'https://www.threads.net/@{username}', 'category': 'blogs', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'SoundCloud', 'url_pattern': 'https://soundcloud.com/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Anchor', 'url_pattern': 'https://anchor.fm/{username}', 'category': 'blogs', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'YouTube', 'url_pattern': 'https://www.youtube.com/{username}', 'category': 'blogs', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Vimeo', 'url_pattern': 'https://vimeo.com/{username}', 'category': 'blogs', 'priority': 6, 'check_type': 'status_code'},
-        ]
-        
-        # E-commerce
-        ecommerce = [
-            {'name': 'Etsy', 'url_pattern': 'https://www.etsy.com/people/{username}', 'category': 'ecommerce', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'eBay', 'url_pattern': 'https://www.ebay.com/usr/{username}', 'category': 'ecommerce', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Amazon', 'url_pattern': 'https://www.amazon.com/gp/profile/{username}', 'category': 'ecommerce', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Redbubble', 'url_pattern': 'https://www.redbubble.com/people/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Society6', 'url_pattern': 'https://society6.com/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Teepublic', 'url_pattern': 'https://www.teepublic.com/user/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Depop', 'url_pattern': 'https://www.depop.com/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Poshmark', 'url_pattern': 'https://poshmark.com/closet/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Mercari', 'url_pattern': 'https://www.mercari.com/u/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Grailed', 'url_pattern': 'https://www.grailed.com/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Gumroad', 'url_pattern': 'https://gumroad.com/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Payhip', 'url_pattern': 'https://payhip.com/{username}', 'category': 'ecommerce', 'priority': 5, 'check_type': 'status_code'},
-            {'name': 'Avito', 'url_pattern': 'https://www.avito.ru/user/{username}', 'category': 'ecommerce', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Yandex.Market', 'url_pattern': 'https://market.yandex.ru/user/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Wildberries', 'url_pattern': 'https://www.wildberries.ru/seller/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Ozon', 'url_pattern': 'https://www.ozon.ru/seller/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'PayPal', 'url_pattern': 'https://www.paypal.com/paypalme/{username}', 'category': 'ecommerce', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Venmo', 'url_pattern': 'https://venmo.com/{username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Cash App', 'url_pattern': 'https://cash.app/${username}', 'category': 'ecommerce', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Trustpilot', 'url_pattern': 'https://www.trustpilot.com/review/{username}', 'category': 'ecommerce', 'priority': 5, 'check_type': 'status_code'},
-        ]
-        
-        # Forums
-        forums = [
-            {'name': 'Reddit', 'url_pattern': 'https://www.reddit.com/user/{username}', 'category': 'forums', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Quora', 'url_pattern': 'https://www.quora.com/profile/{username}', 'category': 'forums', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Stack Exchange', 'url_pattern': 'https://stackexchange.com/users/{username}', 'category': 'forums', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Hacker News', 'url_pattern': 'https://news.ycombinator.com/user?id={username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Product Hunt', 'url_pattern': 'https://www.producthunt.com/@{username}', 'category': 'forums', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Steam Community', 'url_pattern': 'https://steamcommunity.com/id/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'BitcoinTalk', 'url_pattern': 'https://bitcointalk.org/index.php?action=profile;u={username}', 'category': 'forums', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'XDA Developers', 'url_pattern': 'https://forum.xda-developers.com/m/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Habr', 'url_pattern': 'https://habr.com/ru/users/{username}', 'category': 'forums', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Toster', 'url_pattern': 'https://toster.ru/user/{username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
-            {'name': '4PDA', 'url_pattern': 'https://4pda.to/forum/index.php?showuser={username}', 'category': 'forums', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'CodeProject', 'url_pattern': 'https://www.codeproject.com/script/Membership/View.aspx?mid={username}', 'category': 'forums', 'priority': 6, 'check_type': 'status_code'},
-        ]
-        
-        # Russian-language platforms
-        russian = [
-            {'name': 'VK', 'url_pattern': 'https://vk.com/{username}', 'category': 'russian', 'priority': 10, 'check_type': 'status_code'},
-            {'name': 'OK', 'url_pattern': 'https://ok.ru/{username}', 'category': 'russian', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Telegram', 'url_pattern': 'https://t.me/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Yandex.Zen', 'url_pattern': 'https://zen.yandex.ru/user/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Habr', 'url_pattern': 'https://habr.com/ru/users/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Toster', 'url_pattern': 'https://toster.ru/user/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Pikabu', 'url_pattern': 'https://pikabu.ru/@{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'DTF', 'url_pattern': 'https://dtf.ru/u/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'VC.ru', 'url_pattern': 'https://vc.ru/u/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Avito', 'url_pattern': 'https://www.avito.ru/user/{username}', 'category': 'russian', 'priority': 9, 'check_type': 'status_code'},
-            {'name': 'Yandex.Market', 'url_pattern': 'https://market.yandex.ru/user/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Wildberries', 'url_pattern': 'https://www.wildberries.ru/seller/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
-            {'name': 'Ozon', 'url_pattern': 'https://www.ozon.ru/seller/{username}', 'category': 'russian', 'priority': 8, 'check_type': 'status_code'},
-            {'name': '4PDA', 'url_pattern': 'https://4pda.to/forum/index.php?showuser={username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'LiveJournal', 'url_pattern': 'https://{username}.livejournal.com', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'Rutube', 'url_pattern': 'https://rutube.ru/channel/{username}', 'category': 'russian', 'priority': 6, 'check_type': 'status_code'},
-            {'name': 'Kwork', 'url_pattern': 'https://kwork.ru/user/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-            {'name': 'FL.ru', 'url_pattern': 'https://www.fl.ru/users/{username}', 'category': 'russian', 'priority': 7, 'check_type': 'status_code'},
-        ]
-        
-        # All sites together (remove duplicates)
-        all_sites_dict = {}
-        for site in social_media + programming + gaming + blogs + ecommerce + forums + russian:
-            key = (site['name'], site['url_pattern'])
-            if key not in all_sites_dict:
-                all_sites_dict[key] = site
-        all_sites = list(all_sites_dict.values())
-        
-        return {
-            'quick': quick_sites,
-            'social_media': social_media,
-            'programming': programming,
-            'gaming': gaming,
-            'blogs': blogs,
-            'ecommerce': ecommerce,
-            'forums': forums,
-            'russian': russian,
-            'all': all_sites
-        }
+        """Load built-in site lists from files"""
+        return {}
     
     def get_builtin_site_list(self, list_name: str = 'quick') -> List[Dict[str, Any]]:
         """Get built-in site list by name"""
@@ -514,67 +306,58 @@ class CyberFind:
         }
     
     async def load_sites_async(self, sites_file: Optional[str] = None,
-                              builtin_list: Optional[str] = None) -> List[Dict[str, Any]]:
+                          builtin_list: Optional[str] = None) -> List[Dict[str, Any]]:
         """Load sites from file or built-in list"""
         sites = []
-        
-        # 1. Priority: built-in list
+
         if builtin_list:
-            print(f"📋 Using built-in list: {builtin_list}")
-            sites.extend(self.get_builtin_site_list(builtin_list))
-        
-        # 2. If file specified
-        elif sites_file:
-            if sites_file.startswith('builtin:'):
-                # Use built-in list
-                list_name = sites_file.replace('builtin:', '')
-                sites.extend(self.get_builtin_site_list(list_name))
+            print(f"✅ Using built-in list: {builtin_list}")
+            file_path = self.get_builtin_site_path(builtin_list)
+            if file_path:
+                sites.extend(await self.load_sites_from_file_async(file_path))
             else:
-                # Load from file
+                logger.error(f"Built-in list '{builtin_list}' not found!")
+                return []
+
+        elif sites_file:
+            if os.path.exists(sites_file):
                 sites.extend(await self.load_sites_from_file_async(sites_file))
-        
-        # 3. Default: quick list
+            else:
+                logger.error(f"File not found: {sites_file}")
+                return []
+
         else:
-            print("📋 Using default built-in list: quick (25 sites)")
-            sites.extend(self.get_builtin_site_list('quick'))
-        
-        # Remove duplicates
+            print("✅ Using default built-in list: quick (25 sites)")
+            file_path = self.get_builtin_site_path('quick')
+            if file_path:
+                sites.extend(await self.load_sites_from_file_async(file_path))
+
+        # Убираем дубликаты и дополняем полями
         unique_sites = {}
         for site in sites:
             key = (site['name'], site['url_pattern'])
             if key not in unique_sites:
-                # Add standard fields if missing
-                if 'method' not in site:
-                    site['method'] = 'GET'
-                if 'category' not in site:
-                    site['category'] = 'unknown'
-                if 'priority' not in site:
-                    site['priority'] = 5
-                if 'timeout' not in site:
-                    site['timeout'] = self.config['general']['timeout']
-                if 'retry' not in site:
-                    site['retry'] = self.config['general']['retry_attempts']
-                if 'headers' not in site:
-                    site['headers'] = {}
-                if 'cookies' not in site:
-                    site['cookies'] = {}
-                if 'requires_javascript' not in site:
-                    site['requires_javascript'] = False
-                if 'requires_captcha' not in site:
-                    site['requires_captcha'] = False
-                if 'check_strings' not in site:
-                    site['check_strings'] = []
-                if 'error_strings' not in site:
-                    site['error_strings'] = []
-                if 'valid_status_codes' not in site:
-                    site['valid_status_codes'] = [200]
-                if 'invalid_status_codes' not in site:
-                    site['invalid_status_codes'] = [404, 410]
-                if 'check_type' not in site:
-                    site['check_type'] = 'status_code'
-                
-                unique_sites[key] = site
-        
+                # Убедимся, что все поля присутствуют
+                processed_site = {
+                    'name': site.get('name', 'Unknown'),
+                    'url_pattern': site.get('url_pattern', ''),
+                    'method': site.get('method', 'GET'),
+                    'category': site.get('category', 'unknown'),
+                    'priority': site.get('priority', 5),
+                    'timeout': site.get('timeout', self.config['general']['timeout']),
+                    'retry': site.get('retry', self.config['general']['retry_attempts']),
+                    'headers': site.get('headers', {}),
+                    'cookies': site.get('cookies', {}),
+                    'requires_javascript': site.get('requires_javascript', False),
+                    'requires_captcha': site.get('requires_captcha', False),
+                    'check_strings': site.get('check_strings', []),
+                    'error_strings': site.get('error_strings', []),
+                    'valid_status_codes': site.get('valid_status_codes', [200]),
+                    'invalid_status_codes': site.get('invalid_status_codes', [404, 410]),
+                    'check_type': site.get('check_type', 'content'),
+                }
+                unique_sites[key] = processed_site
+
         result = list(unique_sites.values())
         print(f"✅ Loaded {len(result)} unique sites")
         return result
@@ -626,17 +409,14 @@ class CyberFind:
         try:
             if len(parts) < 2:
                 return None
-
             name = parts[0].strip()
             url_pattern = parts[1].strip()
-
             # Ensure URL pattern has {username} placeholder
             if '{username}' not in url_pattern and '${username}' not in url_pattern:
                 if url_pattern.endswith('/'):
                     url_pattern += '{username}'
                 else:
                     url_pattern += '/{username}'
-
             site = {
                 'name': name,
                 'url_pattern': url_pattern,
@@ -655,21 +435,23 @@ class CyberFind:
                 'invalid_status_codes': [404, 410],
                 'check_type': 'status_code',
             }
-
             # Parse optional fields
             if len(parts) >= 3:
                 category = parts[2].strip()
                 if category in [cat.value for cat in SiteCategory]:
                     site['category'] = category
-            
             if len(parts) >= 4:
                 try:
                     site['priority'] = int(parts[3].strip())
                 except ValueError:
                     pass
-
+            # Parse success strings (if exists)
+            if len(parts) >= 5:
+                site['check_strings'] = [s.strip() for s in parts[4].split(',') if s.strip()]
+            # Parse error strings (if exists)
+            if len(parts) >= 6:
+                site['error_strings'] = [s.strip() for s in parts[5].split(',') if s.strip()]
             return site
-            
         except Exception as e:
             logger.error(f"Error parsing site line: {e}")
             return None
@@ -867,28 +649,31 @@ class CyberFind:
         return base_headers
     
     def check_user_exists(self, response_data: Dict[str, Any], site: Dict[str, Any], username: str) -> bool:
-        """Determine if user exists based on response"""
+        """Determine if user exists based on response using content + status logic"""
         status = response_data['status']
-        content = response_data['content'].lower()
+        content = response_data['content']  # keep original case for regex later if needed
+
         
-        # Check invalid status codes
         if status in site['invalid_status_codes']:
             return False
-        # Check valid status codes
-        elif status in site['valid_status_codes']:
-            # Check for error strings in content
+
+        
+        if status in site['valid_status_codes']:
             if site['error_strings']:
-                for error_string in site['error_strings']:
-                    if error_string.lower() in content:
+                content_lower = content.lower()
+                for err_str in site['error_strings']:
+                    if err_str.lower() in content_lower:
                         return False
-            # Check for verification strings in content
+
             if site['check_strings']:
-                for check_string in site['check_strings']:
-                    if check_string.lower() in content:
+                content_lower = content.lower()
+                for check_str in site['check_strings']:
+                    if check_str.lower() in content_lower:
                         return True
                 return False
+
             return True
-        
+
         return False
     
     async def extract_metadata_async(self, url: str, content: str) -> Dict[str, Any]:

@@ -61,7 +61,7 @@ where = ["."]
 include = ["cyberfind*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.txt", "*.yaml", "*.md"]
+cyberfind = ["sites/*.txt"]
 
 [tool.black]
 line-length = 88

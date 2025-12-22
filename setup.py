@@ -11,6 +11,9 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/vazor-code/cyber-find",
     packages=find_packages(),
+    package_data={
+        'cyberfind': ['sites/*.txt'],
+    },
     py_modules=['cyberfind_cli', 'cyberfind_gui', 'cyberfind_api'],  # Добавьте это
     classifiers=[
         "Development Status :: 4 - Beta",
