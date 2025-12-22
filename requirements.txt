@@ -1,12 +1,28 @@
-aiohttp==3.9.1
-beautifulsoup4==4.12.2
-cloudscraper==1.2.71
-fake-useragent==1.4.0
-pandas==2.1.4
-PyYAML==6.0.1
-requests==2.31.0
-openpyxl==3.1.2
-customtkinter==5.2.0
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
+# CyberFind v0.2.0 - Full Requirements
+# ================================
+# Core OSINT & Web Scraping
+aiohttp>=3.9.1
+beautifulsoup4>=4.12.2
+cloudscraper>=1.2.71
+fake-useragent>=1.4.0
+requests>=2.31.0
+lxml>=4.9.3                     # Для ускорения парсинга HTML
+
+# Data Handling & Output
+pandas>=2.1.4
+PyYAML>=6.0.1
+openpyxl>=3.1.2                 # Для Excel (.xlsx)
+xlsxwriter>=3.1.0               # Альтернативный writer для Excel
+tabulate>=0.9.0                 # Красивый вывод таблиц в CLI
+
+# GUI
+customtkinter>=5.2.0
+pillow>=10.0.0                  # Требуется для customtkinter (изображения)
+
+# API & Web Server
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# Для совместимости с Python < 3.9
+importlib-resources>=5.10.0     # Только если нужна поддержка Python 3.8
