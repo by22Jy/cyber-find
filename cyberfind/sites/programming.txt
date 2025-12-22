@@ -1,0 +1,90 @@
+# Programming & IT Platforms
+# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+
+GitHub|https://github.com/{username}|programming|10||Build software together,Repositories
+GitLab|https://gitlab.com/{username}|programming|9||Build software with,Trusted by
+Bitbucket|https://bitbucket.org/{username}|programming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Stack Overflow|https://stackoverflow.com/users/{username}|programming|10||Users,Collectives™ on Stack Overflow
+Stack Exchange|https://stackexchange.com/users/{username}|programming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Dev.to|https://dev.to/{username}|programming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Hashnode|https://hashnode.com/@{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Codepen|https://codepen.io/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+JSFiddle|https://jsfiddle.net/user/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Replit|https://replit.com/@{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+CodeSandbox|https://codesandbox.io/u/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Glitch|https://glitch.com/@{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+PyPI|https://pypi.org/user/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+NPM|https://www.npmjs.com/~{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Docker Hub|https://hub.docker.com/u/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Hacker News|https://news.ycombinator.com/user?id={username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Product Hunt|https://www.producthunt.com/@{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Behance|https://www.behance.net/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Dribbble|https://dribbble.com/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Figma|https://www.figma.com/@{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+HackerOne|https://hackerone.com/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Bugcrowd|https://bugcrowd.com/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+TryHackMe|https://tryhackme.com/p/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+HackTheBox|https://app.hackthebox.com/profile/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+LeetCode|https://leetcode.com/{username}|programming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Codeforces|https://codeforces.com/profile/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+HackerRank|https://www.hackerrank.com/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+CodeChef|https://www.codechef.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+GeeksforGeeks|https://auth.geeksforgeeks.org/user/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+TopCoder|https://www.topcoder.com/members/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Project Euler|https://projecteuler.net/profile/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Exercism|https://exercism.org/profiles/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Codewars|https://www.codewars.com/users/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Advent of Code|https://adventofcode.com/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+FreeCodeCamp|https://www.freecodecamp.org/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+The Odin Project|https://www.theodinproject.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Coursera|https://www.coursera.org/user/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+edX|https://www.edx.org/user/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Udemy|https://www.udemy.com/user/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Pluralsight|https://app.pluralsight.com/profile/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+LinkedIn Learning|https://www.linkedin.com/learning/users/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Kaggle|https://www.kaggle.com/{username}|programming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Google Colab|https://colab.research.google.com/github/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Jupyter|https://jupyter.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Read the Docs|https://readthedocs.org/profiles/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Conda|https://anaconda.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+PyTorch|https://pytorch.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+TensorFlow|https://www.tensorflow.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Hugging Face|https://huggingface.co/{username}|programming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Model Zoo|https://modelzoo.co/user/{username}|programming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Papers With Code|https://paperswithcode.com/user/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+arXiv|https://arxiv.org/user/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+ResearchGate|https://www.researchgate.net/profile/{username}|programming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Academia.edu|https://www.academia.edu/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+ORCID|https://orcid.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Scopus|https://www.scopus.com/authid/detail.uri?authorId={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Web of Science|https://www.webofscience.com/wos/author/record/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+IEEE Xplore|https://ieeexplore.ieee.org/author/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+ACM Digital Library|https://dl.acm.org/author/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Springer|https://link.springer.com/search?query={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Elsevier|https://www.elsevier.com/authors/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Wiley|https://onlinelibrary.wiley.com/action/doSearch?Contributor={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Nature|https://www.nature.com/search?q={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Science|https://www.science.org/action/doSearch?Contributor={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+PLOS|https://journals.plos.org/search/?q={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+BioRxiv|https://www.biorxiv.org/search/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+medRxiv|https://www.medrxiv.org/search/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+ChemRxiv|https://chemrxiv.org/search/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Zenodo|https://zenodo.org/search?q={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Figshare|https://figshare.com/authors/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Dryad|https://datadryad.org/stash/search?utf8=%E2%9C%93&q={username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Mendeley|https://www.mendeley.com/profiles/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Zotero|https://www.zotero.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+EndNote|https://endnote.com/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Overleaf|https://www.overleaf.com/read/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+LaTeX|https://www.latex-project.org/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+MathOverflow|https://mathoverflow.net/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Cross Validated|https://stats.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Server Fault|https://serverfault.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Super User|https://superuser.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Ask Ubuntu|https://askubuntu.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Unix & Linux|https://unix.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Database Administrators|https://dba.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Webmasters|https://webmasters.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Game Development|https://gamedev.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Computer Science|https://cs.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Cryptography|https://crypto.stackexchange.com/users/{username}|programming|6||Prove your humanity,We’re committed to safety and security. But not for bots.

@@ -1,0 +1,23 @@
+# E-commerce
+# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+
+Etsy|https://www.etsy.com/people/{username}|ecommerce|9||Prove your humanity,We’re committed to safety and security. But not for bots.
+eBay|https://www.ebay.com/usr/{username}|ecommerce|9||Prove your humanity,We’re committed to safety and security. But not for bots.
+Amazon|https://www.amazon.com/gp/profile/{username}|ecommerce|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Redbubble|https://www.redbubble.com/people/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Society6|https://society6.com/{username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Teepublic|https://www.teepublic.com/user/{username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Depop|https://www.depop.com/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Poshmark|https://poshmark.com/closet/{username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Mercari|https://www.mercari.com/u/{username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Grailed|https://www.grailed.com/{username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Gumroad|https://gumroad.com/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Payhip|https://payhip.com/{username}|ecommerce|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Avito|https://www.avito.ru/user/{username}|ecommerce|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Yandex.Market|https://market.yandex.ru/user/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Wildberries|https://www.wildberries.ru/seller/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Ozon|https://www.ozon.ru/seller/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+PayPal|https://www.paypal.com/paypalme/{username}|ecommerce|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Venmo|https://venmo.com/{username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Cash App|https://cash.app/${username}|ecommerce|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Trustpilot|https://www.trustpilot.com/review/{username}|ecommerce|5||Prove your humanity,We’re committed to safety and security. But not for bots.

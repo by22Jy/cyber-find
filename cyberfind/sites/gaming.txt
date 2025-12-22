@@ -1,0 +1,54 @@
+# Gaming Platforms
+# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+
+Steam|https://steamcommunity.com/id/{username}|gaming|10||Something went wrong,Please disable them and try again
+Epic Games|https://www.epicgames.com/account/{username}|gaming|9||Prove your humanity,We’re committed to safety and security. But not for bots.
+Xbox|https://account.xbox.com/{username}|gaming|9||Prove your humanity,We’re committed to safety and security. But not for bots.
+PlayStation|https://my.playstation.com/profile/{username}|gaming|9||Prove your humanity,We’re committed to safety and security. But not for bots.
+Twitch|https://www.twitch.tv/{username}|gaming|9||Something went wrong,Please disable them and try again
+Discord|https://discord.com/users/{username}|gaming|8||Something went wrong,Please disable them and try again
+Roblox|https://www.roblox.com/user.aspx?username={username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Minecraft|https://www.minecraft.net/profile/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Fortnite|https://fortnitetracker.com/profile/all/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+League of Legends|https://www.op.gg/summoners/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Valorant|https://tracker.gg/valorant/profile/riot/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Chess.com|https://www.chess.com/member/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Lichess|https://lichess.org/@/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Faceit|https://www.faceit.com/en/players/{username}|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Game Jolt|https://gamejolt.com/@{username}|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Itch.io|https://{username}.itch.io|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+RetroAchievements|https://retroachievements.org/user/{username}|gaming|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Speedrun.com|https://www.speedrun.com/user/{username}|gaming|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Unity Connect|https://connect.unity.com/u/{username}|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Unreal Engine|https://www.unrealengine.com/id/{username}|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Battle.net|https://battle.net/{username}|gaming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Origin|https://www.origin.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Uplay|https://uplay.ubisoft.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+GOG|https://www.gog.com/u/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Humble Bundle|https://www.humblebundle.com/home/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Green Man Gaming|https://www.greenmangaming.com/u/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Fanatical|https://www.fanatical.com/en/profile/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+CDKeys|https://www.cdkeys.com/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+EA|https://www.ea.com/profile/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Ubisoft|https://www.ubisoft.com/profile/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Activision|https://www.activision.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Blizzard|https://www.blizzard.com/{username}|gaming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Riot Games|https://www.riotgames.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Valve|https://www.valvesoftware.com/{username}|gaming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Mojang|https://www.mojang.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Rockstar Games|https://www.rockstargames.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Take-Two|https://www.take2games.com/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Electronic Arts|https://www.ea.com/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Square Enix|https://www.square-enix.com/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Capcom|https://www.capcom.com/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Konami|https://www.konami.com/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Sega|https://www.sega.com/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Nintendo|https://www.nintendo.com/{username}|gaming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Sony|https://www.sony.com/{username}|gaming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Microsoft|https://www.microsoft.com/{username}|gaming|8||We are sorry, the page you requested cannot be found.
+Google Stadia|https://stadia.google.com/{username}|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Amazon Luna|https://luna.amazon.com/{username}|gaming|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+NVIDIA GeForce Now|https://www.nvidia.com/en-us/geforce-now/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Xbox Cloud Gaming|https://www.xbox.com/play/{username}|gaming|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+PlayStation Now|https://www.playstation.com/ps-now/{username}|gaming|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Apple Arcade|https://www.apple.com/apple-arcade/{username}|gaming|6||Prove your humanity,We’re committed to safety and security. But not for bots.

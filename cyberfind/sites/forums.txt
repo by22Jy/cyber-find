@@ -1,0 +1,15 @@
+# Forums
+# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+
+Reddit|https://www.reddit.com/user/{username}|forums|9||Prove your humanity,We’re committed to safety and security. But not for bots.
+Quora|https://www.quora.com/profile/{username}|forums|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Stack Exchange|https://stackexchange.com/users/{username}|forums|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Hacker News|https://news.ycombinator.com/user?id={username}|forums|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Product Hunt|https://www.producthunt.com/@{username}|forums|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Steam Community|https://steamcommunity.com/id/{username}|forums|7||Something went wrong,Please disable them and try again
+BitcoinTalk|https://bitcointalk.org/index.php?action=profile;u={username}|forums|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+XDA Developers|https://forum.xda-developers.com/m/{username}|forums|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Habr|https://habr.com/ru/users/{username}|forums|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Toster|https://toster.ru/user/{username}|forums|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+4PDA|https://4pda.to/forum/index.php?showuser={username}|forums|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+CodeProject|https://www.codeproject.com/script/Membership/View.aspx?mid={username}|forums|6||Prove your humanity,We’re committed to safety and security. But not for bots.

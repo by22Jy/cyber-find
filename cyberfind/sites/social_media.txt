@@ -1,0 +1,123 @@
+# Social Media Platforms (110+)
+# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+
+Facebook|https://www.facebook.com/{username}|social_media|10||Page not found,Sorry, this page isn't available
+Instagram|https://www.instagram.com/{username}|social_media|10||Page Not Found,Sorry, this page isn't available
+Twitter|https://twitter.com/{username}|social_media|10||Something went wrong,Please disable them and try again
+LinkedIn|https://www.linkedin.com/in/{username}|social_media|9||We’re committed to safety and security. But not for bots.
+TikTok|https://www.tiktok.com/@{username}|social_media|9||We regret to inform you that we have discontinued
+YouTube|https://www.youtube.com/{username}|social_media|9||AboutPressCopyrightContact us
+Pinterest|https://www.pinterest.com/{username}|social_media|7||Page not found,Sorry, this page isn't available
+Snapchat|https://www.snapchat.com/add/{username}|social_media|7||Veja Histórias no Snapchat,Confira as Histórias mais recentes
+Telegram|https://t.me/{username}|social_media|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Reddit|https://www.reddit.com/user/{username}|social_media|8||Prove your humanity,We’re committed to safety and security. But not for bots.
+Flickr|https://www.flickr.com/people/{username}|social_media|6||Page not found,Sorry, this page isn't available
+Imgur|https://imgur.com/user/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+500px|https://500px.com/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+DeviantArt|https://www.deviantart.com/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Vimeo|https://vimeo.com/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Bandcamp|https://bandcamp.com/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Mixcloud|https://www.mixcloud.com/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Last.fm|https://www.last.fm/user/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Goodreads|https://www.goodreads.com/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Letterboxd|https://letterboxd.com/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Strava|https://www.strava.com/athletes/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+MyFitnessPal|https://www.myfitnesspal.com/profile/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+TripAdvisor|https://www.tripadvisor.com/members/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Couchsurfing|https://www.couchsurfing.com/people/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+About.me|https://about.me/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Linktree|https://linktr.ee/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Carrd|https://{username}.carrd.co|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+VSCO|https://vsco.co/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Mastodon|https://mastodon.social/@{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Bluesky|https://bsky.app/profile/{username}|social_media|6||Prove your humanity,We’re committed to safety and security. But not for bots.
+Threads|https://www.threads.net/@{username}|social_media|7||Prove your humanity,We’re committed to safety and security. But not for bots.
+Ravelry|https://www.ravelry.com/people/{username}|social_media|5||Prove your humanity,We’re committed to safety and security. But not for bots.
+Tinder|https://tinder.com/@{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Bumble|https://bumble.com/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Grindr|https://grindr.com/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Hinge|https://hinge.co/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+OkCupid|https://www.okcupid.com/profile/{username}|social_media|4||Prove your humanity,We’re committed to safety and security. But not for bots.
+Plague Inc.|https://plagueinc.com/user/{username}|social_media|3||Prove your humanity,We’re committed to safety and security. But not for bots.
+Tinder|https://tinder.com/@{username}|social_media|4||Page not found
+Badoo|https://badoo.com/profile/{username}|social_media|4||Page not found
+MeetMe|https://www.meetme.com/{username}|social_media|4||Page not found
+Tagged|https://www.tagged.com/{username}|social_media|4||Page not found
+Skout|https://www.skout.com/{username}|social_media|4||Page not found
+Yubo|https://yubo.live/{username}|social_media|4||Page not found
+Habbo|https://www.habbo.com/profile/{username}|social_media|4||Page not found
+Clubhouse|https://www.joinclubhouse.com/@{username}|social_media|5||Prove your humanity
+Signal|https://signal.me/#p/{username}|social_media|5||Prove your humanity
+WhatsApp|https://wa.me/{username}|social_media|5||Prove your humanity
+WeChat|https://web.wechat.com/{username}|social_media|5||Prove your humanity
+Line|https://line.me/ti/p/{username}|social_media|5||Prove your humanity
+KakaoTalk|https://pf.kakao.com/{username}|social_media|5||Prove your humanity
+Zalo|https://zalo.me/{username}|social_media|5||Prove your humanity
+Viber|https://viber.click/{username}|social_media|5||Prove your humanity
+Discord|https://discord.com/users/{username}|social_media|7||Something went wrong
+Steam Community|https://steamcommunity.com/id/{username}|social_media|7||Something went wrong
+Xbox Live|https://account.xbox.com/profile?gamerTag={username}|social_media|7||Prove your humanity
+PlayStation|https://my.playstation.com/profile/{username}|social_media|7||Prove your humanity
+Nintendo|https://accounts.nintendo.com/{username}|social_media|6||Prove your humanity
+Epic Games|https://www.epicgames.com/account/{username}|social_media|7||Prove your humanity
+Roblox|https://www.roblox.com/user.aspx?username={username}|social_media|6||Prove your humanity
+Minecraft|https://www.minecraft.net/profile/{username}|social_media|6||Prove your humanity
+Fortnite|https://fortnitetracker.com/profile/all/{username}|social_media|5||Prove your humanity
+League of Legends|https://www.op.gg/summoners/{username}|social_media|5||Prove your humanity
+Valorant|https://tracker.gg/valorant/profile/riot/{username}|social_media|5||Prove your humanity
+Chess.com|https://www.chess.com/member/{username}|social_media|5||Prove your humanity
+Lichess|https://lichess.org/@/{username}|social_media|5||Prove your humanity
+Faceit|https://www.faceit.com/en/players/{username}|social_media|5||Prove your humanity
+Game Jolt|https://gamejolt.com/@{username}|social_media|5||Prove your humanity
+Itch.io|https://{username}.itch.io|social_media|5||Prove your humanity
+RetroAchievements|https://retroachievements.org/user/{username}|social_media|4||Prove your humanity
+Speedrun.com|https://www.speedrun.com/user/{username}|social_media|4||Prove your humanity
+Unity Connect|https://connect.unity.com/u/{username}|social_media|5||Prove your humanity
+Unreal Engine|https://www.unrealengine.com/id/{username}|social_media|5||Prove your humanity
+TikTok|https://www.tiktok.com/@{username}|social_media|9||We regret to inform you that we have discontinued
+Instagram|https://www.instagram.com/{username}|social_media|10||Page Not Found
+Facebook|https://www.facebook.com/{username}|social_media|10||Page not found
+Twitter|https://twitter.com/{username}|social_media|10||Something went wrong
+LinkedIn|https://www.linkedin.com/in/{username}|social_media|9||We’re committed to safety and security. But not for bots.
+YouTube|https://www.youtube.com/{username}|social_media|9||AboutPressCopyrightContact us
+Pinterest|https://www.pinterest.com/{username}|social_media|7||Page not found
+Snapchat|https://www.snapchat.com/add/{username}|social_media|7||Veja Histórias no Snapchat
+Telegram|https://t.me/{username}|social_media|8||Prove your humanity
+Reddit|https://www.reddit.com/user/{username}|social_media|8||Prove your humanity
+Flickr|https://www.flickr.com/people/{username}|social_media|6||Page not found
+Imgur|https://imgur.com/user/{username}|social_media|6||Prove your humanity
+500px|https://500px.com/{username}|social_media|6||Prove your humanity
+DeviantArt|https://www.deviantart.com/{username}|social_media|6||Prove your humanity
+Vimeo|https://vimeo.com/{username}|social_media|6||Prove your humanity
+Bandcamp|https://bandcamp.com/{username}|social_media|5||Prove your humanity
+Mixcloud|https://www.mixcloud.com/{username}|social_media|5||Prove your humanity
+Last.fm|https://www.last.fm/user/{username}|social_media|5||Prove your humanity
+Goodreads|https://www.goodreads.com/{username}|social_media|5||Prove your humanity
+Letterboxd|https://letterboxd.com/{username}|social_media|5||Prove your humanity
+Strava|https://www.strava.com/athletes/{username}|social_media|5||Prove your humanity
+MyFitnessPal|https://www.myfitnesspal.com/profile/{username}|social_media|4||Prove your humanity
+TripAdvisor|https://www.tripadvisor.com/members/{username}|social_media|4||Prove your humanity
+Couchsurfing|https://www.couchsurfing.com/people/{username}|social_media|4||Prove your humanity
+About.me|https://about.me/{username}|social_media|6||Prove your humanity
+Linktree|https://linktr.ee/{username}|social_media|5||Prove your humanity
+Carrd|https://{username}.carrd.co|social_media|5||Prove your humanity
+VSCO|https://vsco.co/{username}|social_media|5||Prove your humanity
+Mastodon|https://mastodon.social/@{username}|social_media|6||Prove your humanity
+Bluesky|https://bsky.app/profile/{username}|social_media|6||Prove your humanity
+Threads|https://www.threads.net/@{username}|social_media|7||Prove your humanity
+Ravelry|https://www.ravelry.com/people/{username}|social_media|5||Prove your humanity
+Tinder|https://tinder.com/@{username}|social_media|4||Page not found
+Badoo|https://badoo.com/profile/{username}|social_media|4||Page not found
+MeetMe|https://www.meetme.com/{username}|social_media|4||Page not found
+Tagged|https://www.tagged.com/{username}|social_media|4||Page not found
+Skout|https://www.skout.com/{username}|social_media|4||Page not found
+Yubo|https://yubo.live/{username}|social_media|4||Page not found
+Habbo|https://www.habbo.com/profile/{username}|social_media|4||Page not found
+Clubhouse|https://www.joinclubhouse.com/@{username}|social_media|5||Prove your humanity
+Signal|https://signal.me/#p/{username}|social_media|5||Prove your humanity
+WhatsApp|https://wa.me/{username}|social_media|5||Prove your humanity
+WeChat|https://web.wechat.com/{username}|social_media|5||Prove your humanity
+Line|https://line.me/ti/p/{username}|social_media|5||Prove your humanity
+KakaoTalk|https://pf.kakao.com/{username}|social_media|5||Prove your humanity
+Zalo|https://zalo.me/{username}|social_media|5||Prove your humanity
+Viber|https://viber.click/{username}|social_media|5||Prove your humanity
