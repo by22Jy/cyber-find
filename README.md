@@ -51,7 +51,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/vazor-code/cyber-find.git  
+git clone https://github.com/VAZlabs/cyber-find.git
 cd cyber-find
 python -m venv venv
 source venv/bin/activate # Linux/macOS
