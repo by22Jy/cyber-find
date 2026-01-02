@@ -68,7 +68,7 @@ Click the **Fork** button in the top-right corner of the repository page.
 ### 2. Clone Your Fork
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/cyber-find.git      
+git clone https://github.com/VAZlabs/cyber-find.git  
 cd cyber-find
 ```
 
