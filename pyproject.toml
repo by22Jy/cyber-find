@@ -9,7 +9,7 @@ description = "Advanced OSINT tool for searching users across platforms"
 readme = "README.md"
 authors = [{name = "vazor"}]
 license = {text = "MIT"}
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["osint", "cybersecurity", "search", "social-media"]
 classifiers = [
     "Development Status :: 4 - Beta",
