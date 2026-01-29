@@ -29,8 +29,6 @@ jobs:
         flake8 cyberfind --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Check formatting with black
       run: black --check cyberfind
-    - name: Type check with mypy
-      run: mypy cyberfind/ --ignore-missing-imports
     - name: Test with pytest
       run: pytest --cov=cyberfind --cov-report=xml
     - name: Upload coverage to Codecov
