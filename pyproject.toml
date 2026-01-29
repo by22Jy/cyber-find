@@ -56,6 +56,9 @@ dev = [
     "mypy>=1.7.1",
 ]
 
+[tool.coverage.run]
+disable_warnings = ["no-data-collected"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["cyberfind*"]

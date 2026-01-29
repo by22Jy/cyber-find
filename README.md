@@ -217,19 +217,6 @@ cyberfind/
 
 ## 🔧 Development
 
-### Running Tests
-
-```bash
-# Install development dependencies
-pip install pytest pytest-asyncio pytest-cov
-
-# Run tests
-pytest tests/
-
-# With coverage
-pytest --cov=cyberfind tests/
-```
-
 ### Code Style
 
 ```bash
