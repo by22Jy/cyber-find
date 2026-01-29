@@ -3,15 +3,13 @@ import csv
 import json
 import logging
 import os
-import random
 import sqlite3
 import time
 from collections import defaultdict
 from datetime import datetime, date
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Set
-from urllib.parse import urlparse
+from typing import Dict, List, Optional, Any
 
 import aiohttp
 import cloudscraper
@@ -24,18 +22,6 @@ from fake_useragent import UserAgent
 
 # New imports for v0.2.1 features
 try:
-    import dns.resolver
-    import whois
-    import shodan
-    import censys.search
-    import vt
-    import waybackpy
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    import validators
     from tqdm import tqdm
     import colorama
 
@@ -45,18 +31,6 @@ except ImportError:
 
 # New imports for v0.2.1 features
 try:
-    import dns.resolver
-    import whois
-    import shodan
-    import censys.search
-    import vt
-    import waybackpy
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    import validators
     from tqdm import tqdm
     import colorama
 
