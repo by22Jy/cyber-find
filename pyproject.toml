@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cyberfind"
-version = "0.2.0"
+version = "0.2.1"
 description = "Advanced OSINT tool for searching users across platforms"
 readme = "README.md"
 authors = [{name = "vazor"}]
@@ -40,7 +40,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/vazor-code/cyber-find"
+Homepage = "https://github.com/VAZlabs/cyber-find"
 
 [project.scripts]
 cyberfind = "cyberfind.cli:main"

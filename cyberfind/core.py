@@ -22,6 +22,46 @@ from aiohttp import ClientTimeout
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
+# New imports for v0.2.1 features
+try:
+    import dns.resolver
+    import whois
+    import shodan
+    import censys.search
+    import vt
+    import waybackpy
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    import validators
+    from tqdm import tqdm
+    import colorama
+    colorama.init()
+except ImportError:
+    pass  # Optional dependencies
+
+# New imports for v0.2.1 features
+try:
+    import dns.resolver
+    import whois
+    import shodan
+    import censys.search
+    import vt
+    import waybackpy
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    import validators
+    from tqdm import tqdm
+    import colorama
+    colorama.init()
+except ImportError:
+    pass  # Optional dependencies
+
 logger = logging.getLogger("cyberfind")
 
 class SearchMode(Enum):
@@ -786,6 +826,321 @@ class CyberFind:
                     return False
             return True
         return status in site['valid_status_codes']
+    
+        # ===== NEW FEATURES FOR v0.2.1 =====
+
+    def dns_enumeration(self, domain: str) -> Dict[str, Any]:
+        """Perform DNS enumeration for a domain"""
+        try:
+            import dns.resolver
+            results = {
+                'domain': domain,
+                'records': {},
+                'errors': []
+            }
+
+            record_types = ['A', 'AAAA', 'MX', 'TXT', 'NS', 'SOA', 'CNAME']
+
+            for record_type in record_types:
+                try:
+                    answers = dns.resolver.resolve(domain, record_type)
+                    results['records'][record_type] = [str(rdata) for rdata in answers]
+                except Exception as e:
+                    results['errors'].append(f"{record_type}: {str(e)}")
+
+            return results
+        except ImportError:
+            return {'error': 'dns-python not installed'}
+        except Exception as e:
+            return {'error': str(e)}
+
+    def whois_lookup(self, domain: str) -> Dict[str, Any]:
+        """Perform WHOIS lookup for a domain"""
+        try:
+            import whois
+            w = whois.whois(domain)
+            return {
+                'domain': domain,
+                'registrar': w.registrar,
+                'creation_date': str(w.creation_date),
+                'expiration_date': str(w.expiration_date),
+                'name_servers': w.name_servers,
+                'emails': w.emails,
+                'org': w.org,
+                'country': w.country
+            }
+        except ImportError:
+            return {'error': 'python-whois not installed'}
+        except Exception as e:
+            return {'error': str(e)}
+
+    def shodan_search(self, query: str, api_key: str = None) -> Dict[str, Any]:
+        """Search Shodan for IP/domain information"""
+        try:
+            import shodan
+            api = shodan.Shodan(api_key)
+            results = api.search(query)
+            return {
+                'query': query,
+                'total': results['total'],
+                'matches': results['matches'][:10]  # First 10 results
+            }
+        except ImportError:
+            return {'error': 'shodan not installed'}
+        except Exception as e:
+            return {'error': str(e)}
+
+    def virustotal_scan(self, url: str, api_key: str = None) -> Dict[str, Any]:
+        """Scan URL with VirusTotal"""
+        try:
+            import vt
+            client = vt.Client(api_key)
+            url_id = vt.url_id(url)
+            url_obj = client.get_object(f"/urls/{url_id}")
+            return {
+                'url': url,
+                'malicious': url_obj.last_analysis_stats['malicious'],
+                'suspicious': url_obj.last_analysis_stats['suspicious'],
+                'harmless': url_obj.last_analysis_stats['harmless'],
+                'undetected': url_obj.last_analysis_stats['undetected']
+            }
+        except ImportError:
+            return {'error': 'virustotal-api not installed'}
+        except Exception as e:
+            return {'error': str(e)}
+
+    def wayback_machine_search(self, url: str, limit: int = 10) -> Dict[str, Any]:
+        """Search Wayback Machine for historical snapshots"""
+        try:
+            import waybackpy
+            wayback = waybackpy.Url(url)
+            snapshots = wayback.get(limit)
+
+            results = []
+            for snapshot in snapshots:
+                results.append({
+                    'url': snapshot.archive_url,
+                    'timestamp': snapshot.timestamp,
+                    'status': snapshot.status_code
+                })
+
+            return {
+                'original_url': url,
+                'snapshots': results
+            }
+        except ImportError:
+            return {'error': 'waybackpy not installed'}
+        except Exception as e:
+            return {'error': str(e)}
+
+    async def selenium_scrape_async(self, url: str, wait_time: int = 5) -> Dict[str, Any]:
+        """Scrape JavaScript-heavy sites using Selenium"""
+        try:
+            from selenium import webdriver
+            from selenium.webdriver.chrome.options import Options
+            from selenium.webdriver.common.by import By
+            from selenium.webdriver.support.ui import WebDriverWait
+            from selenium.webdriver.support import expected_conditions as EC
+
+            options = Options()
+            options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+
+            driver = webdriver.Chrome(options=options)
+            driver.get(url)
+
+            # Wait for page to load
+            WebDriverWait(driver, wait_time).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
+            )
+
+            content = driver.page_source
+            title = driver.title
+
+            driver.quit()
+
+            return {
+                'url': url,
+                'title': title,
+                'content': content[:50000]  # Limit content size
+            }
+        except ImportError:
+            return {'error': 'selenium not installed'}
+        except Exception as e:
+            return {'error': str(e)}
+
+    def validate_url(self, url: str) -> bool:
+        """Validate URL format"""
+        try:
+            import validators
+            return validators.url(url)
+        except ImportError:
+            # Fallback validation
+            import re
+            url_pattern = re.compile(
+                r'^https?://'  # http:// or https://
+                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
+                r'localhost|'  # localhost...
+                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+                r'(?::\d+)?'  # optional port
+                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+            return url_pattern.match(url) is not None
+
+    def create_progress_bar(self, total: int, desc: str = "Progress") -> 'tqdm':
+        """Create a progress bar"""
+        try:
+            from tqdm import tqdm
+            return tqdm(total=total, desc=desc, unit='item')
+        except ImportError:
+            # Fallback: simple print
+            class FakeTqdm:
+                def __init__(self, total, desc, unit):
+                    self.total = total
+                    self.desc = desc
+                    self.current = 0
+
+                def update(self, n=1):
+                    self.current += n
+                    print(f"{self.desc}: {self.current}/{self.total}")
+
+                def close(self):
+                    pass
+            return FakeTqdm(total, desc, 'item')
+
+    def print_colored(self, text: str, color: str = 'white') -> None:
+        """Print colored text"""
+        try:
+            import colorama
+            colors = {
+                'red': colorama.Fore.RED,
+                'green': colorama.Fore.GREEN,
+                'yellow': colorama.Fore.YELLOW,
+                'blue': colorama.Fore.BLUE,
+                'magenta': colorama.Fore.MAGENTA,
+                'cyan': colorama.Fore.CYAN,
+                'white': colorama.Fore.WHITE,
+                'reset': colorama.Fore.RESET
+            }
+            print(f"{colors.get(color, colors['white'])}{text}{colors['reset']}")
+        except ImportError:
+            print(text)
+
+    async def advanced_search_async(self, username: str, enable_dns: bool = False,
+                                   enable_whois: bool = False, enable_shodan: bool = False,
+                                   enable_vt: bool = False, enable_wayback: bool = False,
+                                   api_keys: Dict[str, str] = None) -> Dict[str, Any]:
+        """Perform advanced OSINT search with multiple tools"""
+        results = {
+            'username': username,
+            'basic_search': {},
+            'advanced_features': {}
+        }
+
+        # Basic username search
+        basic_results = await self.search_async(usernames=[username])
+        results['basic_search'] = basic_results
+
+        # Advanced features
+        if enable_dns and username.count('.') >= 1:
+            results['advanced_features']['dns'] = self.dns_enumeration(username)
+
+        if enable_whois and username.count('.') >= 1:
+            results['advanced_features']['whois'] = self.whois_lookup(username)
+
+        if enable_shodan and api_keys and 'shodan' in api_keys:
+            results['advanced_features']['shodan'] = self.shodan_search(username, api_keys['shodan'])
+
+        if enable_vt and api_keys and 'virustotal' in api_keys:
+            # Check found URLs with VT
+            vt_results = []
+            for user_results in basic_results['results'].values():
+                for account in user_results['found']:
+                    if 'url' in account:
+                        vt_result = self.virustotal_scan(account['url'], api_keys['virustotal'])
+                        vt_results.append({'url': account['url'], 'vt_result': vt_result})
+            results['advanced_features']['virustotal'] = vt_results
+
+        if enable_wayback:
+            # Check Wayback for found URLs
+            wayback_results = []
+            for user_results in basic_results['results'].values():
+                for account in user_results['found']:
+                    if 'url' in account:
+                        wb_result = self.wayback_machine_search(account['url'], limit=5)
+                        wayback_results.append({'url': account['url'], 'wayback': wb_result})
+            results['advanced_features']['wayback'] = wayback_results
+
+        return results
+
+    def generate_advanced_report(self, results: Dict[str, Any]) -> str:
+        """Generate advanced OSINT report"""
+        report = []
+        report.append("=" * 80)
+        report.append("CYBERFIND ADVANCED OSINT REPORT")
+        report.append("=" * 80)
+        report.append(f"Target: {results['username']}")
+        report.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report.append("")
+
+        # Basic search summary
+        basic = results.get('basic_search', {})
+        if 'statistics' in basic:
+            stats = basic['statistics']
+            report.append("BASIC SEARCH RESULTS:")
+            report.append(f"  Total checks: {stats.get('total_checks', 0)}")
+            report.append(f"  Accounts found: {stats.get('found_accounts', 0)}")
+            report.append(f"  Errors: {stats.get('errors', 0)}")
+            report.append("")
+
+        # Advanced features
+        advanced = results.get('advanced_features', {})
+
+        if 'dns' in advanced and 'error' not in advanced['dns']:
+            report.append("DNS RECORDS:")
+            dns_data = advanced['dns']
+            for record_type, records in dns_data.get('records', {}).items():
+                report.append(f"  {record_type}: {', '.join(records)}")
+            report.append("")
+
+        if 'whois' in advanced and 'error' not in advanced['whois']:
+            report.append("WHOIS INFORMATION:")
+            whois_data = advanced['whois']
+            report.append(f"  Registrar: {whois_data.get('registrar', 'N/A')}")
+            report.append(f"  Creation Date: {whois_data.get('creation_date', 'N/A')}")
+            report.append(f"  Expiration Date: {whois_data.get('expiration_date', 'N/A')}")
+            report.append(f"  Country: {whois_data.get('country', 'N/A')}")
+            report.append("")
+
+        if 'shodan' in advanced and 'error' not in advanced['shodan']:
+            report.append("SHODAN RESULTS:")
+            shodan_data = advanced['shodan']
+            report.append(f"  Total matches: {shodan_data.get('total', 0)}")
+            for match in shodan_data.get('matches', [])[:3]:
+                report.append(f"  IP: {match.get('ip_str', 'N/A')} | Port: {match.get('port', 'N/A')}")
+            report.append("")
+
+        if 'virustotal' in advanced:
+            report.append("VIRUSTOTAL ANALYSIS:")
+            for vt_result in advanced['virustotal']:
+                vt = vt_result.get('vt_result', {})
+                if 'error' not in vt:
+                    report.append(f"  URL: {vt_result['url']}")
+                    report.append(f"    Malicious: {vt.get('malicious', 0)} | Suspicious: {vt.get('suspicious', 0)}")
+            report.append("")
+
+        if 'wayback' in advanced:
+            report.append("WAYBACK MACHINE:")
+            for wb_result in advanced['wayback']:
+                wb = wb_result.get('wayback', {})
+                if 'error' not in wb:
+                    snapshots = wb.get('snapshots', [])
+                    report.append(f"  URL: {wb_result['url']} | Snapshots: {len(snapshots)}")
+            report.append("")
+
+        report.append("=" * 80)
+        return "\n".join(report)
+
     
     async def extract_metadata_async(self, url: str, content: str) -> Dict[str, Any]:
         """Extract metadata from HTML content"""

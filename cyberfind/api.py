@@ -13,12 +13,12 @@ class SearchRequest(BaseModel):
     usernames: List[str]
     sites_file: Optional[str] = None
     mode: str = "standard"
-    output_format: str = "json"
+    output_format: str = "json" 
     max_concurrent: int = 50
 
 @app.get("/")
 async def root():
-    return {"message": "CyberFind API", "version": "1.0.0"}
+    return {"message": "CyberFind API", "version": "0.2.1"}
 
 @app.post("/search")
 async def search(request: SearchRequest):

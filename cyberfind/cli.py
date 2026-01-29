@@ -34,8 +34,8 @@ def print_banner():
     """Show application banner"""
     banner = """
     ╔══════════════════════════════════════════════╗
-    ║            🕵️♂️ CYBERFIND v0.2.0           ║
-    ║      Advanced OSINT Search Tool            ║
+    ║           🕵️♂️ CYBERFIND v0.2.1              ║
+    ║      Advanced OSINT Search Tool              ║
     ╚══════════════════════════════════════════════╝
     """
     print(banner)
@@ -206,7 +206,7 @@ Usage examples:
     parser.add_argument(
         '--version',
         action='version',
-        version='CyberFind v0.1.0'
+        version='CyberFind v0.2.1'
     )
     
     return parser.parse_args()
