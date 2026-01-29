@@ -8,7 +8,7 @@ from .api import run_api_server
 
 __all__ = [
     "CyberFind",
-    "SearchMode", 
+    "SearchMode",
     "OutputFormat",
     "SiteCategory",
     "CyberFindGUI",
