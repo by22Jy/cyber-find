@@ -10,4 +10,4 @@ from cyberfind_cli import main as cli_main
 from cyberfind_gui import main as gui_main
 from cyberfind_api import main as api_main
 
-__all__ = ['cli_main', 'gui_main', 'api_main']
+__all__ = ["cli_main", "gui_main", "api_main"]
