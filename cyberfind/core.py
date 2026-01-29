@@ -346,8 +346,7 @@ class CyberFind:
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         cursor = self.conn.cursor()
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS search_results (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
@@ -360,11 +359,9 @@ class CyberFind:
                 metadata TEXT,
                 UNIQUE(username, site_name)
             )
-        """
-        )
+        """)
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS statistics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date DATE NOT NULL UNIQUE,
@@ -372,8 +369,7 @@ class CyberFind:
                 accounts_found INTEGER DEFAULT 0,
                 total_time REAL DEFAULT 0
             )
-        """
-        )
+        """)
 
         self.conn.commit()
 
@@ -1406,19 +1402,16 @@ class CyberFind:
             for username, user_results in results.items():
                 rows = []
                 for result in user_results["found"]:
-                    rows.append(
-                        f"""
+                    rows.append(f"""
                     <tr>
                         <td>{result['site']}</td>
                         <td><a href="{result.get('url', '#')}" target="_blank">{result.get('url', '')}</a></td>
                         <td>{result.get('status_code', '')}</td>
                         <td>{result.get('response_time', 0):.2f}s</td>
                     </tr>
-                    """
-                    )
+                    """)
                 user_table = "".join(rows)
-                users_html_parts.append(
-                    f"""
+                users_html_parts.append(f"""
                 <div class="user-section">
                     <h3>User: {username}</h3>
                     <table class="results-table">
@@ -1430,8 +1423,7 @@ class CyberFind:
                         </tbody>
                     </table>
                 </div>
-                """
-                )
+                """)
 
             all_users_html = "".join(users_html_parts)
 
