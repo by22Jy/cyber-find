@@ -1,10 +1,10 @@
 # 🕵️♂️ CyberFind - Advanced OSINT Search Tool
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.2.1-blue?style=for-the-badge&logo=github  " alt="Version">
-  <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python  " alt="Python">
-  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge  " alt="Platform">
-  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative  " alt="License">
+  <img src="https://img.shields.io/badge/Version-0.2.1-blue?style=for-the-badge&logo=github" alt="Version">
+  <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge" alt="Platform">
+  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative" alt="License">
 </p>
 
 <p align="center">
@@ -45,13 +45,23 @@
 - **Statistical analysis** of results
 - **Category grouping** of found accounts
 
+### 🔬 **Advanced OSINT Capabilities (v0.2.1)**
+- **DNS Enumeration**: Retrieve A, AAAA, MX, TXT, NS, SOA, and CNAME records for domains.
+- **WHOIS Lookup**: Get registration details, owner information, and name servers for domains.
+- **Shodan Integration**: Search for exposed devices and services (requires Shodan API key).
+- **VirusTotal Scan**: Check URLs for malicious content (requires VirusTotal API key).
+- **Wayback Machine Search**: Find archived versions of web pages.
+- **Selenium Scraping**: Analyze JavaScript-heavy websites that standard requests might miss.
+- **Advanced Combined Search**: Perform a standard username search and then run additional checks (DNS, WHOIS, Shodan, VT, Wayback) based on the results and provided API keys.
+- **Detailed Reporting**: Generate comprehensive text reports summarizing all findings from standard and advanced checks.
+
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/VAZlabs/cyber-find.git
+git clone https://github.com/VAZlabs/cyber-find.git  
 cd cyber-find
 python -m venv venv
 source venv/bin/activate # Linux/macOS
@@ -132,6 +142,9 @@ cyberfind username --format html -o report
 # Save to database
 cyberfind username --format sqlite
 ```
+
+### 🧪 Advanced Search (v0.2.1) - CLI (Conceptual)
+*Note: Direct CLI integration for advanced features might require specific implementation in `cyberfind_cli.py`. Currently, they are primarily accessible via the Python API.*
 
 ## 📋 Available Site Lists
 
@@ -273,7 +286,7 @@ The GUI provides:
 ```bash
 $ cyberfind john_doe --list quick
 
-🔍 CyberFind v1.0.0
+🔍 CyberFind v0.2.1
 Searching for: john_doe
 📋 Using built-in list: quick (25 sites)
 
@@ -296,14 +309,14 @@ Searching for: john_doe
   ✅ FOUND 3 accounts:
     📁 PROGRAMMING:
       1. GitHub
-          URL: https://github.com/john_doe  
+          URL: https://github.com/john_doe    
           Status: 200, Time: 1.23s
     📁 SOCIAL_MEDIA:
       2. Twitter
-          URL: https://twitter.com/john_doe  
+          URL: https://twitter.com/john_doe    
           Status: 200, Time: 0.89s
       3. LinkedIn
-          URL: https://www.linkedin.com/in/john_doe  
+          URL: https://www.linkedin.com/in/john_doe    
           Status: 200, Time: 1.45s
 
 💡 RECOMMENDATIONS:
@@ -357,6 +370,7 @@ We welcome contributions! Here's how:
 - Writing documentation
 - Performance optimizations
 - Bug fixes
+- Integrating advanced features into CLI/API
 
 ## 📈 Performance Tips
 
@@ -384,7 +398,7 @@ We welcome contributions! Here's how:
    - Consider using proxies
 
 ### Getting Help:
-- Check the [GitHub Issues](https://github.com/vazor-code/cyber-find/issues  )
+- Check the [GitHub Issues](https://github.com/vazor-code/cyber-find/issues)
 - Review the example configurations
 - Test with a simple search first
 
@@ -394,15 +408,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built with [aiohttp](https://docs.aiohttp.org/  ) for async HTTP requests
-- Uses [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/  ) for HTML parsing
+- Built with [aiohttp](https://docs.aiohttp.org/) for async HTTP requests
+- Uses [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/) for HTML parsing
 - Inspired by various OSINT tools in the security community
+- Thanks to the contributors for making CyberFind better!
 
 ## 📬 Contact
 
-- **GitHub**: [vazor-code](https://github.com/vazor-code  )
-- **Project**: [CyberFind](https://github.com/vazor-code/cyber-find  )
-- **Issues**: [Report a bug](https://github.com/vazor-code/cyber-find/issues  )
+- **GitHub**: [vazor-code](https://github.com/vazor-code)
+- **Project**: [CyberFind](https://github.com/vazor-code/cyber-find)
+- **Issues**: [Report a bug](https://github.com/vazor-code/cyber-find/issues)
 
 ---
 
@@ -416,6 +431,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   
 ### ⭐ If you find this useful, please give it a star!
 
-[![GitHub stars](https://img.shields.io/github/stars/vazor-code/cyber-find?style=social  )](https://github.com/vazor-code/cyber-find/stargazers  )
+[![GitHub stars](https://img.shields.io/github/stars/vazor-code/cyber-find?style=social)](https://github.com/vazor-code/cyber-find/stargazers)
 
 </div>
