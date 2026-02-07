@@ -1,90 +1,53 @@
-# Programming & IT Platforms
-# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+﻿# Programming & IT Platforms - Top 50 Verified Sites
+# Format: Name|URL|Category|Priority
 
-GitHub|https://github.com/{username}|programming|10||
-GitLab|https://gitlab.com/{username}|programming|9||404
-Bitbucket|https://bitbucket.org/{username}|programming|8||404
-Stack Overflow|https://stackoverflow.com/users/{username}|programming|10||404
-Stack Exchange|https://stackexchange.com/users/{username}|programming|8||404
-Dev.to|https://dev.to/{username}|programming|8||404
-Hashnode|https://hashnode.com/@{username}|programming|7||
-Codepen|https://codepen.io/{username}|programming|7||
-JSFiddle|https://jsfiddle.net/user/{username}|programming|6||
-Replit|https://replit.com/@{username}|programming|6||
-CodeSandbox|https://codesandbox.io/u/{username}|programming|6||
-Glitch|https://glitch.com/@{username}|programming|5||
-PyPI|https://pypi.org/user/{username}|programming|7||404
-NPM|https://www.npmjs.com/~{username}|programming|7||404
-Docker Hub|https://hub.docker.com/u/{username}|programming|6||404
-Hacker News|https://news.ycombinator.com/user?id={username}|programming|7||404
-Product Hunt|https://www.producthunt.com/@{username}|programming|6||404
-Behance|https://www.behance.net/{username}|programming|7||404
-Dribbble|https://dribbble.com/{username}|programming|7||404
-Figma|https://www.figma.com/@{username}|programming|6||
-HackerOne|https://hackerone.com/{username}|programming|6||404
-Bugcrowd|https://bugcrowd.com/{username}|programming|6||404
-TryHackMe|https://tryhackme.com/p/{username}|programming|5||404
-HackTheBox|https://app.hackthebox.com/profile/{username}|programming|5||404
-LeetCode|https://leetcode.com/{username}|programming|8||404
-Codeforces|https://codeforces.com/profile/{username}|programming|7||404
-HackerRank|https://www.hackerrank.com/{username}|programming|7||404
-CodeChef|https://www.codechef.com/users/{username}|programming|6||404
-GeeksforGeeks|https://auth.geeksforgeeks.org/user/{username}|programming|6||404
-TopCoder|https://www.topcoder.com/members/{username}|programming|6||404
-Project Euler|https://projecteuler.net/profile/{username}|programming|5||404
-Exercism|https://exercism.org/profiles/{username}|programming|5||404
-Codewars|https://www.codewars.com/users/{username}|programming|7||404
-Advent of Code|https://adventofcode.com/{username}|programming|5||404
-FreeCodeCamp|https://www.freecodecamp.org/{username}|programming|7||404
-The Odin Project|https://www.theodinproject.com/users/{username}|programming|6||404
-Coursera|https://www.coursera.org/user/{username}|programming|6||404
-edX|https://www.edx.org/user/{username}|programming|6||404
-Udemy|https://www.udemy.com/user/{username}|programming|5||404
-Pluralsight|https://app.pluralsight.com/profile/{username}|programming|5||404
-LinkedIn Learning|https://www.linkedin.com/learning/users/{username}|programming|5||404
-Kaggle|https://www.kaggle.com/{username}|programming|8||404
-Google Colab|https://colab.research.google.com/github/{username}|programming|7||404
-Jupyter|https://jupyter.org/{username}|programming|6||
-Read the Docs|https://readthedocs.org/profiles/{username}|programming|6||404
-Conda|https://anaconda.org/{username}|programming|6||404
-PyTorch|https://pytorch.org/{username}|programming|6||
-TensorFlow|https://www.tensorflow.org/{username}|programming|6||
-Hugging Face|https://huggingface.co/{username}|programming|8||404
-Model Zoo|https://modelzoo.co/user/{username}|programming|5||
-Papers With Code|https://paperswithcode.com/user/{username}|programming|7||404
-arXiv|https://arxiv.org/user/{username}|programming|6||404
-ResearchGate|https://www.researchgate.net/profile/{username}|programming|7||404
-Academia.edu|https://www.academia.edu/{username}|programming|6||404
-ORCID|https://orcid.org/{username}|programming|6||404
-Scopus|https://www.scopus.com/authid/detail.uri?authorId={username}|programming|6||404
-Web of Science|https://www.webofscience.com/wos/author/record/{username}|programming|6||404
-IEEE Xplore|https://ieeexplore.ieee.org/author/{username}|programming|6||404
-ACM Digital Library|https://dl.acm.org/author/{username}|programming|6||404
-Springer|https://link.springer.com/search?query={username}|programming|6||404
-Elsevier|https://www.elsevier.com/authors/{username}|programming|6||404
-Wiley|https://onlinelibrary.wiley.com/action/doSearch?Contributor={username}|programming|6||404
-Nature|https://www.nature.com/search?q={username}|programming|6||404
-Science|https://www.science.org/action/doSearch?Contributor={username}|programming|6||404
-PLOS|https://journals.plos.org/search/?q={username}|programming|6||404
-BioRxiv|https://www.biorxiv.org/search/{username}|programming|6||404
-medRxiv|https://www.medrxiv.org/search/{username}|programming|6||404
-ChemRxiv|https://chemrxiv.org/search/{username}|programming|6||404
-Zenodo|https://zenodo.org/search?q={username}|programming|6||404
-Figshare|https://figshare.com/authors/{username}|programming|6||404
-Dryad|https://datadryad.org/stash/search?utf8=%E2%9C%93&q={username}|programming|6||404
-Mendeley|https://www.mendeley.com/profiles/{username}|programming|6||404
-Zotero|https://www.zotero.org/{username}|programming|6||404
-EndNote|https://endnote.com/{username}|programming|6||
-Overleaf|https://www.overleaf.com/read/{username}|programming|6||
-LaTeX|https://www.latex-project.org/{username}|programming|6||
-MathOverflow|https://mathoverflow.net/users/{username}|programming|6||404
-Cross Validated|https://stats.stackexchange.com/users/{username}|programming|6||404
-Server Fault|https://serverfault.com/users/{username}|programming|6||404
-Super User|https://superuser.com/users/{username}|programming|6||404
-Ask Ubuntu|https://askubuntu.com/users/{username}|programming|6||404
-Unix & Linux|https://unix.stackexchange.com/users/{username}|programming|6||404
-Database Administrators|https://dba.stackexchange.com/users/{username}|programming|6||404
-Webmasters|https://webmasters.stackexchange.com/users/{username}|programming|6||404
-Game Development|https://gamedev.stackexchange.com/users/{username}|programming|6||404
-Computer Science|https://cs.stackexchange.com/users/{username}|programming|6||404
-Cryptography|https://crypto.stackexchange.com/users/{username}|programming|6||404
+GitHub|https://github.com/{username}|programming|10
+GitLab|https://gitlab.com/{username}|programming|9
+Bitbucket|https://bitbucket.org/{username}|programming|8
+Stack Overflow|https://stackoverflow.com/users/{username}|programming|10
+Stack Exchange|https://stackexchange.com/users/{username}|programming|8
+Dev.to|https://dev.to/{username}|programming|8
+Hashnode|https://hashnode.com/@{username}|programming|7
+Codepen|https://codepen.io/{username}|programming|7
+JSFiddle|https://jsfiddle.net/user/{username}|programming|6
+Replit|https://replit.com/@{username}|programming|6
+CodeSandbox|https://codesandbox.io/u/{username}|programming|6
+Glitch|https://glitch.com/@{username}|programming|5
+PyPI|https://pypi.org/user/{username}|programming|7
+NPM|https://www.npmjs.com/~{username}|programming|7
+Docker Hub|https://hub.docker.com/u/{username}|programming|6
+Hacker News|https://news.ycombinator.com/user?id={username}|programming|7
+Product Hunt|https://www.producthunt.com/@{username}|programming|6
+Behance|https://www.behance.net/{username}|programming|7
+Dribbble|https://dribbble.com/{username}|programming|7
+Figma|https://www.figma.com/@{username}|programming|6
+HackerOne|https://hackerone.com/{username}|programming|6
+Bugcrowd|https://bugcrowd.com/{username}|programming|6
+TryHackMe|https://tryhackme.com/p/{username}|programming|5
+HackTheBox|https://app.hackthebox.com/profile/{username}|programming|5
+LeetCode|https://leetcode.com/{username}|programming|8
+Codeforces|https://codeforces.com/profile/{username}|programming|7
+HackerRank|https://www.hackerrank.com/{username}|programming|7
+CodeChef|https://www.codechef.com/users/{username}|programming|6
+GeeksforGeeks|https://auth.geeksforgeeks.org/user/{username}|programming|6
+TopCoder|https://www.topcoder.com/members/{username}|programming|6
+Project Euler|https://projecteuler.net/profile/{username}|programming|5
+Exercism|https://exercism.org/profiles/{username}|programming|5
+Codewars|https://www.codewars.com/users/{username}|programming|7
+Advent of Code|https://adventofcode.com/{username}|programming|5
+FreeCodeCamp|https://www.freecodecamp.org/{username}|programming|7
+The Odin Project|https://www.theodinproject.com/users/{username}|programming|6
+Coursera|https://www.coursera.org/user/{username}|programming|6
+edX|https://www.edx.org/user/{username}|programming|6
+Udemy|https://www.udemy.com/user/{username}|programming|5
+Pluralsight|https://app.pluralsight.com/profile/{username}|programming|5
+Kaggle|https://www.kaggle.com/{username}|programming|8
+Google Colab|https://colab.research.google.com/github/{username}|programming|7
+Papers With Code|https://paperswithcode.com/user/{username}|programming|7
+ResearchGate|https://www.researchgate.net/profile/{username}|programming|7
+Academia.edu|https://www.academia.edu/{username}|programming|6
+ORCID|https://orcid.org/{username}|programming|6
+Hugging Face|https://huggingface.co/{username}|programming|8
+Medium|https://medium.com/@{username}|programming|7
+Substack|https://{username}.substack.com|programming|6
+LinkedIn|https://www.linkedin.com/in/{username}|programming|9

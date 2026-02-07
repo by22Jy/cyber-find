@@ -1,21 +1,21 @@
-# Russian-language platforms
-# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+﻿# Russian-language Platforms - Top 18 Verified Sites
+# Format: Name|URL|Category|Priority
 
-VK|https://vk.com/{username}|russian|10||404
-OK|https://ok.ru/{username}|russian|9||404
-Telegram|https://t.me/{username}|russian|8||
-Yandex.Zen|https://zen.yandex.ru/user/{username}|russian|7||404
-Habr|https://habr.com/ru/users/{username}|russian|8||404
-Toster|https://toster.ru/user/{username}|russian|7||404
-Pikabu|https://pikabu.ru/@{username}|russian|7||404
-DTF|https://dtf.ru/u/{username}|russian|7||404
-VC.ru|https://vc.ru/u/{username}|russian|7||404
-Avito|https://www.avito.ru/user/{username}|russian|9||404
-Yandex.Market|https://market.yandex.ru/user/{username}|russian|8||404
-Wildberries|https://www.wildberries.ru/seller/{username}|russian|8||404
-Ozon|https://www.ozon.ru/seller/{username}|russian|8||404
-4PDA|https://4pda.to/forum/index.php?showuser={username}|russian|7||404
-LiveJournal|https://{username}.livejournal.com|russian|7||404
-Rutube|https://rutube.ru/channel/{username}|russian|6||404
-Kwork|https://kwork.ru/user/{username}|russian|7||404
-FL.ru|https://www.fl.ru/users/{username}|russian|7||404
+VK|https://vk.com/{username}|russian|10
+OK|https://ok.ru/{username}|russian|9
+Telegram|https://t.me/{username}|russian|8
+Yandex.Zen|https://zen.yandex.ru/user/{username}|russian|7
+Habr|https://habr.com/ru/users/{username}|russian|8
+Toster|https://toster.ru/user/{username}|russian|7
+Pikabu|https://pikabu.ru/@{username}|russian|7
+DTF|https://dtf.ru/u/{username}|russian|7
+VC.ru|https://vc.ru/u/{username}|russian|7
+Avito|https://www.avito.ru/user/{username}|russian|9
+Yandex.Market|https://market.yandex.ru/user/{username}|russian|8
+Wildberries|https://www.wildberries.ru/seller/{username}|russian|8
+Ozon|https://www.ozon.ru/seller/{username}|russian|8
+4PDA|https://4pda.to/forum/index.php?showuser={username}|russian|7
+LiveJournal|https://{username}.livejournal.com|russian|7
+Rutube|https://rutube.ru/channel/{username}|russian|6
+Kwork|https://kwork.ru/user/{username}|russian|7
+FL.ru|https://www.fl.ru/users/{username}|russian|7

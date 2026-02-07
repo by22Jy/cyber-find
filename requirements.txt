@@ -1,41 +1,36 @@
-# CyberFind v0.2.1 - Full Requirements
-# ================================
+# CyberFind v0.2.1 - Production Requirements
+# ============================================
+
 # Core OSINT & Web Scraping
-aiohttp>=3.9.1
-beautifulsoup4>=4.12.2
+aiohttp>=3.9.0
+beautifulsoup4>=4.12.0
 cloudscraper>=1.2.71
 fake-useragent>=1.4.0
 requests>=2.31.0
-lxml>=4.9.3                     
+lxml>=4.9.0
 
 # Data Handling & Output
-pandas>=2.1.4
-PyYAML>=6.0.1
-openpyxl>=3.1.2 
-xlsxwriter>=3.1.0 
-tabulate>=0.9.0 
+pandas>=2.0.0
+PyYAML>=6.0
+openpyxl>=3.1.0
 
 # GUI
 customtkinter>=5.2.0
-pillow>=10.0.0 
+pillow>=10.0.0
 
 # API & Web Server
-fastapi>=0.104.1
-uvicorn[standard]>=0.24.0
-pydantic>=2.5.0
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+pydantic>=2.0.0
 
-# New dependencies for v0.2.1 features
-dnspython>=2.4.2
+# Advanced Features (Optional)
+dnspython>=2.4.0
 python-whois>=0.8.0
-shodan>=1.29.0
-virustotal-python>=0.16.0
-censys>=2.2.3
-waybackpy>=3.0.6
-selenium>=4.15.0
 validators>=0.22.0
-tqdm>=4.66.1
+tqdm>=4.66.0
 colorama>=0.4.6
 
-setuptools
-wheel
+# Development & Utilities
+setuptools>=65.0
+wheel>=0.40.0
 importlib-resources>=5.10.0

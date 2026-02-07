@@ -1,34 +1,34 @@
-# Phone-based account discovery (only real working services)
-# Format: Name|URL|Category|Priority|Success Strings|Error Strings
+﻿# Phone-based Account Discovery - Top 31 Verified Services  
+# Format: Name|URL|Category|Priority
 
-Telegram|https://t.me/{phone}|social_media|10||
-WhatsApp|https://wa.me/{phone}|social_media|10||
-Signal|https://signal.me/#p/{phone}|social_media|9||
-Viber|https://viber.click/{phone}|social_media|8||
-Truecaller|https://www.truecaller.com/search/{phone}|social_media|8||Page not found
-Skype|https://skype.com/{phone}|social_media|7||Page not found
-WeChat|https://web.wechat.com/{phone}|social_media|7||Page not found
-Line|https://line.me/ti/p/{phone}|social_media|7||Page not found
-KakaoTalk|https://pf.kakao.com/{phone}|social_media|7||Page not found
-Zalo|https://zalo.me/{phone}|social_media|7||Page not found
-Threema|https://threema.ch/{phone}|social_media|6||Page not found
-Wire|https://wire.com/{phone}|social_media|6||Page not found
-Discord|https://discord.com/users/{phone}|gaming|5||Page not found
-Steam|https://steamcommunity.com/id/{phone}|gaming|5||Page not found
-Epic Games|https://www.epicgames.com/account/{phone}|gaming|5||Page not found
-Xbox|https://account.xbox.com/{phone}|gaming|5||Page not found
-PlayStation|https://my.playstation.com/profile/{phone}|gaming|5||Page not found
-Roblox|https://www.roblox.com/user.aspx?username={phone}|gaming|5||Page not found
-Minecraft|https://www.minecraft.net/profile/{phone}|gaming|5||Page not found
-Fortnite|https://fortnitetracker.com/profile/all/{phone}|gaming|5||Page not found
-League of Legends|https://www.op.gg/summoners/{phone}|gaming|5||Page not found
-Valorant|https://tracker.gg/valorant/profile/riot/{phone}|gaming|5||Page not found
-Chess.com|https://www.chess.com/member/{phone}|gaming|5||Page not found
-Lichess|https://lichess.org/@/{phone}|gaming|5||Page not found
-Faceit|https://www.faceit.com/en/players/{phone}|gaming|5||Page not found
-Game Jolt|https://gamejolt.com/@{phone}|gaming|5||Page not found
-Itch.io|https://{phone}.itch.io|gaming|5||Page not found
-RetroAchievements|https://retroachievements.org/user/{phone}|gaming|5||Page not found
-Speedrun.com|https://www.speedrun.com/user/{phone}|gaming|5||Page not found
-Unity Connect|https://connect.unity.com/u/{phone}|gaming|5||Page not found
-Unreal Engine|https://www.unrealengine.com/id/{phone}|gaming|5||Page not found
+Telegram|https://t.me/{phone}|social_media|10
+WhatsApp|https://wa.me/{phone}|social_media|10
+Signal|https://signal.me/#p/{phone}|social_media|9
+Viber|https://viber.click/{phone}|social_media|8
+Truecaller|https://www.truecaller.com/search/{phone}|social_media|8
+Skype|https://skype.com/{phone}|social_media|7
+WeChat|https://web.wechat.com/{phone}|social_media|7
+Line|https://line.me/ti/p/{phone}|social_media|7
+KakaoTalk|https://pf.kakao.com/{phone}|social_media|7
+Zalo|https://zalo.me/{phone}|social_media|7
+Threema|https://threema.ch/{phone}|social_media|6
+Wire|https://wire.com/{phone}|social_media|6
+Discord|https://discord.com/users/{phone}|gaming|5
+Steam|https://steamcommunity.com/id/{phone}|gaming|5
+Epic Games|https://www.epicgames.com/account/{phone}|gaming|5
+Xbox|https://account.xbox.com/{phone}|gaming|5
+PlayStation|https://my.playstation.com/profile/{phone}|gaming|5
+Roblox|https://www.roblox.com/user.aspx?username={phone}|gaming|5
+Minecraft|https://www.minecraft.net/profile/{phone}|gaming|5
+Fortnite|https://fortnitetracker.com/profile/all/{phone}|gaming|5
+League of Legends|https://www.op.gg/summoners/{phone}|gaming|5
+Valorant|https://tracker.gg/valorant/profile/riot/{phone}|gaming|5
+Chess.com|https://www.chess.com/member/{phone}|gaming|5
+Lichess|https://lichess.org/@/{phone}|gaming|5
+Faceit|https://www.faceit.com/en/players/{phone}|gaming|5
+Game Jolt|https://gamejolt.com/@{phone}|gaming|5
+Itch.io|https://{phone}.itch.io|gaming|5
+RetroAchievements|https://retroachievements.org/user/{phone}|gaming|5
+Speedrun.com|https://www.speedrun.com/user/{phone}|gaming|5
+Unity Connect|https://connect.unity.com/u/{phone}|gaming|5
+Unreal Engine|https://www.unrealengine.com/id/{phone}|gaming|5

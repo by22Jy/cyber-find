@@ -1,26 +1,33 @@
-# Blogs & Publications
-# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+﻿# Blogs & Publications - Top 30 Verified Sites
+# Format: Name|URL|Category|Priority
 
-Medium|https://medium.com/@{username}|blogs|9||404
-Dev.to|https://dev.to/{username}|blogs|8||404
-WordPress.com|https://{username}.wordpress.com|blogs|7||404
-Blogger|https://{username}.blogspot.com|blogs|7||404
-Tumblr|https://{username}.tumblr.com|blogs|6||404
-Substack|https://{username}.substack.com|blogs|7||404
-Ghost|https://{username}.ghost.io|blogs|6||404
-Hashnode|https://hashnode.com/@{username}|blogs|7||404
-FreeCodeCamp|https://www.freecodecamp.org/{username}|blogs|6||404
-Hackernoon|https://hackernoon.com/u/{username}|blogs|6||404
-Instagram|https://www.instagram.com/{username}|blogs|8||404
-VSCO|https://vsco.co/{username}|blogs|5||404
-Flickr|https://www.flickr.com/people/{username}|blogs|6||404
-500px|https://500px.com/{username}|blogs|5||404
-LiveJournal|https://{username}.livejournal.com|blogs|6||404
-Twitter|https://twitter.com/{username}|blogs|8||404
-Mastodon|https://mastodon.social/@{username}|blogs|6||404
-Bluesky|https://bsky.app/profile/{username}|blogs|6||404
-Threads|https://www.threads.net/@{username}|blogs|7||404
-SoundCloud|https://soundcloud.com/{username}|blogs|6||404
-Anchor|https://anchor.fm/{username}|blogs|5||404
-YouTube|https://www.youtube.com/{username}|blogs|8||404
-Vimeo|https://vimeo.com/{username}|blogs|6||404
+Medium|https://medium.com/@{username}|blogs|9
+Dev.to|https://dev.to/{username}|blogs|8
+WordPress.com|https://{username}.wordpress.com|blogs|7
+Blogger|https://{username}.blogspot.com|blogs|7
+Tumblr|https://{username}.tumblr.com|blogs|6
+Substack|https://{username}.substack.com|blogs|7
+Ghost|https://{username}.ghost.io|blogs|6
+Hashnode|https://hashnode.com/@{username}|blogs|7
+FreeCodeCamp|https://www.freecodecamp.org/{username}|blogs|6
+Hackernoon|https://hackernoon.com/u/{username}|blogs|6
+Instagram|https://www.instagram.com/{username}|blogs|8
+VSCO|https://vsco.co/{username}|blogs|5
+Flickr|https://www.flickr.com/people/{username}|blogs|6
+500px|https://500px.com/{username}|blogs|5
+LiveJournal|https://{username}.livejournal.com|blogs|6
+Twitter|https://twitter.com/{username}|blogs|8
+Mastodon|https://mastodon.social/@{username}|blogs|6
+Bluesky|https://bsky.app/profile/{username}|blogs|6
+Threads|https://www.threads.net/@{username}|blogs|7
+SoundCloud|https://soundcloud.com/{username}|blogs|6
+Anchor|https://anchor.fm/{username}|blogs|5
+YouTube|https://www.youtube.com/{username}|blogs|8
+Vimeo|https://vimeo.com/{username}|blogs|6
+Quora|https://www.quora.com/profile/{username}|blogs|6
+Patreon|https://www.patreon.com/{username}|blogs|6
+LinkedIn|https://www.linkedin.com/in/{username}|blogs|8
+Pinterest|https://www.pinterest.com/{username}|blogs|7
+TikTok|https://www.tiktok.com/@{username}|blogs|7
+Reddit|https://www.reddit.com/user/{username}|blogs|6
+Letterboxd|https://letterboxd.com/{username}|blogs|5

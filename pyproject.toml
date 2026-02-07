@@ -1,46 +1,55 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=65.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cyberfind"
-version = "0.2.1"
-description = "Advanced OSINT tool for searching users across platforms"
+version = "0.2.2"
+description = "Advanced OSINT tool for searching users across 200+ platforms"
 readme = "README.md"
-authors = [{name = "vazor"}]
+authors = [{name = "vazor", email = "vazorcode@gmail.com"}]
 license = {text = "MIT"}
 requires-python = ">=3.9"
-keywords = ["osint", "cybersecurity", "search", "social-media"]
+keywords = ["osint", "cybersecurity", "search", "social-media", "reconnaissance"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Information Technology",
+    "Intended Audience :: Security Professionals",
     "Topic :: Security",
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
 ]
 
 dependencies = [
-    "aiohttp>=3.9.1",
-    "beautifulsoup4>=4.12.2",
+    "aiohttp>=3.9.0",
+    "beautifulsoup4>=4.12.0",
     "cloudscraper>=1.2.71",
     "fake-useragent>=1.4.0",
-    "pandas>=2.1.4",
-    "PyYAML>=6.0.1",
+    "pandas>=2.0.0",
+    "PyYAML>=6.0",
     "requests>=2.31.0",
-    "openpyxl>=3.1.2",
+    "openpyxl>=3.1.0",
     "customtkinter>=5.2.0",
-    "fastapi>=0.104.1",
-    "uvicorn[standard]>=0.24.0",
-    "pydantic>=2.5.0",
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "pydantic>=2.0.0",
+    "lxml>=4.9.0",
+    "dnspython>=2.4.0",
+    "validators>=0.22.0",
+    "tqdm>=4.66.0",
+    "colorama>=0.4.6",
 ]
 
 [project.urls]
 Homepage = "https://github.com/VAZlabs/cyber-find"
+Documentation = "https://github.com/VAZlabs/cyber-find/wiki"
+Repository = "https://github.com/VAZlabs/cyber-find.git"
+Issues = "https://github.com/VAZlabs/cyber-find/issues"
 
 [project.scripts]
 cyberfind = "cyberfind.cli:main"
@@ -49,26 +58,37 @@ cyberfind-api = "cyberfind.api_main:main"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.3",
-    "pytest-asyncio>=0.21.1",
-    "black>=23.11.0",
-    "flake8>=6.1.0",
-    "mypy>=1.7.1",
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+advanced = [
+    "python-whois>=0.8.0",
+    "selenium>=4.15.0",
+    "waybackpy>=3.0.6",
 ]
 
-[tool.coverage.run]
-disable_warnings = ["no-data-collected"]
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["cyberfind*"]
+[tool.setuptools]
+packages = ["cyberfind"]
 
 [tool.setuptools.package-data]
 cyberfind = ["sites/*.txt"]
 
 [tool.black]
-line-length = 88
-target-version = ['py38']
+line-length = 99
+target-version = ["py39", "py310", "py311"]
 
 [tool.isort]
 profile = "black"
+multi_line_mode = 3
+
+[tool.mypy]
+python_version = "3.9"
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.coverage.run]
+disable_warnings = ["no-data-collected"]

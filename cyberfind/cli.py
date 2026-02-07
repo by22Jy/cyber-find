@@ -14,16 +14,25 @@ from datetime import datetime
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
+# Setup logging first
 try:
-    from cyberfind import CyberFind, SearchMode, OutputFormat
-    from cyberfind import run_gui, run_api_server
+    from cyberfind.logging_config import setup_logging
+
+    setup_logging()
+except ImportError:
+    import logging
+
+    logging.basicConfig(level=logging.INFO)
+
+try:
+    from cyberfind import CyberFind, OutputFormat, SearchMode, run_api_server, run_gui
 except ImportError:
     # Alternative import
     sys.path.insert(0, os.path.join(current_dir, "cyberfind"))
     try:
-        from core import CyberFind, SearchMode, OutputFormat
-        from gui import run_gui
         from api import run_api_server
+        from core import CyberFind, OutputFormat, SearchMode
+        from gui import run_gui
     except ImportError as e:
         print(f"❌ Import error: {e}")
         print("Make sure all dependencies are installed:")
@@ -80,22 +89,22 @@ def parse_arguments():
 Usage examples:
   # Quick check (25 most popular sites)
   cyberfind username
-  
+
   # Use built-in lists
   cyberfind username --list social_media
   cyberfind username --list programming
   cyberfind username --list all
-  
+
   # Multiple users
   cyberfind user1 user2 user3 --list quick
-  
+
   # From sites file
   cyberfind username -f sites/social_media.txt
-  
+
   # Advanced options
   cyberfind username --mode deep --format html -o report
   cyberfind username --format csv --threads 50 --timeout 15
-  
+
   # Additional commands
   cyberfind --show-lists
   cyberfind --gui
@@ -149,19 +158,13 @@ Usage examples:
     parser.add_argument("-o", "--output", help="Filename to save results")
 
     # Performance settings
-    parser.add_argument(
-        "-t", "--threads", type=int, default=30, help="Number of concurrent requests"
-    )
+    parser.add_argument("-t", "--threads", type=int, default=30, help="Number of concurrent requests")
 
-    parser.add_argument(
-        "--timeout", type=int, default=10, help="Request timeout in seconds"
-    )
+    parser.add_argument("--timeout", type=int, default=10, help="Request timeout in seconds")
     # Email / Phone support
     parser.add_argument("--email", help="Search by email address")
 
-    parser.add_argument(
-        "--phone", help="Search by phone number (E.164 format: +1234567890)"
-    )
+    parser.add_argument("--phone", help="Search by phone number (E.164 format: +1234567890)")
 
     # Passive mode
     parser.add_argument(
@@ -173,17 +176,13 @@ Usage examples:
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     # Additional commands
-    parser.add_argument(
-        "--show-lists", action="store_true", help="Show available built-in lists"
-    )
+    parser.add_argument("--show-lists", action="store_true", help="Show available built-in lists")
 
     parser.add_argument("--gui", action="store_true", help="Launch graphical interface")
 
     parser.add_argument("--api", action="store_true", help="Launch API server")
 
-    parser.add_argument(
-        "--config", default="config.yaml", help="Path to configuration file"
-    )
+    parser.add_argument("--config", default="config.yaml", help="Path to configuration file")
 
     parser.add_argument("--version", action="version", version="CyberFind v0.2.1")
 
@@ -256,9 +255,7 @@ async def run_passive_search(args, cybertrace):
 
         engines = [e.strip() for e in args.engines.split(",")]
 
-        results = await cybertrace.passive_search_async(
-            queries=queries, engines=engines, max_concurrent=args.threads
-        )
+        results = await cybertrace.passive_search_async(queries=queries, engines=engines, max_concurrent=args.threads)
 
         end_time = datetime.now()
         total_time = (end_time - start_time).total_seconds()
@@ -278,13 +275,13 @@ async def run_passive_search(args, cybertrace):
 
 def print_results(results, total_time, args):
     """Print search results"""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"✅ SEARCH COMPLETED in {total_time:.1f} seconds")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     if "statistics" in results:
         stats = results["statistics"]
-        print(f"\n📊 STATISTICS:")
+        print("\n📊 STATISTICS:")
         print(f"  Total checks: {stats.get('total_checks', 0)}")
         print(f"  Accounts found: {stats.get('found_accounts', 0)}")
         print(f"  Errors: {stats.get('errors', 0)}")
@@ -313,11 +310,9 @@ def print_results(results, total_time, args):
                         response_time = account.get("response_time", 0)
                         print(f"      {i:2d}. {account['site']}")
                         print(f"          URL: {account.get('url', 'N/A')}")
-                        print(
-                            f"          Status: {status_code}, Time: {response_time:.2f}s"
-                        )
+                        print(f"          Status: {status_code}, Time: {response_time:.2f}s")
             else:
-                print(f"  ❌ No accounts found")
+                print("  ❌ No accounts found")
 
             # Show errors in verbose mode
             if args.verbose and data and "errors" in data and data["errors"]:
@@ -325,9 +320,7 @@ def print_results(results, total_time, args):
                 if error_count > 0:
                     print(f"  ⚠️  Errors: {error_count}")
                     for i, error in enumerate(data["errors"][:5], 1):  # First 5 errors
-                        print(
-                            f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}"
-                        )
+                        print(f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}")
                     if error_count > 5:
                         print(f"      ... and {error_count - 5} more errors")
 
@@ -335,7 +328,7 @@ def print_results(results, total_time, args):
     if "report" in results and "recommendations" in results["report"]:
         recommendations = results["report"]["recommendations"]
         if recommendations:
-            print(f"\n💡 RECOMMENDATIONS:")
+            print("\n💡 RECOMMENDATIONS:")
             for i, rec in enumerate(recommendations, 1):
                 print(f"  {i}. {rec}")
 
@@ -419,14 +412,10 @@ def main():
         try:
             if args.mode == "passive":
                 # Passive mode
-                results, total_time = loop.run_until_complete(
-                    run_passive_search(args, cybertrace)
-                )
+                results, total_time = loop.run_until_complete(run_passive_search(args, cybertrace))
             else:
                 # Standard or email/phone mode
-                results, total_time = loop.run_until_complete(
-                    run_search(args, cybertrace)
-                )
+                results, total_time = loop.run_until_complete(run_search(args, cybertrace))
 
             print_results(results, total_time, args)
 
@@ -441,7 +430,7 @@ def main():
         finally:
             try:
                 loop.close()
-            except:
+            except Exception:
                 pass
 
     except Exception as e:

@@ -1,33 +1,29 @@
-# Quick Check - Top 30 Most Popular Sites
-# Format: Name|URL|Category|Priority|Success Strings|Error Strings
+﻿# Quick Check - Top 25 Most Popular & Working Sites
+# Format: Name|URL|Category|Priority
+# Last updated: 2026-02-07
 
-Facebook|https://www.facebook.com/{username}|social_media|10||404,Page not found
-Instagram|https://www.instagram.com/{username}|social_media|10||404,Page Not Found
-Twitter|https://twitter.com/{username}|social_media|10||404,This account doesn’t exist
-LinkedIn|https://www.linkedin.com/in/{username}|social_media|9||404,Profile not found
-GitHub|https://github.com/{username}|programming|10||
-GitLab|https://gitlab.com/{username}|programming|9||404
-Stack Overflow|https://stackoverflow.com/users/{username}|programming|9||404
-YouTube|https://www.youtube.com/{username}|social_media|9||404
-Twitch|https://www.twitch.tv/{username}|gaming|8||404
-Reddit|https://www.reddit.com/user/{username}|social_media|8||404
-Pinterest|https://www.pinterest.com/{username}|social_media|7||404
-Snapchat|https://www.snapchat.com/add/{username}|social_media|7||404
-VK|https://vk.com/{username}|social_media|9||404
-OK|https://ok.ru/{username}|social_media|8||404
-Telegram|https://t.me/{username}|social_media|8||
-Steam|https://steamcommunity.com/id/{username}|gaming|8||404
-Discord|https://discord.com/users/{username}|gaming|7||
-Medium|https://medium.com/@{username}|blogs|8||404
-Dev.to|https://dev.to/{username}|programming|7||404
-Quora|https://www.quora.com/profile/{username}|forums|7||404
-Etsy|https://www.etsy.com/people/{username}|ecommerce|7||404
-eBay|https://www.ebay.com/usr/{username}|ecommerce|7||404
-SoundCloud|https://soundcloud.com/{username}|social_media|7||404
-Spotify|https://open.spotify.com/user/{username}|social_media|6||404
-Flickr|https://www.flickr.com/people/{username}|social_media|6||404
-Imgur|https://imgur.com/user/{username}|social_media|6||404
-500px|https://500px.com/{username}|social_media|6||404
-DeviantArt|https://www.deviantart.com/{username}|social_media|6||404
-Behance|https://www.behance.net/{username}|programming|7||404
-Dribbble|https://dribbble.com/{username}|programming|7||404
+GitHub|https://github.com/{username}|programming|10
+Twitter|https://twitter.com/{username}|social_media|10
+Facebook|https://www.facebook.com/{username}|social_media|10
+Instagram|https://www.instagram.com/{username}|social_media|10
+LinkedIn|https://www.linkedin.com/in/{username}|social_media|9
+YouTube|https://www.youtube.com/@{username}|social_media|9
+Reddit|https://www.reddit.com/user/{username}|social_media|9
+TikTok|https://www.tiktok.com/@{username}|social_media|9
+Twitch|https://www.twitch.tv/{username}|gaming|8
+Stack Overflow|https://stackoverflow.com/users/{username}|programming|8
+GitLab|https://gitlab.com/{username}|programming|8
+Medium|https://medium.com/@{username}|blogs|7
+Pinterest|https://www.pinterest.com/{username}|social_media|7
+Quora|https://www.quora.com/profile/{username}|forums|7
+VK|https://vk.com/{username}|social_media|8
+Telegram|https://t.me/{username}|social_media|8
+Discord|https://discordapp.com/users/{username}|gaming|7
+Snapchat|https://www.snapchat.com/add/{username}|social_media|7
+Spotify|https://open.spotify.com/user/{username}|social_media|6
+SoundCloud|https://soundcloud.com/{username}|social_media|6
+Flickr|https://www.flickr.com/people/{username}|social_media|6
+Imgur|https://imgur.com/user/{username}|social_media|6
+Behance|https://www.behance.net/{username}|programming|7
+Dev.to|https://dev.to/{username}|programming|7
+Patreon|https://www.patreon.com/{username}|social_media|6

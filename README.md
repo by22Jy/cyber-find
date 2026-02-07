@@ -1,10 +1,12 @@
 # 🕵️♂️ CyberFind - Advanced OSINT Search Tool
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.2.1-blue?style=for-the-badge&logo=github" alt="Version">
-  <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Version-0.2.2-blue?style=for-the-badge&logo=github" alt="Version">
+  <img src="https://img.shields.io/badge/Python-3.9+-green?style=for-the-badge&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge" alt="Platform">
   <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative" alt="License">
+  <img src="https://img.shields.io/badge/Tests-36%20Passing-brightgreen?style=for-the-badge&logo=pytest" alt="Tests">
+  <img src="https://img.shields.io/badge/Code%20Style-Black-black?style=for-the-badge&logo=python" alt="Code Style">
 </p>
 
 <p align="center">
@@ -217,21 +219,95 @@ cyberfind/
 
 ## 🔧 Development
 
-### Code Style
+### Code Style & Quality
 
 ```bash
-# Install formatting tools
-pip install black flake8 isort
+# Install development tools
+pip install -r requirements-dev.txt
 
-# Format code
-black cyberfind_cli.py core.py
+# Format code with black
+black cyberfind --line-length 120
 
-# Check code style
-flake8 cyberfind_cli.py core.py
+# Check code style with flake8
+flake8 cyberfind --max-line-length 120
 
-# Sort imports
-isort cyberfind_cli.py core.py
+# Sort imports with isort
+isort cyberfind --profile black
+
+# Type checking with mypy
+mypy cyberfind --ignore-missing-imports
 ```
+
+### 🧪 Testing & CI/CD
+
+CyberFind has comprehensive testing infrastructure to ensure code quality and reliability:
+
+#### Running Tests
+
+```bash
+# Install test dependencies
+pip install -r requirements-dev.txt
+
+# Run all tests
+pytest tests/ -v
+
+# Run specific test file
+pytest tests/test_rate_limiting.py -v
+
+# Run with coverage report
+pytest tests/ --cov=cyberfind --cov-report=html
+
+# Run only fast tests
+pytest tests/ -m "not slow"
+
+# Run async tests only
+pytest tests/ -m asyncio
+```
+
+#### Test Coverage
+
+Current test infrastructure includes:
+- **36 unit tests** covering core modules
+- **2 test modules**: `test_rate_limiting.py` (17 tests), `test_proxy_support.py` (15 tests)
+- **8 pytest fixtures** for reusable test data
+- **Branch coverage tracking** enabled in `.coveragerc`
+- **Async test support** with `@pytest.mark.asyncio`
+
+#### Code Quality Checks
+
+All commits are validated against:
+- ✅ **flake8** - PEP8 style compliance (0 errors)
+- ✅ **black** - Code formatting (120 char lines)
+- ✅ **isort** - Import sorting (black-compatible)
+- ✅ **mypy** - Type checking (Python 3.9+)
+- ✅ **pytest** - Unit tests (36 tests passing)
+- ✅ **bandit** - Security scanning
+
+#### GitHub Actions CI/CD
+
+Automated testing runs on:
+- Python 3.9, 3.10, 3.11
+- Linux, Windows, macOS
+- Every push and pull request
+
+See `.github/workflows/tests.yml` for workflow configuration.
+
+#### Pre-commit Hooks
+
+Setup local git hooks for instant validation:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Setup git hooks
+pre-commit install
+
+# Run hooks on all files
+pre-commit run --all-files
+```
+
+For detailed testing documentation, see [TESTING.md](TESTING.md)
 
 ## 🌐 API Usage
 
@@ -349,6 +425,49 @@ We welcome contributions! Here's how:
    git push origin feature/amazing-feature
    ```
 5. **Open** a Pull Request
+
+### Code Quality Standards
+
+All contributions must pass our quality gates:
+
+**Required Checks:**
+- ✅ **Black** code formatting (`black --line-length 120`)
+- ✅ **flake8** PEP8 linting (max line 120, 0 errors)
+- ✅ **isort** import sorting (black-compatible profile)
+- ✅ **mypy** type checking (Python 3.9+ strict mode)
+- ✅ **pytest** unit tests (all passing)
+- ✅ **bandit** security scanning
+
+**Before submitting a PR, run locally:**
+```bash
+# Format code
+black cyberfind --line-length 120
+
+# Sort imports
+isort cyberfind --profile black --line-length 120
+
+# Check style
+flake8 cyberfind --max-line-length 120 --ignore=E203,E266,E501,W503,E741
+
+# Type checking
+mypy cyberfind --ignore-missing-imports
+
+# Run tests
+pytest tests/ -v
+```
+
+**Test Requirements:**
+- New features must include unit tests
+- Maintain minimum 80% code coverage
+- Use pytest fixtures from `tests/conftest.py`
+- Add `@pytest.mark.unit` to unit tests
+- Add `@pytest.mark.asyncio` to async tests
+- See [TESTING.md](TESTING.md) for detailed testing guidelines
+
+**Automated Checks:**
+- GitHub Actions runs tests on Python 3.9, 3.10, 3.11
+- Pre-commit hooks available (run `pre-commit install`)
+- All checks must pass before merging
 
 ### Areas for Contribution:
 - Adding new site definitions

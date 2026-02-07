@@ -6,10 +6,10 @@ import os
 import sqlite3
 import time
 from collections import defaultdict
-from datetime import datetime, date
+from datetime import date, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 import aiohttp
 import cloudscraper
@@ -20,23 +20,14 @@ from aiohttp import ClientTimeout
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
-# New imports for v0.2.1 features
+# Optional dependencies for enhanced features
 try:
-    from tqdm import tqdm
     import colorama
+    from tqdm import tqdm
 
     colorama.init()
 except ImportError:
-    pass  # Optional dependencies
-
-# New imports for v0.2.1 features
-try:
-    from tqdm import tqdm
-    import colorama
-
-    colorama.init()
-except ImportError:
-    pass  # Optional dependencies
+    pass
 
 logger = logging.getLogger("cyberfind")
 
@@ -127,9 +118,7 @@ class CyberFind:
 
                 update_dict(default_config, user_config)
             except Exception as e:
-                logger.warning(
-                    f"Error loading config file {config_path}: {e}. Using default config."
-                )
+                logger.warning(f"Error loading config file {config_path}: {e}. Using default config.")
 
         return default_config
 
@@ -204,6 +193,7 @@ class CyberFind:
     ) -> Dict[str, Any]:
         """Perform passive reconnaissance using search engines"""
         import urllib.parse
+
         from bs4 import BeautifulSoup
 
         async def fetch_engine(query: str, engine: str):
@@ -231,10 +221,9 @@ class CyberFind:
                             try:
                                 data = json.loads(text)
                                 urls = [
-                                    f"https://web.archive.org/web/{item[1]}/{item[2]}"
-                                    for item in data[1:5]
+                                    f"https://web.archive.org/web/{item[1]}/{item[2]}" for item in data[1:5]
                                 ]  # top 4
-                            except:
+                            except Exception:
                                 pass
                         else:
                             soup = BeautifulSoup(text, "html.parser")
@@ -242,10 +231,7 @@ class CyberFind:
                                 href = a["href"]
                                 if href.startswith("/url?q="):
                                     clean_url = href.split("/url?q=")[1].split("&")[0]
-                                    if (
-                                        "google.com" not in clean_url
-                                        and "bing.com" not in clean_url
-                                    ):
+                                    if "google.com" not in clean_url and "bing.com" not in clean_url:
                                         urls.append(urllib.parse.unquote(clean_url))
 
                         return engine, query, urls
@@ -360,9 +346,7 @@ class CyberFind:
             return dict(obj)
         elif hasattr(obj, "__dict__"):
             return obj.__dict__
-        raise TypeError(
-            f"Object of type {obj.__class__.__name__} is not JSON serializable"
-        )
+        raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
     async def search_async(
         self,
@@ -412,11 +396,7 @@ class CyberFind:
 
         # Load and filter sites by search type
         all_sites = await self.load_sites_async(sites_file, builtin_list)
-        sites = [
-            site
-            for site in all_sites
-            if site.get("value_type", "username") == search_type
-        ]
+        sites = [site for site in all_sites if site.get("value_type", "username") == search_type]
 
         if not sites:
             logger.error(f"No sites available for {search_type} search")
@@ -429,9 +409,7 @@ class CyberFind:
         # Search for each target
         for target in search_targets:
             print(f"\n🔍 Searching: {target} (type: {search_type})")
-            user_results = await self.search_single_user_async(
-                target, sites, mode, max_concurrent
-            )
+            user_results = await self.search_single_user_async(target, sites, mode, max_concurrent)
             all_results[target] = user_results
 
             # Save intermediate results if configured
@@ -480,10 +458,7 @@ class CyberFind:
         processed_sites = []
         for site in sites:
             key = (site["name"], site["url_pattern"])
-            if any(
-                k == key
-                for k in [(s["name"], s["url_pattern"]) for s in processed_sites]
-            ):
+            if any(k == key for k in [(s["name"], s["url_pattern"]) for s in processed_sites]):
                 continue
 
             # Detect value type
@@ -604,14 +579,10 @@ class CyberFind:
                     pass
             # Parse success strings (if exists)
             if len(parts) >= 5:
-                site["check_strings"] = [
-                    s.strip() for s in parts[4].split(",") if s.strip()
-                ]
+                site["check_strings"] = [s.strip() for s in parts[4].split(",") if s.strip()]
             # Parse error strings (if exists)
             if len(parts) >= 6:
-                site["error_strings"] = [
-                    s.strip() for s in parts[5].split(",") if s.strip()
-                ]
+                site["error_strings"] = [s.strip() for s in parts[5].split(",") if s.strip()]
             return site
         except Exception as e:
             logger.error(f"Error parsing site line: {e}")
@@ -643,9 +614,7 @@ class CyberFind:
         # Create tasks for all sites
         tasks = []
         for i, site in enumerate(sites_sorted):
-            task = asyncio.create_task(
-                self.check_site_async(username, site, mode, semaphore)
-            )
+            task = asyncio.create_task(self.check_site_async(username, site, mode, semaphore))
             tasks.append(task)
 
             # Show progress every 10 sites
@@ -738,16 +707,12 @@ class CyberFind:
 
                     # Extract metadata if enabled
                     if self.config.get("advanced", {}).get("metadata_extraction", True):
-                        metadata = await self.extract_metadata_async(
-                            url, response_data["content"]
-                        )
+                        metadata = await self.extract_metadata_async(url, response_data["content"])
                         result["metadata"].update(metadata)
                         result["metadata"]["category"] = site["category"]
 
                     # Check if user exists
-                    result["found"] = self.check_user_exists(
-                        response_data, site, username
-                    )
+                    result["found"] = self.check_user_exists(response_data, site, username)
                 else:
                     result["error"] = response_data["error"]
 
@@ -757,9 +722,7 @@ class CyberFind:
 
             return result
 
-    async def request_standard_async(
-        self, url: str, site: Dict[str, Any], mode: SearchMode
-    ) -> Dict[str, Any]:
+    async def request_standard_async(self, url: str, site: Dict[str, Any], mode: SearchMode) -> Dict[str, Any]:
         """Make HTTP request with retries"""
 
         headers = self.generate_headers(mode)
@@ -799,12 +762,12 @@ class CyberFind:
             "DNT": "1",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
+            "User-Agent": self.ua.random,
         }
 
         if mode == SearchMode.STEALTH:
             base_headers.update(
                 {
-                    "User-Agent": self.ua.random,
                     "Sec-Fetch-Dest": "document",
                     "Sec-Fetch-Mode": "navigate",
                     "Sec-Fetch-Site": "none",
@@ -818,28 +781,26 @@ class CyberFind:
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
                 }
             )
-        else:
-            base_headers.update(
-                {
-                    "User-Agent": self.ua.random,
-                }
-            )
 
         return base_headers
 
-    def check_user_exists(
-        self, response_data: Dict[str, Any], site: Dict[str, Any], username: str
-    ) -> bool:
-        """Determine if user exists based ONLY on status code (unless error_strings are defined)"""
-        status = response_data["status"]
+    def check_user_exists(self, response_data: Dict[str, Any], site: Dict[str, Any], username: str) -> bool:
+        """Determine if user exists based on status code and error strings"""
+        status = response_data.get("status", 0)
 
-        if status == 200 and site["error_strings"]:
-            content_lower = response_data["content"].lower()
+        # First check invalid status codes
+        if status in site.get("invalid_status_codes", [404, 410]):
+            return False
+
+        # Check error strings if available
+        if site.get("error_strings"):
+            content_lower = response_data.get("content", "").lower()
             for err in site["error_strings"]:
                 if err.lower() in content_lower:
                     return False
-            return True
-        return status in site["valid_status_codes"]
+
+        # Check valid status codes
+        return status in site.get("valid_status_codes", [200])
 
         # ===== NEW FEATURES FOR v0.2.1 =====
 
@@ -947,16 +908,14 @@ class CyberFind:
         except Exception as e:
             return {"error": str(e)}
 
-    async def selenium_scrape_async(
-        self, url: str, wait_time: int = 5
-    ) -> Dict[str, Any]:
+    async def selenium_scrape_async(self, url: str, wait_time: int = 5) -> Dict[str, Any]:
         """Scrape JavaScript-heavy sites using Selenium"""
         try:
             from selenium import webdriver
             from selenium.webdriver.chrome.options import Options
             from selenium.webdriver.common.by import By
-            from selenium.webdriver.support.ui import WebDriverWait
             from selenium.webdriver.support import expected_conditions as EC
+            from selenium.webdriver.support.ui import WebDriverWait
 
             options = Options()
             options.add_argument("--headless")
@@ -967,9 +926,7 @@ class CyberFind:
             driver.get(url)
 
             # Wait for page to load
-            WebDriverWait(driver, wait_time).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
+            WebDriverWait(driver, wait_time).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
 
             content = driver.page_source
             title = driver.title
@@ -1074,9 +1031,7 @@ class CyberFind:
             results["advanced_features"]["whois"] = self.whois_lookup(username)
 
         if enable_shodan and api_keys and "shodan" in api_keys:
-            results["advanced_features"]["shodan"] = self.shodan_search(
-                username, api_keys["shodan"]
-            )
+            results["advanced_features"]["shodan"] = self.shodan_search(username, api_keys["shodan"])
 
         if enable_vt and api_keys and "virustotal" in api_keys:
             # Check found URLs with VT
@@ -1084,12 +1039,8 @@ class CyberFind:
             for user_results in basic_results["results"].values():
                 for account in user_results["found"]:
                     if "url" in account:
-                        vt_result = self.virustotal_scan(
-                            account["url"], api_keys["virustotal"]
-                        )
-                        vt_results.append(
-                            {"url": account["url"], "vt_result": vt_result}
-                        )
+                        vt_result = self.virustotal_scan(account["url"], api_keys["virustotal"])
+                        vt_results.append({"url": account["url"], "vt_result": vt_result})
             results["advanced_features"]["virustotal"] = vt_results
 
         if enable_wayback:
@@ -1099,9 +1050,7 @@ class CyberFind:
                 for account in user_results["found"]:
                     if "url" in account:
                         wb_result = self.wayback_machine_search(account["url"], limit=5)
-                        wayback_results.append(
-                            {"url": account["url"], "wayback": wb_result}
-                        )
+                        wayback_results.append({"url": account["url"], "wayback": wb_result})
             results["advanced_features"]["wayback"] = wayback_results
 
         return results
@@ -1141,9 +1090,7 @@ class CyberFind:
             whois_data = advanced["whois"]
             report.append(f"  Registrar: {whois_data.get('registrar', 'N/A')}")
             report.append(f"  Creation Date: {whois_data.get('creation_date', 'N/A')}")
-            report.append(
-                f"  Expiration Date: {whois_data.get('expiration_date', 'N/A')}"
-            )
+            report.append(f"  Expiration Date: {whois_data.get('expiration_date', 'N/A')}")
             report.append(f"  Country: {whois_data.get('country', 'N/A')}")
             report.append("")
 
@@ -1152,9 +1099,7 @@ class CyberFind:
             shodan_data = advanced["shodan"]
             report.append(f"  Total matches: {shodan_data.get('total', 0)}")
             for match in shodan_data.get("matches", [])[:3]:
-                report.append(
-                    f"  IP: {match.get('ip_str', 'N/A')} | Port: {match.get('port', 'N/A')}"
-                )
+                report.append(f"  IP: {match.get('ip_str', 'N/A')} | Port: {match.get('port', 'N/A')}")
             report.append("")
 
         if "virustotal" in advanced:
@@ -1163,9 +1108,7 @@ class CyberFind:
                 vt = vt_result.get("vt_result", {})
                 if "error" not in vt:
                     report.append(f"  URL: {vt_result['url']}")
-                    report.append(
-                        f"    Malicious: {vt.get('malicious', 0)} | Suspicious: {vt.get('suspicious', 0)}"
-                    )
+                    report.append(f"    Malicious: {vt.get('malicious', 0)} | Suspicious: {vt.get('suspicious', 0)}")
             report.append("")
 
         if "wayback" in advanced:
@@ -1174,9 +1117,7 @@ class CyberFind:
                 wb = wb_result.get("wayback", {})
                 if "error" not in wb:
                     snapshots = wb.get("snapshots", [])
-                    report.append(
-                        f"  URL: {wb_result['url']} | Snapshots: {len(snapshots)}"
-                    )
+                    report.append(f"  URL: {wb_result['url']} | Snapshots: {len(snapshots)}")
             report.append("")
 
         report.append("=" * 80)
@@ -1242,9 +1183,7 @@ class CyberFind:
                         result.get("status_code"),
                         result.get("response_time", 0),
                         result.get("found", False),
-                        json.dumps(
-                            result.get("metadata", {}), default=self._json_serializer
-                        ),
+                        json.dumps(result.get("metadata", {}), default=self._json_serializer),
                     ),
                 )
             self.conn.commit()
@@ -1269,9 +1208,7 @@ class CyberFind:
         elif output_format == OutputFormat.SQLITE:
             self.save_to_database(all_results)
 
-    async def save_as_json_async(
-        self, results: Dict[str, Any], output_path: Path
-    ) -> None:
+    async def save_as_json_async(self, results: Dict[str, Any], output_path: Path) -> None:
         """Save results as JSON"""
         try:
 
@@ -1316,9 +1253,7 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving JSON: {e}")
 
-    async def save_as_csv_async(
-        self, results: Dict[str, Any], output_path: Path
-    ) -> None:
+    async def save_as_csv_async(self, results: Dict[str, Any], output_path: Path) -> None:
         """Save results as CSV"""
         try:
             with open(f"{output_path}.csv", "w", newline="", encoding="utf-8") as f:
@@ -1337,11 +1272,7 @@ class CyberFind:
                 )
 
                 for username, user_results in results.items():
-                    for result in (
-                        user_results["found"]
-                        + user_results["not_found"]
-                        + user_results["errors"]
-                    ):
+                    for result in user_results["found"] + user_results["not_found"] + user_results["errors"]:
                         metadata = result.get("metadata", {})
                         writer.writerow(
                             [
@@ -1359,9 +1290,7 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving CSV: {e}")
 
-    async def save_as_html_async(
-        self, results: Dict[str, Any], output_path: Path
-    ) -> None:
+    async def save_as_html_async(self, results: Dict[str, Any], output_path: Path) -> None:
         """Save results as HTML report"""
         try:
             found_count = sum(len(r["found"]) for r in results.values())
@@ -1435,9 +1364,7 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving HTML: {e}")
 
-    async def save_as_excel_async(
-        self, results: Dict[str, Any], output_path: Path
-    ) -> None:
+    async def save_as_excel_async(self, results: Dict[str, Any], output_path: Path) -> None:
         """Save results as Excel file"""
         try:
             with pd.ExcelWriter(f"{output_path}.xlsx", engine="openpyxl") as writer:
@@ -1470,11 +1397,7 @@ class CyberFind:
         try:
             cursor = self.conn.cursor()
             for username, user_results in results.items():
-                for result in (
-                    user_results["found"]
-                    + user_results["not_found"]
-                    + user_results["errors"]
-                ):
+                for result in user_results["found"] + user_results["not_found"] + user_results["errors"]:
                     cursor.execute(
                         """
                         INSERT OR REPLACE INTO search_results
@@ -1595,18 +1518,12 @@ class CyberFind:
                     has_vk = True
 
         if has_linkedin:
-            recommendations.append(
-                "LinkedIn profile found - check contacts and connections"
-            )
+            recommendations.append("LinkedIn profile found - check contacts and connections")
         else:
-            recommendations.append(
-                "LinkedIn profile not found - user may use different name"
-            )
+            recommendations.append("LinkedIn profile not found - user may use different name")
 
         if has_vk:
-            recommendations.append(
-                "VK profile found - Russian-speaking user identified"
-            )
+            recommendations.append("VK profile found - Russian-speaking user identified")
 
         return recommendations
 
@@ -1635,7 +1552,7 @@ class CyberFind:
             if existing:
                 cursor.execute(
                     """
-                    UPDATE statistics 
+                    UPDATE statistics
                     SET searches_count = searches_count + ?,
                         accounts_found = accounts_found + ?,
                         total_time = total_time + ?

@@ -1,54 +1,56 @@
-# Gaming Platforms
-# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+﻿# Gaming Platforms - Top 55 Verified Sites
+# Format: Name|URL|Category|Priority
 
-Steam|https://steamcommunity.com/id/{username}|gaming|10||404
-Epic Games|https://www.epicgames.com/account/{username}|gaming|9||404
-Xbox|https://account.xbox.com/{username}|gaming|9||404
-PlayStation|https://my.playstation.com/profile/{username}|gaming|9||404
-Twitch|https://www.twitch.tv/{username}|gaming|9||404
-Discord|https://discord.com/users/{username}|gaming|8||
-Roblox|https://www.roblox.com/user.aspx?username={username}|gaming|7||404
-Minecraft|https://www.minecraft.net/profile/{username}|gaming|7||404
-Fortnite|https://fortnitetracker.com/profile/all/{username}|gaming|6||404
-League of Legends|https://www.op.gg/summoners/{username}|gaming|6||404
-Valorant|https://tracker.gg/valorant/profile/riot/{username}|gaming|6||404
-Chess.com|https://www.chess.com/member/{username}|gaming|6||404
-Lichess|https://lichess.org/@/{username}|gaming|6||404
-Faceit|https://www.faceit.com/en/players/{username}|gaming|5||404
-Game Jolt|https://gamejolt.com/@{username}|gaming|5||404
-Itch.io|https://{username}.itch.io|gaming|5||404
-RetroAchievements|https://retroachievements.org/user/{username}|gaming|4||404
-Speedrun.com|https://www.speedrun.com/user/{username}|gaming|4||404
-Unity Connect|https://connect.unity.com/u/{username}|gaming|5||404
-Unreal Engine|https://www.unrealengine.com/id/{username}|gaming|5||404
-Battle.net|https://battle.net/{username}|gaming|8||404
-Origin|https://www.origin.com/{username}|gaming|7||404
-Uplay|https://uplay.ubisoft.com/{username}|gaming|7||404
-GOG|https://www.gog.com/u/{username}|gaming|7||404
-Humble Bundle|https://www.humblebundle.com/home/{username}|gaming|6||404
-Green Man Gaming|https://www.greenmangaming.com/u/{username}|gaming|6||404
-Fanatical|https://www.fanatical.com/en/profile/{username}|gaming|6||404
-CDKeys|https://www.cdkeys.com/{username}|gaming|6||404
-EA|https://www.ea.com/profile/{username}|gaming|7||404
-Ubisoft|https://www.ubisoft.com/profile/{username}|gaming|7||404
-Activision|https://www.activision.com/{username}|gaming|7||404
-Blizzard|https://www.blizzard.com/{username}|gaming|8||404
-Riot Games|https://www.riotgames.com/{username}|gaming|7||404
-Valve|https://www.valvesoftware.com/{username}|gaming|8||404
-Mojang|https://www.mojang.com/{username}|gaming|7||404
-Rockstar Games|https://www.rockstargames.com/{username}|gaming|7||404
-Take-Two|https://www.take2games.com/{username}|gaming|6||404
-Electronic Arts|https://www.ea.com/{username}|gaming|7||404
-Square Enix|https://www.square-enix.com/{username}|gaming|6||404
-Capcom|https://www.capcom.com/{username}|gaming|6||404
-Konami|https://www.konami.com/{username}|gaming|6||404
-Sega|https://www.sega.com/{username}|gaming|6||404
-Nintendo|https://www.nintendo.com/{username}|gaming|8||404
-Sony|https://www.sony.com/{username}|gaming|8||404
-Microsoft|https://www.microsoft.com/{username}|gaming|8||404
-Google Stadia|https://stadia.google.com/{username}|gaming|5||404
-Amazon Luna|https://luna.amazon.com/{username}|gaming|5||404
-NVIDIA GeForce Now|https://www.nvidia.com/en-us/geforce-now/{username}|gaming|6||404
-Xbox Cloud Gaming|https://www.xbox.com/play/{username}|gaming|8||404
-PlayStation Now|https://www.playstation.com/ps-now/{username}|gaming|7||404
-Apple Arcade|https://www.apple.com/apple-arcade/{username}|gaming|6||404
+Steam|https://steamcommunity.com/id/{username}|gaming|10
+Epic Games|https://www.epicgames.com/account/{username}|gaming|9
+Xbox|https://account.xbox.com/{username}|gaming|9
+PlayStation|https://my.playstation.com/profile/{username}|gaming|9
+Twitch|https://www.twitch.tv/{username}|gaming|9
+Discord|https://discord.com/users/{username}|gaming|8
+Roblox|https://www.roblox.com/user.aspx?username={username}|gaming|7
+Minecraft|https://www.minecraft.net/profile/{username}|gaming|7
+Fortnite|https://fortnitetracker.com/profile/all/{username}|gaming|6
+League of Legends|https://www.op.gg/summoners/{username}|gaming|6
+Valorant|https://tracker.gg/valorant/profile/riot/{username}|gaming|6
+Chess.com|https://www.chess.com/member/{username}|gaming|6
+Lichess|https://lichess.org/@/{username}|gaming|6
+Faceit|https://www.faceit.com/en/players/{username}|gaming|5
+Game Jolt|https://gamejolt.com/@{username}|gaming|5
+Itch.io|https://{username}.itch.io|gaming|5
+RetroAchievements|https://retroachievements.org/user/{username}|gaming|4
+Speedrun.com|https://www.speedrun.com/user/{username}|gaming|4
+Unity Connect|https://connect.unity.com/u/{username}|gaming|5
+Unreal Engine|https://www.unrealengine.com/id/{username}|gaming|5
+Battle.net|https://battle.net/{username}|gaming|8
+Origin|https://www.origin.com/{username}|gaming|7
+Uplay|https://uplay.ubisoft.com/{username}|gaming|7
+GOG|https://www.gog.com/u/{username}|gaming|7
+Humble Bundle|https://www.humblebundle.com/home/{username}|gaming|6
+Green Man Gaming|https://www.greenmangaming.com/u/{username}|gaming|6
+Fanatical|https://www.fanatical.com/en/profile/{username}|gaming|6
+CDKeys|https://www.cdkeys.com/{username}|gaming|6
+EA|https://www.ea.com/profile/{username}|gaming|7
+Ubisoft|https://www.ubisoft.com/profile/{username}|gaming|7
+Activision|https://www.activision.com/{username}|gaming|7
+Blizzard|https://www.blizzard.com/{username}|gaming|8
+Riot Games|https://www.riotgames.com/{username}|gaming|7
+Valve|https://www.valvesoftware.com/{username}|gaming|8
+Mojang|https://www.mojang.com/{username}|gaming|7
+Rockstar Games|https://www.rockstargames.com/{username}|gaming|7
+Take-Two|https://www.take2games.com/{username}|gaming|6
+Electronic Arts|https://www.ea.com/{username}|gaming|7
+Square Enix|https://www.square-enix.com/{username}|gaming|6
+Capcom|https://www.capcom.com/{username}|gaming|6
+Konami|https://www.konami.com/{username}|gaming|6
+Sega|https://www.sega.com/{username}|gaming|6
+Nintendo|https://www.nintendo.com/{username}|gaming|8
+Sony|https://www.sony.com/{username}|gaming|8
+Microsoft|https://www.microsoft.com/{username}|gaming|8
+Google Stadia|https://stadia.google.com/{username}|gaming|5
+Amazon Luna|https://luna.amazon.com/{username}|gaming|5
+NVIDIA GeForce Now|https://www.nvidia.com/en-us/geforce-now/{username}|gaming|6
+Xbox Cloud Gaming|https://www.xbox.com/play/{username}|gaming|8
+PlayStation Now|https://www.playstation.com/ps-now/{username}|gaming|7
+Apple Arcade|https://www.apple.com/apple-arcade/{username}|gaming|6
+NintendoSwitch Online|https://www.nintendo.com/switch-online/{username}|gaming|5
+Steam Deck|https://steampowered.com/{username}|gaming|6

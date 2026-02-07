@@ -1,15 +1,15 @@
-# Forums
-# Format: Name|URL Pattern|Category|Priority|Success Strings|Error Strings
+﻿# Forums - Top 12 Verified Platforms
+# Format: Name|URL|Category|Priority
 
-Reddit|https://www.reddit.com/user/{username}|forums|9||404
-Quora|https://www.quora.com/profile/{username}|forums|8||404
-Stack Exchange|https://stackexchange.com/users/{username}|forums|8||404
-Hacker News|https://news.ycombinator.com/user?id={username}|forums|7||404
-Product Hunt|https://www.producthunt.com/@{username}|forums|6||404
-Steam Community|https://steamcommunity.com/id/{username}|forums|7||404
-BitcoinTalk|https://bitcointalk.org/index.php?action=profile;u={username}|forums|6||404
-XDA Developers|https://forum.xda-developers.com/m/{username}|forums|7||404
-Habr|https://habr.com/ru/users/{username}|forums|8||404
-Toster|https://toster.ru/user/{username}|forums|7||404
-4PDA|https://4pda.to/forum/index.php?showuser={username}|forums|7||404
-CodeProject|https://www.codeproject.com/script/Membership/View.aspx?mid={username}|forums|6||404
+Reddit|https://www.reddit.com/user/{username}|forums|9
+Quora|https://www.quora.com/profile/{username}|forums|8
+Stack Exchange|https://stackexchange.com/users/{username}|forums|8
+Hacker News|https://news.ycombinator.com/user?id={username}|forums|7
+Product Hunt|https://www.producthunt.com/@{username}|forums|6
+Steam Community|https://steamcommunity.com/id/{username}|forums|7
+BitcoinTalk|https://bitcointalk.org/index.php?action=profile;u={username}|forums|6
+XDA Developers|https://forum.xda-developers.com/m/{username}|forums|7
+Habr|https://habr.com/ru/users/{username}|forums|8
+Toster|https://toster.ru/user/{username}|forums|7
+4PDA|https://4pda.to/forum/index.php?showuser={username}|forums|7
+CodeProject|https://www.codeproject.com/script/Membership/View.aspx?mid={username}|forums|6

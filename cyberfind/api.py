@@ -1,12 +1,13 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from typing import List, Optional
 
-from .core import CyberFind, SearchMode, OutputFormat
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
-app = FastAPI(title="CyberFind API", version="1.0.0")
+from .core import CyberFind, OutputFormat, SearchMode
 
-cybertrace = CyberFind()
+app = FastAPI(title="CyberFind API", version="0.2.1")
+
+cyberfind = CyberFind()
 
 
 class SearchRequest(BaseModel):
@@ -28,7 +29,7 @@ async def search(request: SearchRequest):
         mode = SearchMode(request.mode)
         output_format = OutputFormat(request.output_format)
 
-        results = await cybertrace.search_async(
+        results = await cyberfind.search_async(
             usernames=request.usernames,
             sites_file=request.sites_file,
             mode=mode,
