@@ -5,7 +5,7 @@ import logging
 import os
 import sqlite3
 import time
-from collections import defaultdict
+from collections import defaultdict, deque
 from datetime import date, datetime
 from enum import Enum
 from pathlib import Path
@@ -166,7 +166,7 @@ class CyberFind:
             "start_time": None,
             "end_time": None,
             "sites_checked": defaultdict(int),
-            "response_times": [],
+            "response_times": deque(maxlen=10000),  # Limit to prevent memory leak
         }
 
         self.cache = {}
@@ -543,6 +543,12 @@ class CyberFind:
                 return None
             name = parts[0].strip()
             url_pattern = parts[1].strip()
+            
+            # Validate URL pattern
+            if not url_pattern or not self.validate_url(url_pattern.replace("{username}", "test")):
+                logger.warning(f"Invalid URL pattern for {name}: {url_pattern}")
+                return None
+            
             # Ensure URL pattern has {username} placeholder
             if "{username}" not in url_pattern and "${username}" not in url_pattern:
                 if url_pattern.endswith("/"):
@@ -700,21 +706,24 @@ class CyberFind:
                 response_data = await self.request_standard_async(url, site, mode)
 
                 result["response_time"] = time.time() - start_time
-                self.stats["response_times"].append(result["response_time"])
+                try:
+                    self.stats["response_times"].append(result["response_time"])
+                except TypeError:
+                    pass
 
                 if response_data["success"]:
-                    result["status_code"] = response_data["status"]
+                    result["status_code"] = response_data.get("status", 200)
 
                     # Extract metadata if enabled
                     if self.config.get("advanced", {}).get("metadata_extraction", True):
-                        metadata = await self.extract_metadata_async(url, response_data["content"])
+                        metadata = await self.extract_metadata_async(url, response_data.get("content", ""))
                         result["metadata"].update(metadata)
-                        result["metadata"]["category"] = site["category"]
+                        result["metadata"]["category"] = site.get("category", "unknown")
 
                     # Check if user exists
                     result["found"] = self.check_user_exists(response_data, site, username)
                 else:
-                    result["error"] = response_data["error"]
+                    result["error"] = response_data.get("error", "Unknown error")
 
             except Exception as e:
                 result["error"] = str(e)
@@ -728,11 +737,12 @@ class CyberFind:
         headers = self.generate_headers(mode)
         headers.update(site.get("headers", {}))
 
-        timeout = ClientTimeout(total=site["timeout"])
+        timeout = ClientTimeout(total=site.get("timeout", self.config["general"]["timeout"]))
+        max_retries = site.get("retry", self.config["general"]["retry_attempts"])
 
-        async with aiohttp.ClientSession(timeout=timeout) as session:
-            for attempt in range(site["retry"]):
-                try:
+        for attempt in range(max_retries):
+            try:
+                async with aiohttp.ClientSession(timeout=timeout) as session:
                     async with session.get(url, headers=headers) as response:
                         content = await response.text()
                         return {
@@ -741,15 +751,14 @@ class CyberFind:
                             "headers": dict(response.headers),
                             "content": content,
                         }
-
-                except asyncio.TimeoutError:
-                    if attempt == site["retry"] - 1:
-                        return {"success": False, "error": "Timeout"}
-                    await asyncio.sleep(self.config["general"]["retry_delay"])
-                except Exception as e:
-                    if attempt == site["retry"] - 1:
-                        return {"success": False, "error": str(e)}
-                    await asyncio.sleep(self.config["general"]["retry_delay"])
+            except asyncio.TimeoutError:
+                if attempt == max_retries - 1:
+                    return {"success": False, "error": "Timeout"}
+                await asyncio.sleep(self.config["general"]["retry_delay"])
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    return {"success": False, "error": str(e)}
+                await asyncio.sleep(self.config["general"]["retry_delay"])
 
         return {"success": False, "error": "Max retries exceeded"}
 
@@ -1274,16 +1283,21 @@ class CyberFind:
                 for username, user_results in results.items():
                     for result in user_results["found"] + user_results["not_found"] + user_results["errors"]:
                         metadata = result.get("metadata", {})
+                        # Ensure all values are properly serialized for CSV
+                        response_time = result.get("response_time", 0)
+                        if not isinstance(response_time, (int, float)):
+                            response_time = 0
+                        
                         writer.writerow(
                             [
-                                username,
-                                result["site"],
-                                result.get("url", ""),
-                                result.get("status_code", ""),
-                                result.get("response_time", 0),
-                                result.get("found", False),
-                                result.get("error", ""),
-                                metadata.get("title", ""),
+                                str(username),
+                                str(result.get("site", "")),
+                                str(result.get("url", "")),
+                                str(result.get("status_code", "")),
+                                float(response_time),
+                                str(result.get("found", False)),
+                                str(result.get("error", "")),
+                                str(metadata.get("title", "")),
                             ]
                         )
             logger.info(f"Results saved to {output_path}.csv")

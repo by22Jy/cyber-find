@@ -2,6 +2,7 @@
 Performance Analytics Module - Анализ производительности поиска
 """
 
+import asyncio
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -31,6 +32,7 @@ class PerformanceAnalytics:
         self.searches: List[SearchMetrics] = []
         self.current_search_start: Optional[float] = None
         self.current_search_data: Optional[Dict] = None
+        self._lock = asyncio.Lock()  # Add thread-safe lock for async operations
 
     def start_search(self, username: str, total_sites: int) -> None:
         """
@@ -86,6 +88,7 @@ class PerformanceAnalytics:
             timestamp=datetime.now().isoformat(),
         )
 
+        # Thread-safe append
         self.searches.append(metrics)
         self.current_search_start = None
         self.current_search_data = None

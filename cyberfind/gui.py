@@ -13,8 +13,8 @@ ctk.set_default_color_theme("blue")
 
 
 class CyberFindGUI:
-    def __init__(self, cybertrace: CyberFind = None):
-        self.cybertrace = cybertrace or CyberFind()
+    def __init__(self, cyberfind: CyberFind = None):
+        self.cyberfind = cyberfind or CyberFind()
         self.setup_window()
         self.build_ui()
 
@@ -28,7 +28,9 @@ class CyberFindGUI:
         top_frame = ctk.CTkFrame(self.root)
         top_frame.pack(fill="x", padx=10, pady=10)
 
-        ctk.CTkLabel(top_frame, text="Users (one per line):").pack(anchor="w", padx=5, pady=(0, 5))
+        ctk.CTkLabel(top_frame, text="Users (one per line):").pack(
+            anchor="w", padx=5, pady=(0, 5)
+        )
         self.users_text = ctk.CTkTextbox(top_frame, height=80, font=("Consolas", 12))
         self.users_text.pack(fill="x", padx=5, pady=(0, 10))
 
@@ -42,7 +44,9 @@ class CyberFindGUI:
         sites_entry_frame.pack(fill="x", padx=5, pady=(0, 5))
 
         self.sites_file = ctk.StringVar(value="")
-        sites_entry = ctk.CTkEntry(sites_entry_frame, textvariable=self.sites_file, height=30)
+        sites_entry = ctk.CTkEntry(
+            sites_entry_frame, textvariable=self.sites_file, height=30
+        )
         sites_entry.pack(side="left", fill="x", expand=True, padx=(0, 5))
 
         browse_btn = ctk.CTkButton(
@@ -90,11 +94,15 @@ class CyberFindGUI:
         self.log_text.pack(fill="both", expand=True, padx=10, pady=10)
 
         self.status = ctk.StringVar(value="Ready")
-        status_bar = ctk.CTkLabel(self.root, textvariable=self.status, anchor="w", font=("Arial", 10))
+        status_bar = ctk.CTkLabel(
+            self.root, textvariable=self.status, anchor="w", font=("Arial", 10)
+        )
         status_bar.pack(fill="x", padx=10, pady=(0, 5))
 
     def browse_sites(self):
-        initial_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "sites")
+        initial_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "..", "sites"
+        )
         if not os.path.exists(initial_dir):
             initial_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -115,7 +123,9 @@ class CyberFindGUI:
             messagebox.showerror("Error", "Enter at least one user")
             return
         if not sites and not os.path.exists("sites"):
-            messagebox.showerror("Error", "Select sites file or create 'sites' folder with files")
+            messagebox.showerror(
+                "Error", "Select sites file or create 'sites' folder with files"
+            )
             return
 
         try:
@@ -147,7 +157,7 @@ class CyberFindGUI:
             asyncio.set_event_loop(loop)
 
             results = loop.run_until_complete(
-                self.cybertrace.search_async(
+                self.cyberfind.search_async(
                     usernames=users,
                     sites_file=sites_file,
                     mode=search_mode,
@@ -185,7 +195,9 @@ class CyberFindGUI:
                 self.log_text.insert("end", "FOUND:\n")
                 for item in data["found"]:
                     if isinstance(item, dict) and "site" in item and "url" in item:
-                        self.log_text.insert("end", f"  • {item['site']}: {item['url']}\n")
+                        self.log_text.insert(
+                            "end", f"  • {item['site']}: {item['url']}\n"
+                        )
                 found_any = True
             else:
                 self.log_text.insert("end", "Not found\n")
@@ -217,6 +229,6 @@ class CyberFindGUI:
 
 
 def run_gui():
-    cybertrace = CyberFind()
-    app = CyberFindGUI(cybertrace)
+    cyberfind = CyberFind()
+    app = CyberFindGUI(cyberfind)
     app.run()

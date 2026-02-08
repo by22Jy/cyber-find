@@ -158,13 +158,19 @@ Usage examples:
     parser.add_argument("-o", "--output", help="Filename to save results")
 
     # Performance settings
-    parser.add_argument("-t", "--threads", type=int, default=30, help="Number of concurrent requests")
+    parser.add_argument(
+        "-t", "--threads", type=int, default=30, help="Number of concurrent requests"
+    )
 
-    parser.add_argument("--timeout", type=int, default=10, help="Request timeout in seconds")
+    parser.add_argument(
+        "--timeout", type=int, default=10, help="Request timeout in seconds"
+    )
     # Email / Phone support
     parser.add_argument("--email", help="Search by email address")
 
-    parser.add_argument("--phone", help="Search by phone number (E.164 format: +1234567890)")
+    parser.add_argument(
+        "--phone", help="Search by phone number (E.164 format: +1234567890)"
+    )
 
     # Passive mode
     parser.add_argument(
@@ -176,20 +182,24 @@ Usage examples:
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     # Additional commands
-    parser.add_argument("--show-lists", action="store_true", help="Show available built-in lists")
+    parser.add_argument(
+        "--show-lists", action="store_true", help="Show available built-in lists"
+    )
 
     parser.add_argument("--gui", action="store_true", help="Launch graphical interface")
 
     parser.add_argument("--api", action="store_true", help="Launch API server")
 
-    parser.add_argument("--config", default="config.yaml", help="Path to configuration file")
+    parser.add_argument(
+        "--config", default="config.yaml", help="Path to configuration file"
+    )
 
     parser.add_argument("--version", action="version", version="CyberFind v0.2.1")
 
     return parser.parse_args()
 
 
-async def run_search(args, cybertrace):
+async def run_search(args, cyberfind):
     """Run search"""
     try:
         start_time = datetime.now()
@@ -209,7 +219,7 @@ async def run_search(args, cybertrace):
             sites_file = None
 
         # Run search
-        results = await cybertrace.search_async(
+        results = await cyberfind.search_async(
             usernames=args.usernames,
             sites_file=sites_file,
             builtin_list=builtin_list,
@@ -236,7 +246,7 @@ async def run_search(args, cybertrace):
         raise
 
 
-async def run_passive_search(args, cybertrace):
+async def run_passive_search(args, cyberfind):
     """Run passive reconnaissance"""
     try:
         start_time = datetime.now()
@@ -255,7 +265,9 @@ async def run_passive_search(args, cybertrace):
 
         engines = [e.strip() for e in args.engines.split(",")]
 
-        results = await cybertrace.passive_search_async(queries=queries, engines=engines, max_concurrent=args.threads)
+        results = await cyberfind.passive_search_async(
+            queries=queries, engines=engines, max_concurrent=args.threads
+        )
 
         end_time = datetime.now()
         total_time = (end_time - start_time).total_seconds()
@@ -310,7 +322,9 @@ def print_results(results, total_time, args):
                         response_time = account.get("response_time", 0)
                         print(f"      {i:2d}. {account['site']}")
                         print(f"          URL: {account.get('url', 'N/A')}")
-                        print(f"          Status: {status_code}, Time: {response_time:.2f}s")
+                        print(
+                            f"          Status: {status_code}, Time: {response_time:.2f}s"
+                        )
             else:
                 print("  ❌ No accounts found")
 
@@ -320,7 +334,9 @@ def print_results(results, total_time, args):
                 if error_count > 0:
                     print(f"  ⚠️  Errors: {error_count}")
                     for i, error in enumerate(data["errors"][:5], 1):  # First 5 errors
-                        print(f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}")
+                        print(
+                            f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}"
+                        )
                     if error_count > 5:
                         print(f"      ... and {error_count - 5} more errors")
 
@@ -401,10 +417,10 @@ def main():
 
     # Create CyberFind instance
     try:
-        cybertrace = CyberFind(args.config)
+        cyberfind = CyberFind(args.config)
 
         if args.timeout:
-            cybertrace.config["general"]["timeout"] = args.timeout
+            cyberfind.config["general"]["timeout"] = args.timeout
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -412,10 +428,14 @@ def main():
         try:
             if args.mode == "passive":
                 # Passive mode
-                results, total_time = loop.run_until_complete(run_passive_search(args, cybertrace))
+                results, total_time = loop.run_until_complete(
+                    run_passive_search(args, cyberfind)
+                )
             else:
                 # Standard or email/phone mode
-                results, total_time = loop.run_until_complete(run_search(args, cybertrace))
+                results, total_time = loop.run_until_complete(
+                    run_search(args, cyberfind)
+                )
 
             print_results(results, total_time, args)
 

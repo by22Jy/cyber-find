@@ -45,7 +45,7 @@ class InvalidInputError(CyberFindException):
     pass
 
 
-class TimeoutError(CyberFindException):
+class RequestTimeoutError(CyberFindException):
     """Raised when operation times out"""
 
     pass

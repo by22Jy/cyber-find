@@ -5,7 +5,7 @@ __email__ = "vazorcode@gmail.com"
 from .api import run_api_server
 from .config import Config
 from .core import CyberFind, OutputFormat, SearchMode, SiteCategory
-from .exceptions import CyberFindException
+from .exceptions import CyberFindException, RequestTimeoutError
 from .gui import CyberFindGUI, run_gui
 from .models import SearchReport, SearchResult, SearchStatus, UserSearchResults
 from .utils import (
@@ -26,6 +26,7 @@ __all__ = [
     "run_gui",
     "run_api_server",
     "CyberFindException",
+    "RequestTimeoutError",
     "Config",
     "SearchResult",
     "UserSearchResults",

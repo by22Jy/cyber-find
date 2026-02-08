@@ -48,7 +48,7 @@ async def get_stats():
     try:
         import sqlite3
 
-        conn = sqlite3.connect("cybertrace.db")
+        conn = sqlite3.connect("cyberfind.db")
         cursor = conn.cursor()
 
         cursor.execute("SELECT * FROM statistics ORDER BY date DESC LIMIT 10")
