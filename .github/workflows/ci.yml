@@ -42,7 +42,7 @@ jobs:
     - name: Type checking with mypy
       run: |
         pip install mypy types-PyYAML types-requests
-        mypy .\cyberfind --ignore-missing-imports
+        python -m mypy ./cyberfind --ignore-missing-imports
       
     - name: Lint (critical)
       run: flake8 cyberfind --select=E9,F63,F7,F82
