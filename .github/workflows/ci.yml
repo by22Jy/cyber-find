@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI (required)
 
 on:
   push:
@@ -20,6 +20,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        cache: pip
     
     - name: Install dependencies
       run: |
@@ -30,28 +31,25 @@ jobs:
     - name: Lint with flake8
       run: |
         pip install flake8
-        # Критические ошибки
         flake8 cyberfind --count --select=E9,F63,F7,F82 --show-source --statistics
-        # Все остальные ошибки (не блокирующие)
         flake8 cyberfind --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
         
     - name: Check imports with isort
       run: |
         pip install isort
-        isort --check-only cyberfind --diff || true
+        isort --check-only cyberfind --diff
         
     - name: Type checking with mypy
       run: |
         pip install mypy types-PyYAML types-requests
-        mypy cyberfind --ignore-missing-imports || true
-        
-    - name: Check formatting with black
-      run: |
-        black --check cyberfind --diff || true
+        mypy cyberfind --ignore-missing-imports
+      
+    - name: Lint (critical)
+      run: flake8 cyberfind --select=E9,F63,F7,F82
         
     - name: Run tests
       run: |
-        pytest tests/ -v --tb=short || true
+        pytest tests/ -v
         
     - name: Build package
       run: |
