@@ -1,0 +1,39 @@
+name: Greetings
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          issue-message: |
+            👋 Thanks for opening your first issue!
+
+            Please make sure you:
+            - Provided clear steps to reproduce (if it's a bug)
+            - Included expected vs actual behavior
+            - Added logs or screenshots if relevant
+
+            We’ll review this as soon as possible. Thanks for contributing 🚀
+
+          pr-message: |
+            🎉 Thanks for your first pull request!
+
+            Before review, please make sure:
+            - All CI checks pass
+            - Tests are included or updated
+            - The PR description clearly explains the change
+
+            We appreciate your contribution! 💙
