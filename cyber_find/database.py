@@ -27,7 +27,8 @@ class DatabaseManager:
     def create_tables(self):
         cursor = self.conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS search_results (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
@@ -40,9 +41,11 @@ class DatabaseManager:
                 metadata TEXT,
                 UNIQUE(username, site_name)
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS statistics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date DATE NOT NULL UNIQUE,
@@ -50,7 +53,8 @@ class DatabaseManager:
                 accounts_found INTEGER DEFAULT 0,
                 total_time REAL DEFAULT 0
             )
-        """)
+        """
+        )
 
         self.conn.commit()
 

@@ -22,7 +22,8 @@ class DatabaseExporter:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS searches (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NOT NULL,
@@ -31,9 +32,11 @@ class DatabaseExporter:
                     total_results INTEGER,
                     search_time REAL
                 )
-                """)
+                """
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     search_id INTEGER NOT NULL,
@@ -45,9 +48,11 @@ class DatabaseExporter:
                     metadata JSON,
                     FOREIGN KEY(search_id) REFERENCES searches(id)
                 )
-                """)
+                """
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,
@@ -56,7 +61,8 @@ class DatabaseExporter:
                     total_searches INTEGER DEFAULT 0,
                     total_accounts_found INTEGER DEFAULT 0
                 )
-                """)
+                """
+            )
 
             conn.commit()
 

@@ -69,9 +69,10 @@ class SiteCategory(Enum):
 class CyberFind:
     """Main class for CyberFind OSINT tool"""
 
-    def __init__(self, config_path: str = "config.yaml"):
+    def __init__(self, config_path: str = "config.yaml", no_color: bool = False):
         """Initialize CyberFind with configuration"""
         self.config = self.load_config(config_path)
+        self.no_color = no_color
         self.initialize_components()
 
     def load_config(self, config_path: str) -> Dict[str, Any]:
@@ -319,7 +320,8 @@ class CyberFind:
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         cursor = self.conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS search_results (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
@@ -332,9 +334,11 @@ class CyberFind:
                 metadata TEXT,
                 UNIQUE(username, site_name)
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS statistics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date DATE NOT NULL UNIQUE,
@@ -342,7 +346,8 @@ class CyberFind:
                 accounts_found INTEGER DEFAULT 0,
                 total_time REAL DEFAULT 0
             )
-        """)
+        """
+        )
 
         self.conn.commit()
 
@@ -669,14 +674,22 @@ class CyberFind:
                 user_results["found"].append(result_dict)
                 self.stats["found_accounts"] += 1
                 found_count += 1
-                # Show found accounts immediately
-                print(f"    ✓ Found: {result_dict['site']}")
+                # Show found accounts immediately with green color
+                self.print_colored(f"    ✅ Found: {result_dict['site']}", "green")
             elif result_dict.get("error"):
                 user_results["errors"].append(result_dict)
                 self.stats["errors"] += 1
                 error_count += 1
+                # Show errors immediately with yellow color
+                error_msg = result_dict.get("error", "Unknown error")
+                if "rate" in error_msg.lower() or "limit" in error_msg.lower():
+                    self.print_colored(f"    ⚠️  Rate-limited: {result_dict['site']}", "yellow")
+                else:
+                    self.print_colored(f"    ⚠️  Error: {result_dict['site']}", "yellow")
             else:
                 user_results["not_found"].append(result_dict)
+                # Optionally show not found with red color (commented out to reduce verbosity)
+                # self.print_colored(f"    ❌ Not found: {result_dict['site']}", "red")
 
         print(f"  Done: {found_count} found, {error_count} errors")
 
@@ -1025,7 +1038,11 @@ class CyberFind:
             return FakeTqdm(total, desc, "item")
 
     def print_colored(self, text: str, color: str = "white") -> None:
-        """Print colored text"""
+        """Print colored text (respects no_color flag)"""
+        if self.no_color:
+            print(text)
+            return
+
         try:
             import colorama
 
@@ -1355,16 +1372,19 @@ class CyberFind:
             for username, user_results in results.items():
                 rows = []
                 for result in user_results["found"]:
-                    rows.append(f"""
+                    rows.append(
+                        f"""
                     <tr>
                         <td>{result['site']}</td>
                         <td><a href="{result.get('url', '#')}" target="_blank">{result.get('url', '')}</a></td>
                         <td>{result.get('status_code', '')}</td>
                         <td>{result.get('response_time', 0):.2f}s</td>
                     </tr>
-                    """)
+                    """
+                    )
                 user_table = "".join(rows)
-                users_html_parts.append(f"""
+                users_html_parts.append(
+                    f"""
                 <div class="user-section">
                     <h3>User: {username}</h3>
                     <table class="results-table">
@@ -1376,7 +1396,8 @@ class CyberFind:
                         </tbody>
                     </table>
                 </div>
-                """)
+                """
+                )
 
             all_users_html = "".join(users_html_parts)
 

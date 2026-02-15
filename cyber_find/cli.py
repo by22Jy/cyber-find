@@ -196,6 +196,12 @@ Usage examples:
 
     parser.add_argument("--version", action="version", version="CyberFind v0.3.2")
 
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="Disable colored output (useful for CI/logs)",
+    )
+
     return parser.parse_args()
 
 
@@ -285,18 +291,43 @@ async def run_passive_search(args, cyberfind):
         raise
 
 
+def print_colored_text(text: str, color: str, no_color: bool = False) -> None:
+    """Helper function to print colored text"""
+    if no_color:
+        print(text)
+        return
+    try:
+        import colorama
+
+        colors = {
+            "red": colorama.Fore.RED,
+            "green": colorama.Fore.GREEN,
+            "yellow": colorama.Fore.YELLOW,
+            "blue": colorama.Fore.BLUE,
+            "magenta": colorama.Fore.MAGENTA,
+            "cyan": colorama.Fore.CYAN,
+            "white": colorama.Fore.WHITE,
+            "reset": colorama.Fore.RESET,
+        }
+        print(f"{colors.get(color, colors['white'])}{text}{colors['reset']}")
+    except ImportError:
+        print(text)
+
+
 def print_results(results, total_time, args):
     """Print search results"""
     print(f"\n{'=' * 60}")
-    print(f"✅ SEARCH COMPLETED in {total_time:.1f} seconds")
+    print_colored_text(f"✅ SEARCH COMPLETED in {total_time:.1f} seconds", "green", args.no_color)
     print(f"{'=' * 60}")
 
     if "statistics" in results:
         stats = results["statistics"]
         print("\n📊 STATISTICS:")
         print(f"  Total checks: {stats.get('total_checks', 0)}")
-        print(f"  Accounts found: {stats.get('found_accounts', 0)}")
-        print(f"  Errors: {stats.get('errors', 0)}")
+        print_colored_text(
+            f"  Accounts found: {stats.get('found_accounts', 0)}", "green", args.no_color
+        )
+        print_colored_text(f"  Errors: {stats.get('errors', 0)}", "yellow", args.no_color)
 
     if "results" in results:
         for username, data in results["results"].items():
@@ -304,7 +335,7 @@ def print_results(results, total_time, args):
 
             if data and "found" in data and data["found"]:
                 found_count = len(data["found"])
-                print(f"  ✅ FOUND {found_count} accounts:")
+                print_colored_text(f"  ✅ FOUND {found_count} accounts:", "green", args.no_color)
 
                 # Group by categories
                 categories = {}
@@ -320,20 +351,24 @@ def print_results(results, total_time, args):
                     for i, account in enumerate(accounts, 1):
                         status_code = account.get("status_code", "N/A")
                         response_time = account.get("response_time", 0)
-                        print(f"      {i:2d}. {account['site']}")
+                        print_colored_text(
+                            f"      {i:2d}. {account['site']}", "green", args.no_color
+                        )
                         print(f"          URL: {account.get('url', 'N/A')}")
                         print(f"          Status: {status_code}, Time: {response_time:.2f}s")
             else:
-                print("  ❌ No accounts found")
+                print_colored_text("  ❌ No accounts found", "red", args.no_color)
 
             # Show errors in verbose mode
             if args.verbose and data and "errors" in data and data["errors"]:
                 error_count = len(data["errors"])
                 if error_count > 0:
-                    print(f"  ⚠️  Errors: {error_count}")
+                    print_colored_text(f"  ⚠️  Errors: {error_count}", "yellow", args.no_color)
                     for i, error in enumerate(data["errors"][:5], 1):  # First 5 errors
-                        print(
-                            f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}"
+                        print_colored_text(
+                            f"      {i}. {error.get('site', 'Unknown')}: {error.get('error', 'Unknown')}",
+                            "yellow",
+                            args.no_color,
                         )
                     if error_count > 5:
                         print(f"      ... and {error_count - 5} more errors")
@@ -415,7 +450,7 @@ def main():
 
     # Create CyberFind instance
     try:
-        cyberfind = CyberFind(args.config)
+        cyberfind = CyberFind(args.config, no_color=args.no_color)
 
         if args.timeout:
             cyberfind.config["general"]["timeout"] = args.timeout
