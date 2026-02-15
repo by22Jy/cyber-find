@@ -4,26 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cyber-find"
-version = "0.3"
+version = "0.3.2"
 description = "Advanced OSINT tool for searching users across 200+ platforms"
 readme = "README.md"
 authors = [{name = "vazor", email = "vazorcode@gmail.com"}]
 license = {text = "MIT"}
 requires-python = ">=3.9"
 keywords = ["osint", "cybersecurity", "search", "social-media", "reconnaissance"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Security Professionals",
-    "Topic :: Security",
-    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Operating System :: OS Independent",
-]
+
 
 dependencies = [
     "aiohttp>=3.9.0",

@@ -215,7 +215,7 @@ class ReportGenerator:
         </div>
 
         <div class="footer">
-            <p>Отчёт создан с помощью CyberFind v0.3</p>
+            <p>Отчёт создан с помощью CyberFind v0.3.2</p>
         </div>
     </div>
 </body>

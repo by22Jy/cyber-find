@@ -52,7 +52,7 @@ def print_banner():
     """Show application banner"""
     banner = """
     ╔══════════════════════════════════════════════╗
-    ║           🕵️♂️ CYBERFIND v0.3                 ║
+    ║           🕵️♂️ CYBERFIND v0.3.2                 ║
     ║      Advanced OSINT Search Tool              ║
     ╚══════════════════════════════════════════════╝
     """
@@ -194,7 +194,7 @@ Usage examples:
 
     parser.add_argument("--config", default="config.yaml", help="Path to configuration file")
 
-    parser.add_argument("--version", action="version", version="CyberFind v0.3")
+    parser.add_argument("--version", action="version", version="CyberFind v0.3.2")
 
     return parser.parse_args()
 
