@@ -32,10 +32,8 @@ We are committed to maintaining security for the following versions of **CyberFi
 
 | Version | Supported          | End of Life Date |
 | ------- | ------------------ | ---------------- |
-| 0.2.x   | :white_check_mark: | TBD             |
-| 0.1.x   | :white_check_mark: | TBD             |
-| 0.0.x   | :white_check_mark: | TBD             |
-| < 0.0   | :x:                | N/A             |
+| 0.3.x   | :white_check_mark: | TBD             |
+| < 0.2.x   | :x:                | N/A             |
 
 > **Note:** Only the latest stable release receives active security updates. Users of older versions are encouraged to upgrade.
 
