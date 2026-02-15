@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative" alt="License">
   <img src="https://img.shields.io/badge/Tests-36%20Passing-brightgreen?style=for-the-badge&logo=pytest" alt="Tests">
   <img src="https://img.shields.io/badge/Code%20Style-Black-black?style=for-the-badge&logo=python" alt="Code Style">
+  <img src="https://img.shields.io/pypi/v/cyber-find?color=blue&label=PyPI&logo=pypi&style=for-the-badge" alt="PyPI Version">
 </p>
 
 <p align="center">
@@ -61,21 +62,26 @@
 
 ### Installation
 
+Install directly from PyPI (recommended):
 ```bash
-# Clone the repository
-git clone https://github.com/VAZlabs/cyber-find.git  
-cd cyber-find
-python -m venv venv
-source venv/bin/activate # Linux/macOS
-venv\Scripts\activate.bat # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-pip install .
-
-# Make it executable (Linux/macOS)
-chmod +x cyberfind
+pip install cyber-find
 ```
+
+Or, if you have multiple Python versions:
+```bash
+python3 -m pip install cyber-find
+```
+
+> 💡 After installation, the `cyberfind` command is available globally in your terminal.
+
+#### Alternative: From source (for developers)
+```bash
+git clone https://github.com/VAZlabs/cyber-find.git
+cd cyber-find
+pip install -e .
+```
+
+---
 
 ### Basic Usage
 
