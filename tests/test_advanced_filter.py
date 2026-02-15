@@ -113,7 +113,7 @@ class TestResultFilter:
                 site="facebook",
                 url="https://facebook.com/test",
                 status=SearchStatus.FOUND,
-                confidence=0.3.20,
+                confidence=0.32,
             ),
         ]
 
