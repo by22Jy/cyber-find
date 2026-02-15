@@ -2,9 +2,11 @@
 Unit tests for rate_limiting module
 """
 
-import pytest
 import asyncio
-from cyberfind.rate_limiting import RateLimiter, RateLimitStrategy
+
+import pytest
+
+from cyber_find.rate_limiting import RateLimiter, RateLimitStrategy
 
 
 @pytest.mark.unit

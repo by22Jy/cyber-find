@@ -3,7 +3,8 @@ Unit tests for proxy_support module
 """
 
 import pytest
-from cyberfind.proxy_support import ProxyManager
+
+from cyber_find.proxy_support import ProxyManager
 
 
 @pytest.mark.unit

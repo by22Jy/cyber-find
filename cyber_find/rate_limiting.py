@@ -183,7 +183,9 @@ class RateLimiter:
                     "requests": self.request_count.get(domain, 0),
                     "failures": self.failure_count.get(domain, 0),
                 }
-                for domain in set(list(self.request_count.keys()) + list(self.failure_count.keys()))
+                for domain in set(
+                    list(self.request_count.keys()) + list(self.failure_count.keys())
+                )
             },
         }
 

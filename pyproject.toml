@@ -3,7 +3,7 @@ requires = ["setuptools>=65.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cyberfind"
+name = "cyber_find"
 version = "0.2.2"
 description = "Advanced OSINT tool for searching users across 200+ platforms"
 readme = "README.md"
@@ -52,9 +52,9 @@ Repository = "https://github.com/VAZlabs/cyber-find.git"
 Issues = "https://github.com/VAZlabs/cyber-find/issues"
 
 [project.scripts]
-cyberfind = "cyberfind.cli:main"
-cyberfind-gui = "cyberfind.gui_main:main"
-cyberfind-api = "cyberfind.api_main:main"
+cyberfind = "cyber_find.cli:main"
+cyberfind-gui = "cyber_find.gui_main:main"
+cyberfind-api = "cyber_find.api_main:main"
 
 [project.optional-dependencies]
 dev = [
@@ -72,10 +72,10 @@ advanced = [
 ]
 
 [tool.setuptools]
-packages = ["cyberfind"]
+packages = ["cyber_find"]
 
 [tool.setuptools.package-data]
-cyberfind = ["sites/*.txt"]
+cyber_find = ["sites/*.txt"]
 
 [tool.black]
 line-length = 99

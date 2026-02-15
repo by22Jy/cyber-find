@@ -4,9 +4,9 @@ Unit tests for CyberFind modules
 
 import pytest
 
-from cyberfind.core import CyberFind
-from cyberfind.proxy_support import ProxyManager
-from cyberfind.rate_limiting import RateLimiter
+from cyber_find.core import CyberFind
+from cyber_find.proxy_support import ProxyManager
+from cyber_find.rate_limiting import RateLimiter
 
 
 @pytest.mark.unit

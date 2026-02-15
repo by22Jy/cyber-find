@@ -3,7 +3,7 @@ Advanced Filtering Module - Фильтрация результатов по р�
 """
 
 from enum import Enum
-from typing import Callable, List
+from typing import Callable, Dict, List
 
 from .models import SearchResult
 
@@ -87,7 +87,7 @@ class ResultFilter:
         results: List[SearchResult],
     ) -> dict:
         """Группировка результатов по категориям"""
-        grouped = {}
+        grouped: Dict[str, List[SearchResult]] = {}
         for result in results:
             category = result.category or "other"
             if category not in grouped:

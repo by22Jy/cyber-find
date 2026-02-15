@@ -1,5 +1,6 @@
 import asyncio
 import csv
+import hashlib
 import json
 import logging
 import os
@@ -118,7 +119,9 @@ class CyberFind:
 
                 update_dict(default_config, user_config)
             except Exception as e:
-                logger.warning(f"Error loading config file {config_path}: {e}. Using default config.")
+                logger.warning(
+                    f"Error loading config file {config_path}: {e}. Using default config."
+                )
 
         return default_config
 
@@ -132,10 +135,16 @@ class CyberFind:
         # 1. Try from package resources (works after pip install)
         try:
             import importlib.resources as pkg_resources
+            from pathlib import Path as _Path
 
-            resource_path = pkg_resources.files("cyberfind.sites").joinpath(filename)
-            if resource_path.exists():
-                return Path(str(resource_path))
+            resource_path = pkg_resources.files("cyber_find.sites").joinpath(filename)
+            # Check if resource exists by trying to read it
+            try:
+                with pkg_resources.as_file(resource_path) as rp:
+                    if rp.exists():
+                        return _Path(str(rp))
+            except (OSError, ValueError):
+                pass
         except Exception as e:
             logger.debug(f"Could not load {filename} from package: {e}")
 
@@ -153,13 +162,13 @@ class CyberFind:
         self.session = requests.Session()
         self.cloud_session = cloudscraper.create_scraper()
 
-        self.proxy_list = []
+        self.proxy_list: List[str] = []
         self.current_proxy_index = 0
 
         self.init_database()
 
         # Initialize statistics
-        self.stats = {
+        self.stats: Dict[str, Any] = {
             "total_checks": 0,
             "found_accounts": 0,
             "errors": 0,
@@ -169,7 +178,7 @@ class CyberFind:
             "response_times": deque(maxlen=10000),  # Limit to prevent memory leak
         }
 
-        self.cache = {}
+        self.cache: Dict[str, Any] = {}
         self.cache_ttl = 300
 
         # Load built-in site lists
@@ -180,7 +189,7 @@ class CyberFind:
         if value_type == "email":
             import hashlib
 
-            return hashlib.md5(value.lower().encode("utf-8")).hexdigest()
+            return hashlib.md5(value.lower().encode("utf-8"), usedforsecurity=False).hexdigest()
         elif value_type == "phone":
             import re
 
@@ -221,17 +230,21 @@ class CyberFind:
                             try:
                                 data = json.loads(text)
                                 urls = [
-                                    f"https://web.archive.org/web/{item[1]}/{item[2]}" for item in data[1:5]
+                                    f"https://web.archive.org/web/{item[1]}/{item[2]}"
+                                    for item in data[1:5]
                                 ]  # top 4
                             except Exception:
                                 pass
                         else:
                             soup = BeautifulSoup(text, "html.parser")
                             for a in soup.find_all("a", href=True):
-                                href = a["href"]
+                                href = str(a["href"])
                                 if href.startswith("/url?q="):
                                     clean_url = href.split("/url?q=")[1].split("&")[0]
-                                    if "google.com" not in clean_url and "bing.com" not in clean_url:
+                                    if (
+                                        "google.com" not in clean_url
+                                        and "bing.com" not in clean_url
+                                    ):
                                         urls.append(urllib.parse.unquote(clean_url))
 
                         return engine, query, urls
@@ -248,11 +261,11 @@ class CyberFind:
         responses = await asyncio.gather(*tasks, return_exceptions=True)
 
         # Process results
-        results = {}
+        results: Dict[str, Dict[str, Any]] = {}
         for resp in responses:
             if isinstance(resp, Exception):
                 continue
-            engine, query, urls = resp
+            engine, query, urls = resp  # type: ignore
             key = query
             if key not in results:
                 results[key] = {"found": [], "errors": 0}
@@ -437,7 +450,7 @@ class CyberFind:
         if builtin_list:
             file_path = self.get_builtin_site_path(builtin_list)
             if file_path:
-                sites.extend(await self.load_sites_from_file_async(file_path))
+                sites.extend(await self.load_sites_from_file_async(str(file_path)))
             else:
                 logger.error(f"Built-in list '{builtin_list}' not found!")
                 return []
@@ -452,10 +465,10 @@ class CyberFind:
         else:
             file_path = self.get_builtin_site_path("quick")
             if file_path:
-                sites.extend(await self.load_sites_from_file_async(file_path))
+                sites.extend(await self.load_sites_from_file_async(str(file_path)))
 
         # Process sites and detect value type
-        processed_sites = []
+        processed_sites: List[Dict[str, Any]] = []
         for site in sites:
             key = (site["name"], site["url_pattern"])
             if any(k == key for k in [(s["name"], s["url_pattern"]) for s in processed_sites]):
@@ -496,7 +509,7 @@ class CyberFind:
 
     async def load_sites_from_file_async(self, file_path: str) -> List[Dict[str, Any]]:
         """Load sites from file (local or remote)"""
-        sites = []
+        sites: List[Dict[str, Any]] = []
         file_path_str = str(file_path)
 
         try:
@@ -543,12 +556,12 @@ class CyberFind:
                 return None
             name = parts[0].strip()
             url_pattern = parts[1].strip()
-            
+
             # Validate URL pattern
             if not url_pattern or not self.validate_url(url_pattern.replace("{username}", "test")):
                 logger.warning(f"Invalid URL pattern for {name}: {url_pattern}")
                 return None
-            
+
             # Ensure URL pattern has {username} placeholder
             if "{username}" not in url_pattern and "${username}" not in url_pattern:
                 if url_pattern.endswith("/"):
@@ -603,7 +616,7 @@ class CyberFind:
     ) -> Dict[str, Any]:
         """Search for a single user across all sites"""
 
-        user_results = {
+        user_results: Dict[str, Any] = {
             "username": username,
             "found": [],
             "not_found": [],
@@ -650,18 +663,20 @@ class CyberFind:
 
             self.stats["total_checks"] += 1
 
-            if result["found"]:
-                user_results["found"].append(result)
+            # Cast result to dict after Exception check
+            result_dict: Dict[str, Any] = result  # type: ignore
+            if result_dict.get("found"):
+                user_results["found"].append(result_dict)
                 self.stats["found_accounts"] += 1
                 found_count += 1
                 # Show found accounts immediately
-                print(f"    ✓ Found: {result['site']}")
-            elif result["error"]:
-                user_results["errors"].append(result)
+                print(f"    ✓ Found: {result_dict['site']}")
+            elif result_dict.get("error"):
+                user_results["errors"].append(result_dict)
                 self.stats["errors"] += 1
                 error_count += 1
             else:
-                user_results["not_found"].append(result)
+                user_results["not_found"].append(result_dict)
 
         print(f"  Done: {found_count} found, {error_count} errors")
 
@@ -716,7 +731,9 @@ class CyberFind:
 
                     # Extract metadata if enabled
                     if self.config.get("advanced", {}).get("metadata_extraction", True):
-                        metadata = await self.extract_metadata_async(url, response_data.get("content", ""))
+                        metadata = await self.extract_metadata_async(
+                            url, response_data.get("content", "")
+                        )
                         result["metadata"].update(metadata)
                         result["metadata"]["category"] = site.get("category", "unknown")
 
@@ -731,7 +748,9 @@ class CyberFind:
 
             return result
 
-    async def request_standard_async(self, url: str, site: Dict[str, Any], mode: SearchMode) -> Dict[str, Any]:
+    async def request_standard_async(
+        self, url: str, site: Dict[str, Any], mode: SearchMode
+    ) -> Dict[str, Any]:
         """Make HTTP request with retries"""
 
         headers = self.generate_headers(mode)
@@ -793,7 +812,9 @@ class CyberFind:
 
         return base_headers
 
-    def check_user_exists(self, response_data: Dict[str, Any], site: Dict[str, Any], username: str) -> bool:
+    def check_user_exists(
+        self, response_data: Dict[str, Any], site: Dict[str, Any], username: str
+    ) -> bool:
         """Determine if user exists based on status code and error strings"""
         status = response_data.get("status", 0)
 
@@ -818,7 +839,7 @@ class CyberFind:
         try:
             import dns.resolver
 
-            results = {"domain": domain, "records": {}, "errors": []}
+            results: Dict[str, Any] = {"domain": domain, "records": {}, "errors": []}
 
             record_types = ["A", "AAAA", "MX", "TXT", "NS", "SOA", "CNAME"]
 
@@ -843,24 +864,27 @@ class CyberFind:
             w = whois.whois(domain)
             return {
                 "domain": domain,
-                "registrar": w.registrar,
-                "creation_date": str(w.creation_date),
-                "expiration_date": str(w.expiration_date),
-                "name_servers": w.name_servers,
-                "emails": w.emails,
-                "org": w.org,
-                "country": w.country,
+                "registrar": w.registrar,  # type: ignore
+                "creation_date": str(w.creation_date),  # type: ignore
+                "expiration_date": str(w.expiration_date),  # type: ignore
+                "name_servers": w.name_servers,  # type: ignore
+                "emails": w.emails,  # type: ignore
+                "org": w.org,  # type: ignore
+                "country": w.country,  # type: ignore
             }
         except ImportError:
             return {"error": "python-whois not installed"}
         except Exception as e:
             return {"error": str(e)}
 
-    def shodan_search(self, query: str, api_key: str = None) -> Dict[str, Any]:
+    def shodan_search(self, query: str, api_key: Optional[str] = None) -> Dict[str, Any]:
         """Search Shodan for IP/domain information"""
+        if not api_key:
+            return {"error": "Shodan API key required"}
         try:
             import shodan
 
+            assert api_key is not None  # for mypy
             api = shodan.Shodan(api_key)
             results = api.search(query)
             return {
@@ -873,11 +897,14 @@ class CyberFind:
         except Exception as e:
             return {"error": str(e)}
 
-    def virustotal_scan(self, url: str, api_key: str = None) -> Dict[str, Any]:
+    def virustotal_scan(self, url: str, api_key: Optional[str] = None) -> Dict[str, Any]:
         """Scan URL with VirusTotal"""
+        if not api_key:
+            return {"error": "VirusTotal API key required"}
         try:
             import vt
 
+            assert api_key is not None  # for mypy
             client = vt.Client(api_key)
             url_id = vt.url_id(url)
             url_obj = client.get_object(f"/urls/{url_id}")
@@ -935,7 +962,9 @@ class CyberFind:
             driver.get(url)
 
             # Wait for page to load
-            WebDriverWait(driver, wait_time).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+            WebDriverWait(driver, wait_time).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
+            )
 
             content = driver.page_source
             title = driver.title
@@ -957,7 +986,8 @@ class CyberFind:
         try:
             import validators
 
-            return validators.url(url)
+            result = validators.url(url)
+            return bool(result) if result else False
         except ImportError:
             # Fallback validation
             import re
@@ -973,7 +1003,7 @@ class CyberFind:
             )
             return url_pattern.match(url) is not None
 
-    def create_progress_bar(self, total: int, desc: str = "Progress") -> "tqdm":
+    def create_progress_bar(self, total: int, desc: str = "Progress") -> Any:
         """Create a progress bar"""
         try:
             from tqdm import tqdm
@@ -1023,7 +1053,7 @@ class CyberFind:
         enable_shodan: bool = False,
         enable_vt: bool = False,
         enable_wayback: bool = False,
-        api_keys: Dict[str, str] = None,
+        api_keys: Optional[Dict[str, str]] = None,
     ) -> Dict[str, Any]:
         """Perform advanced OSINT search with multiple tools"""
         results = {"username": username, "basic_search": {}, "advanced_features": {}}
@@ -1034,13 +1064,15 @@ class CyberFind:
 
         # Advanced features
         if enable_dns and username.count(".") >= 1:
-            results["advanced_features"]["dns"] = self.dns_enumeration(username)
+            results["advanced_features"]["dns"] = self.dns_enumeration(username)  # type: ignore
 
         if enable_whois and username.count(".") >= 1:
-            results["advanced_features"]["whois"] = self.whois_lookup(username)
+            results["advanced_features"]["whois"] = self.whois_lookup(username)  # type: ignore
 
         if enable_shodan and api_keys and "shodan" in api_keys:
-            results["advanced_features"]["shodan"] = self.shodan_search(username, api_keys["shodan"])
+            results["advanced_features"]["shodan"] = self.shodan_search(  # type: ignore
+                username, api_keys["shodan"]
+            )
 
         if enable_vt and api_keys and "virustotal" in api_keys:
             # Check found URLs with VT
@@ -1050,7 +1082,7 @@ class CyberFind:
                     if "url" in account:
                         vt_result = self.virustotal_scan(account["url"], api_keys["virustotal"])
                         vt_results.append({"url": account["url"], "vt_result": vt_result})
-            results["advanced_features"]["virustotal"] = vt_results
+            results["advanced_features"]["virustotal"] = vt_results  # type: ignore
 
         if enable_wayback:
             # Check Wayback for found URLs
@@ -1060,7 +1092,7 @@ class CyberFind:
                     if "url" in account:
                         wb_result = self.wayback_machine_search(account["url"], limit=5)
                         wayback_results.append({"url": account["url"], "wayback": wb_result})
-            results["advanced_features"]["wayback"] = wayback_results
+            results["advanced_features"]["wayback"] = wayback_results  # type: ignore
 
         return results
 
@@ -1108,7 +1140,9 @@ class CyberFind:
             shodan_data = advanced["shodan"]
             report.append(f"  Total matches: {shodan_data.get('total', 0)}")
             for match in shodan_data.get("matches", [])[:3]:
-                report.append(f"  IP: {match.get('ip_str', 'N/A')} | Port: {match.get('port', 'N/A')}")
+                report.append(
+                    f"  IP: {match.get('ip_str', 'N/A')} | Port: {match.get('port', 'N/A')}"
+                )
             report.append("")
 
         if "virustotal" in advanced:
@@ -1117,7 +1151,9 @@ class CyberFind:
                 vt = vt_result.get("vt_result", {})
                 if "error" not in vt:
                     report.append(f"  URL: {vt_result['url']}")
-                    report.append(f"    Malicious: {vt.get('malicious', 0)} | Suspicious: {vt.get('suspicious', 0)}")
+                    report.append(
+                        f"    Malicious: {vt.get('malicious', 0)} | Suspicious: {vt.get('suspicious', 0)}"
+                    )
             report.append("")
 
         if "wayback" in advanced:
@@ -1152,8 +1188,8 @@ class CyberFind:
 
             # Extract meta tags
             for meta in soup.find_all("meta"):
-                name = meta.get("name", "").lower()
-                content_val = meta.get("content", "")
+                name = str(meta.get("name", "")).lower()  # type: ignore
+                content_val = str(meta.get("content", ""))  # type: ignore
                 if name == "description":
                     metadata["description"] = content_val
                 elif name == "keywords":
@@ -1161,13 +1197,13 @@ class CyberFind:
 
             # Extract links
             for link in soup.find_all("a", href=True):
-                href = link["href"]
-                if href.startswith("http"):
-                    metadata["links"].append(href)
+                href = str(link["href"])
+                if href.startswith("http"):  # type: ignore
+                    metadata["links"].append(href)  # type: ignore
 
             # Extract images
             for img in soup.find_all("img", src=True):
-                metadata["images"].append(img["src"])
+                metadata["images"].append(img["src"])  # type: ignore
 
         except Exception as e:
             logger.debug(f"Error extracting metadata: {e}")
@@ -1281,13 +1317,15 @@ class CyberFind:
                 )
 
                 for username, user_results in results.items():
-                    for result in user_results["found"] + user_results["not_found"] + user_results["errors"]:
+                    for result in (
+                        user_results["found"] + user_results["not_found"] + user_results["errors"]
+                    ):
                         metadata = result.get("metadata", {})
                         # Ensure all values are properly serialized for CSV
                         response_time = result.get("response_time", 0)
                         if not isinstance(response_time, (int, float)):
                             response_time = 0
-                        
+
                         writer.writerow(
                             [
                                 str(username),
@@ -1406,12 +1444,27 @@ class CyberFind:
         except Exception as e:
             logger.error(f"Error saving Excel: {e}")
 
+    @staticmethod
+    def normalize_value(value: str, value_type: str) -> Optional[str]:
+        if not value:
+            return None
+
+        if value_type == "email":
+            # MD5 used for lookup/normalization, not for cryptographic security
+            return hashlib.md5(value.lower().encode("utf-8"), usedforsecurity=False).hexdigest()
+        elif value_type == "phone":
+            normalized = "".join(ch for ch in value if ch.isdigit())
+            return normalized
+        return None
+
     def save_to_database(self, results: Dict[str, Any]) -> None:
         """Save results to SQLite database"""
         try:
             cursor = self.conn.cursor()
             for username, user_results in results.items():
-                for result in user_results["found"] + user_results["not_found"] + user_results["errors"]:
+                for result in (
+                    user_results["found"] + user_results["not_found"] + user_results["errors"]
+                ):
                     cursor.execute(
                         """
                         INSERT OR REPLACE INTO search_results
@@ -1438,7 +1491,7 @@ class CyberFind:
 
     async def generate_report_async(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """Generate comprehensive search report"""
-        report = {
+        report: Dict[str, Any] = {
             "summary": {
                 "total_users": len(results),
                 "total_accounts_found": 0,
@@ -1452,7 +1505,7 @@ class CyberFind:
         }
 
         for username, user_results in results.items():
-            user_summary = {
+            user_summary: Dict[str, Any] = {
                 "accounts_found": len(user_results["found"]),
                 "sites_found": [],
                 "categories": defaultdict(int),
@@ -1460,12 +1513,12 @@ class CyberFind:
 
             for result in user_results["found"]:
                 site_name = result["site"]
-                user_summary["sites_found"].append(site_name)
+                user_summary["sites_found"].append(site_name)  # type: ignore
                 report["summary"]["unique_sites_found"].add(site_name)
 
                 category = result.get("metadata", {}).get("category", "unknown")
-                user_summary["categories"][category] += 1
-                report["summary"]["categories_found"][category] += 1
+                user_summary["categories"][category] += 1  # type: ignore
+                report["summary"]["categories_found"][category] += 1  # type: ignore
 
             report["summary"]["total_accounts_found"] += user_summary["accounts_found"]
             report["summary"]["total_errors"] += len(user_results["errors"])
@@ -1600,3 +1653,9 @@ class CyberFind:
     def __del__(self) -> None:
         """Destructor to ensure resources are closed"""
         self.close()
+
+
+def gravatar_hash(email: str) -> str:
+    """Convert email to MD5 hash for gravatar-style lookups"""
+    # MD5 used for non-security purpose (gravatar lookup)
+    return hashlib.md5(email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()

@@ -81,7 +81,7 @@ class ReverseSearch:
         Найти кросс-ссылки между разными юзернеймами
         (может помочь найти альты одного человека)
         """
-        cross_refs = {}
+        cross_refs: Dict[str, List[SearchResult]] = {}
 
         for user, results in all_results.items():
             for result in results:

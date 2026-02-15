@@ -29,6 +29,11 @@ class SearchResult:
     error: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
     timestamp: datetime = field(default_factory=datetime.now)
+    # Additional fields for extended functionality
+    username: Optional[str] = None
+    confidence: int = 0
+    category: Optional[str] = None
+    priority: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
@@ -41,6 +46,16 @@ class SearchResult:
     def is_success(self) -> bool:
         """Check if search was successful"""
         return self.status == SearchStatus.FOUND
+
+    @property
+    def found(self) -> bool:
+        """Alias for is_success - check if account was found"""
+        return self.is_success
+
+    @property
+    def site_name(self) -> str:
+        """Alias for site name"""
+        return self.site
 
 
 @dataclass
@@ -125,5 +140,7 @@ class SearchReport:
             "total_errors": self.total_errors,
             "duration": self.duration,
             "success_rate": self.success_rate,
-            "user_results": {username: results.to_dict() for username, results in self.user_results.items()},
+            "user_results": {
+                username: results.to_dict() for username, results in self.user_results.items()
+            },
         }

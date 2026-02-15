@@ -16,7 +16,7 @@ sys.path.insert(0, current_dir)
 
 # Setup logging first
 try:
-    from cyberfind.logging_config import setup_logging
+    from cyber_find.logging_config import setup_logging
 
     setup_logging()
 except ImportError:
@@ -25,14 +25,22 @@ except ImportError:
     logging.basicConfig(level=logging.INFO)
 
 try:
-    from cyberfind import CyberFind, OutputFormat, SearchMode, run_api_server, run_gui
+    from cyber_find import CyberFind, OutputFormat, SearchMode, run_api_server, run_gui
 except ImportError:
-    # Alternative import
-    sys.path.insert(0, os.path.join(current_dir, "cyberfind"))
+    # Alternative import for development
+    sys.path.insert(0, os.path.join(current_dir, "cyber_find"))
     try:
-        from api import run_api_server
-        from core import CyberFind, OutputFormat, SearchMode
-        from gui import run_gui
+        from api import run_api_server as _run_api_server
+        from core import CyberFind as _CyberFind
+        from core import OutputFormat as _OutputFormat
+        from core import SearchMode as _SearchMode
+        from gui import run_gui as _run_gui
+
+        run_api_server = _run_api_server  # type: ignore
+        CyberFind = _CyberFind  # type: ignore
+        OutputFormat = _OutputFormat  # type: ignore
+        SearchMode = _SearchMode  # type: ignore
+        run_gui = _run_gui  # type: ignore
     except ImportError as e:
         print(f"❌ Import error: {e}")
         print("Make sure all dependencies are installed:")
@@ -162,15 +170,11 @@ Usage examples:
         "-t", "--threads", type=int, default=30, help="Number of concurrent requests"
     )
 
-    parser.add_argument(
-        "--timeout", type=int, default=10, help="Request timeout in seconds"
-    )
+    parser.add_argument("--timeout", type=int, default=10, help="Request timeout in seconds")
     # Email / Phone support
     parser.add_argument("--email", help="Search by email address")
 
-    parser.add_argument(
-        "--phone", help="Search by phone number (E.164 format: +1234567890)"
-    )
+    parser.add_argument("--phone", help="Search by phone number (E.164 format: +1234567890)")
 
     # Passive mode
     parser.add_argument(
@@ -182,17 +186,13 @@ Usage examples:
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     # Additional commands
-    parser.add_argument(
-        "--show-lists", action="store_true", help="Show available built-in lists"
-    )
+    parser.add_argument("--show-lists", action="store_true", help="Show available built-in lists")
 
     parser.add_argument("--gui", action="store_true", help="Launch graphical interface")
 
     parser.add_argument("--api", action="store_true", help="Launch API server")
 
-    parser.add_argument(
-        "--config", default="config.yaml", help="Path to configuration file"
-    )
+    parser.add_argument("--config", default="config.yaml", help="Path to configuration file")
 
     parser.add_argument("--version", action="version", version="CyberFind v0.2.1")
 
@@ -322,9 +322,7 @@ def print_results(results, total_time, args):
                         response_time = account.get("response_time", 0)
                         print(f"      {i:2d}. {account['site']}")
                         print(f"          URL: {account.get('url', 'N/A')}")
-                        print(
-                            f"          Status: {status_code}, Time: {response_time:.2f}s"
-                        )
+                        print(f"          Status: {status_code}, Time: {response_time:.2f}s")
             else:
                 print("  ❌ No accounts found")
 
@@ -428,14 +426,10 @@ def main():
         try:
             if args.mode == "passive":
                 # Passive mode
-                results, total_time = loop.run_until_complete(
-                    run_passive_search(args, cyberfind)
-                )
+                results, total_time = loop.run_until_complete(run_passive_search(args, cyberfind))
             else:
                 # Standard or email/phone mode
-                results, total_time = loop.run_until_complete(
-                    run_search(args, cyberfind)
-                )
+                results, total_time = loop.run_until_complete(run_search(args, cyberfind))
 
             print_results(results, total_time, args)
 

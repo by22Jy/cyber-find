@@ -5,7 +5,7 @@ Database Export Module - Сохранение результатов в базу
 import json
 import sqlite3
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .models import SearchResult
 
@@ -66,7 +66,7 @@ class DatabaseExporter:
         results: List[SearchResult],
         mode: str = "standard",
         search_time: float = 0.0,
-    ) -> int:
+    ) -> Optional[int]:
         """Сохранить результаты поиска в БД"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -126,7 +126,7 @@ class DatabaseExporter:
             conn.commit()
             return search_id
 
-    def get_user_profile(self, username: str) -> Dict[str, Any]:
+    def get_user_profile(self, username: str) -> Optional[Dict[str, Any]]:
         """Получить профиль пользователя со всей статистикой"""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row

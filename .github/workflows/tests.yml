@@ -34,24 +34,24 @@ jobs:
 
     - name: Lint with flake8
       run: |
-        flake8 cyberfind tests --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 cyberfind tests --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+        flake8 cyber_find tests --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 cyber_find tests --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
 
     - name: Type check with mypy
       run: |
-        python -m mypy ./cyberfind --ignore-missing-imports
+        python -m mypy -p cyber_find --ignore-missing-imports
 
     - name: Format check with black
       run: |
-        black --check cyberfind tests
+        black --check cyber_find tests
 
     - name: Check import sorting with isort
       run: |
-        isort --check-only cyberfind tests
+        isort --check-only cyber_find tests
 
     - name: Run pytest with coverage
       run: |
-        pytest tests/ -v --cov=cyberfind --cov-report=xml --cov-report=html --cov-report=term-missing
+        pytest tests/ -v --cov=cyber_find --cov-report=xml --cov-report=html --cov-report=term-missing
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
@@ -87,11 +87,11 @@ jobs:
 
     - name: Pylint
       run: |
-        pylint cyberfind --fail-under=8.5
+        pylint cyber_find --fail-under=8.5
 
     - name: Bandit security check
       run: |
-        bandit -r cyberfind --severity-level high
+        bandit -r cyber_find --severity-level high
 
   performance:
     runs-on: ubuntu-latest

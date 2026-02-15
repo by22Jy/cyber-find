@@ -4,7 +4,7 @@ Unit tests for account_age module
 
 import pytest
 
-from cyberfind.account_age import AccountAgeDetector
+from cyber_find.account_age import AccountAgeDetector
 
 
 @pytest.mark.unit

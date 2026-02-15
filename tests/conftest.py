@@ -3,9 +3,10 @@ Pytest configuration and fixtures for CyberFind tests
 """
 
 import sys
-import pytest
 from pathlib import Path
 from typing import Generator
+
+import pytest
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -36,7 +37,7 @@ def temp_db(tmp_path):
 @pytest.fixture
 def sample_search_result():
     """Create a sample SearchResult for testing"""
-    from cyberfind.models import SearchResult, SearchStatus
+    from cyber_find.models import SearchResult, SearchStatus
 
     return SearchResult(
         site="GitHub",
@@ -51,7 +52,7 @@ def sample_search_result():
 @pytest.fixture
 def sample_search_results(sample_search_result):
     """Create multiple sample SearchResults"""
-    from cyberfind.models import SearchResult, SearchStatus
+    from cyber_find.models import SearchResult, SearchStatus
 
     return [
         sample_search_result,

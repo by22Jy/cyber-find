@@ -30,7 +30,7 @@ class CustomSiteListManager:
         Returns:
             Список сайтов в формате [{"name": "", "url": "", "category": "", "priority": ""}]
         """
-        sites = []
+        sites: List[Dict[str, str]] = []
 
         if not os.path.exists(file_path):
             return sites
@@ -242,7 +242,7 @@ class CustomSiteListManager:
         """
         sites = self.custom_lists.get(list_name, [])
 
-        categories = {}
+        categories: Dict[str, int] = {}
         for site in sites:
             cat = site.get("category", "unknown")
             categories[cat] = categories.get(cat, 0) + 1
@@ -273,7 +273,7 @@ class CustomSiteListManager:
         stats = {}
 
         for list_name, sites in self.custom_lists.items():
-            categories = {}
+            categories: Dict[str, int] = {}
             for site in sites:
                 cat = site.get("category", "unknown")
                 categories[cat] = categories.get(cat, 0) + 1

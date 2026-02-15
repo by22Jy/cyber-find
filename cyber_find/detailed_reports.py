@@ -254,7 +254,9 @@ class ReportGenerator:
                 "found_count": len(found),
                 "not_found_count": len(results) - len(found),
                 "success_rate": (len(found) / len(results) * 100) if results else 0,
-                "average_confidence": (sum(r.confidence or 0 for r in found) / len(found) if found else 0),
+                "average_confidence": (
+                    sum(r.confidence or 0 for r in found) / len(found) if found else 0
+                ),
             },
             "results": [
                 {

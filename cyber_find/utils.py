@@ -54,7 +54,7 @@ def normalize_phone(phone: str) -> str:
 
 def email_to_hash(email: str) -> str:
     """Convert email to MD5 hash for gravatar-style lookups"""
-    return hashlib.md5(email.lower().encode("utf-8")).hexdigest()
+    return hashlib.md5(email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 def format_url(base_url: str, username: str) -> str:
@@ -102,11 +102,12 @@ def sanitize_output(text: str, max_length: int = 1000) -> str:
 
 def format_size(size_bytes: int) -> str:
     """Format bytes to human-readable size"""
+    size = float(size_bytes)
     for unit in ["B", "KB", "MB", "GB"]:
-        if size_bytes < 1024:
-            return f"{size_bytes:.2f}{unit}"
-        size_bytes /= 1024
-    return f"{size_bytes:.2f}TB"
+        if size < 1024:
+            return f"{size:.2f}{unit}"
+        size /= 1024
+    return f"{size:.2f}TB"
 
 
 def format_duration(seconds: float) -> str:
@@ -133,9 +134,12 @@ def split_urls(urls: str) -> List[str]:
     return [url.strip() for url in parts if url.strip()]
 
 
-def combine_results(results: List[dict]) -> dict:
+from typing import Any, Dict, List
+
+
+def combine_results(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Combine multiple search results"""
-    combined = {
+    combined: Dict[str, Any] = {
         "total_found": 0,
         "total_errors": 0,
         "accounts": [],
@@ -144,10 +148,10 @@ def combine_results(results: List[dict]) -> dict:
 
     for result in results:
         if result.get("status") == "found":
-            combined["total_found"] += 1
+            combined["total_found"] = combined["total_found"] + 1
             combined["accounts"].append(result)
         elif result.get("error"):
-            combined["total_errors"] += 1
+            combined["total_errors"] = combined["total_errors"] + 1
             combined["errors"].append(result)
 
     return combined

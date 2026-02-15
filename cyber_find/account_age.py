@@ -3,7 +3,7 @@ Account Age Detection Module - Определение возраста акка�
 """
 
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from .models import SearchResult
 
@@ -120,7 +120,9 @@ class AccountAgeDetector:
             "suspicious": len(indicators) >= 3,
             "indicator_count": len(indicators),
             "indicators": indicators,
-            "risk_level": ("high" if len(indicators) >= 4 else "medium" if len(indicators) >= 2 else "low"),
+            "risk_level": (
+                "high" if len(indicators) >= 4 else "medium" if len(indicators) >= 2 else "low"
+            ),
         }
 
     @staticmethod
@@ -139,11 +141,11 @@ class AccountAgeDetector:
         if not results_by_date:
             return {}
 
-        analysis = {
+        analysis: Dict[str, Any] = {
             "first_seen": None,
             "last_seen": None,
             "activity_days": 0,
-            "average_posts_per_day": 0,
+            "average_posts_per_day": 0.0,
         }
 
         dates = []
@@ -193,7 +195,10 @@ class AccountAgeDetector:
             "newest": sorted_ages[0] if sorted_ages else None,
             "average_age_days": sum(a["age_days"] for a in ages.values()) / len(ages),
             "age_variance": (
-                max(a["age_days"] for a in ages.values()) - min(a["age_days"] for a in ages.values()) if ages else 0
+                max(a["age_days"] for a in ages.values())
+                - min(a["age_days"] for a in ages.values())
+                if ages
+                else 0
             ),
             "all_ages": ages,
         }

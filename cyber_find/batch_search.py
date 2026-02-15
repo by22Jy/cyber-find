@@ -38,6 +38,7 @@ class BatchSearch:
             Dict с результатами поиска для каждого юзернейма
         """
         from .core import SearchMode
+
         results = {}
         cf = CyberFind()
 
@@ -82,7 +83,7 @@ class BatchSearch:
                     # Load sites and find the specific one
                     sites = await cf.load_sites_async(builtin_list="all")
                     matching_site = next((s for s in sites if s.get("name") == site_name), None)
-                    
+
                     if matching_site:
                         result = await cf.check_site_async(
                             username, matching_site, SearchMode.STANDARD, asyncio.Semaphore(1)
@@ -118,7 +119,7 @@ class BatchSearch:
                     # Load sites and find the specific one
                     sites = await cf.load_sites_async(builtin_list="all")
                     matching_site = next((s for s in sites if s.get("name") == site_name), None)
-                    
+
                     if matching_site:
                         result = await cf.check_site_async(
                             username, matching_site, SearchMode.STANDARD, asyncio.Semaphore(1)

@@ -181,7 +181,7 @@ class PerformanceAnalytics:
         Returns:
             Список рекомендаций
         """
-        suggestions = []
+        suggestions: List[str] = []
 
         if not self.searches:
             return suggestions
@@ -255,7 +255,9 @@ class PerformanceAnalytics:
             return {}
 
         return {
-            "faster_search": username1 if search1.duration_seconds < search2.duration_seconds else username2,
+            "faster_search": (
+                username1 if search1.duration_seconds < search2.duration_seconds else username2
+            ),
             "duration_difference": abs(search1.duration_seconds - search2.duration_seconds),
             "success_difference": abs(search1.success_rate - search2.success_rate),
             "search1": asdict(search1),
