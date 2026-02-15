@@ -1,6 +1,3 @@
-# CyberFind v0.2.1 - Production Requirements
-# ============================================
-
 # Core OSINT & Web Scraping
 aiohttp>=3.9.0
 beautifulsoup4>=4.12.0

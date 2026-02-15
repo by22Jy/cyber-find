@@ -194,7 +194,7 @@ Usage examples:
 
     parser.add_argument("--config", default="config.yaml", help="Path to configuration file")
 
-    parser.add_argument("--version", action="version", version="CyberFind v0.2.1")
+    parser.add_argument("--version", action="version", version="CyberFind v0.3")
 
     return parser.parse_args()
 

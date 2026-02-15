@@ -832,7 +832,6 @@ class CyberFind:
         # Check valid status codes
         return status in site.get("valid_status_codes", [200])
 
-        # ===== NEW FEATURES FOR v0.2.1 =====
 
     def dns_enumeration(self, domain: str) -> Dict[str, Any]:
         """Perform DNS enumeration for a domain"""

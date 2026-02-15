@@ -47,7 +47,7 @@
 - **Statistical analysis** of results
 - **Category grouping** of found accounts
 
-### 🔬 **Advanced OSINT Capabilities (v0.2.1)**
+### 🔬 **Advanced OSINT Capabilities**
 - **DNS Enumeration**: Retrieve A, AAAA, MX, TXT, NS, SOA, and CNAME records for domains.
 - **WHOIS Lookup**: Get registration details, owner information, and name servers for domains.
 - **Shodan Integration**: Search for exposed devices and services (requires Shodan API key).
@@ -145,7 +145,7 @@ cyberfind username --format html -o report
 cyberfind username --format sqlite
 ```
 
-### 🧪 Advanced Search (v0.2.1) - CLI (Conceptual)
+### 🧪 Advanced Search (v0.3) - CLI (Conceptual)
 *Note: Direct CLI integration for advanced features might require specific implementation in `cyberfind_cli.py`. Currently, they are primarily accessible via the Python API.*
 
 ## 📋 Available Site Lists
@@ -349,7 +349,7 @@ The GUI provides:
 ```bash
 $ cyberfind john_doe --list quick
 
-🔍 CyberFind v0.2.1
+🔍 CyberFind v0.3
 Searching for: john_doe
 📋 Using built-in list: quick (25 sites)
 
