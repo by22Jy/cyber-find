@@ -1,4 +1,4 @@
-# 🕵️♂️ CyberFind - Advanced OSINT Search Tool
+# 🕵️ CyberFind - Advanced OSINT Search Tool
 
 <p align="center">
   <img src="https://img.shields.io/badge/Version-0.3-blue?style=for-the-badge&logo=github" alt="Version">
