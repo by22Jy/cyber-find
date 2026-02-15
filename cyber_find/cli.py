@@ -52,7 +52,7 @@ def print_banner():
     """Show application banner"""
     banner = """
     ╔══════════════════════════════════════════════╗
-    ║           🕵️♂️ CYBERFIND v0.2.1              ║
+    ║           🕵️♂️ CYBERFIND v0.3                 ║
     ║      Advanced OSINT Search Tool              ║
     ╚══════════════════════════════════════════════╝
     """
