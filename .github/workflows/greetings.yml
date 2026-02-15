@@ -19,21 +19,27 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
           issue-message: |
-            👋 Thanks for opening your first issue!
+            👋 **Welcome, and thanks for your first issue!**
 
-            Please make sure you:
-            - Provided clear steps to reproduce (if it's a bug)
-            - Included expected vs actual behavior
-            - Added logs or screenshots if relevant
+            We really appreciate you taking the time to report this 💙  
+            To help us respond faster, please double-check that your issue includes:
 
-            We’ll review this as soon as possible. Thanks for contributing 🚀
+            - 🔁 Clear steps to reproduce (for bugs)
+            - 🎯 Expected vs actual behavior
+            - 🧾 Logs, error messages, or screenshots (if applicable)
+
+            A maintainer will take a look soon.  
+            Thanks for helping make this project better! 🚀
 
           pr-message: |
-            🎉 Thanks for your first pull request!
+            🎉 **Thanks for your first pull request!**
 
-            Before review, please make sure:
-            - All CI checks pass
-            - Tests are included or updated
-            - The PR description clearly explains the change
+            That’s awesome — contributions like this keep the project moving forward 💪  
+            Before review, please make sure that:
 
-            We appreciate your contribution! 💙
+            - ✅ All CI checks are passing
+            - 🧪 Tests are added or updated when needed
+            - 📝 The PR description clearly explains *what* and *why*
+
+            If everything looks good, we’ll review it shortly.  
+            Welcome aboard, and happy hacking! 💙✨
