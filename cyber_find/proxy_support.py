@@ -154,7 +154,7 @@ class ProxyManager:
             stats["success_rate"] = stats["success"] / stats["requests"]
 
             # Если неудачный процент слишком высок, добавить в чёрный список
-            if stats["success_rate"] < 0.3.2:
+            if stats["success_rate"] < 0.32:
                 self.failed_proxies.append(proxy)
 
     def get_proxy_stats(self) -> Dict:
