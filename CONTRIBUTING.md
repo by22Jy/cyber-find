@@ -1,7 +1,7 @@
 # 🤝 Contributing to CyberFind
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.3.2-blue?style=for-the-badge&logo=github        " alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.3.3-blue?style=for-the-badge&logo=github        " alt="Version">
   <img src="https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python        " alt="Python">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge        " alt="Platform">
   <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative        " alt="License">

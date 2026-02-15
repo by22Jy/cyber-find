@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from .core import CyberFind, OutputFormat, SearchMode
 
-app = FastAPI(title="CyberFind API", version="0.3.2")
+app = FastAPI(title="CyberFind API", version="0.3.3")
 
 cyberfind = CyberFind()
 
@@ -20,7 +20,7 @@ class SearchRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "CyberFind API", "version": "0.3.2"}
+    return {"message": "CyberFind API", "version": "0.3.3"}
 
 
 @app.post("/search")
