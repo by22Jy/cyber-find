@@ -61,7 +61,7 @@ def sample_search_results(sample_search_result):
             url="https://twitter.com/testuser",
             status=SearchStatus.FOUND,
             status_code=200,
-            response_time=0.3.2,
+            response_time=0.32,
             metadata={"followers": 500},
         ),
         SearchResult(
