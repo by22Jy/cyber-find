@@ -1,5 +1,5 @@
 """
-Advanced Filtering Module - Фильтрация результатов по разным критериям
+Advanced Filtering Module - Filter results by various criteria
 """
 
 from enum import Enum
@@ -9,7 +9,7 @@ from .models import SearchResult
 
 
 class PriorityLevel(Enum):
-    """Приоритеты платформ"""
+    """Platform priorities"""
 
     CRITICAL = 10
     HIGH = 9
@@ -19,7 +19,7 @@ class PriorityLevel(Enum):
 
 
 class ConfidenceLevel(Enum):
-    """Уровни доверия к результатам"""
+    """Confidence levels for results"""
 
     VERY_HIGH = 0.95
     HIGH = 0.80
@@ -28,11 +28,11 @@ class ConfidenceLevel(Enum):
 
 
 class ResultFilter:
-    """Продвинутая фильтрация результатов поиска"""
+    """Advanced search result filtering"""
 
     @staticmethod
     def filter_by_found(results: List[SearchResult]) -> List[SearchResult]:
-        """Оставить только найденные аккаунты"""
+        """Keep only found accounts"""
         return [r for r in results if r.found]
 
     @staticmethod
@@ -40,7 +40,7 @@ class ResultFilter:
         results: List[SearchResult],
         categories: List[str],
     ) -> List[SearchResult]:
-        """Фильтр по категориям сайтов (social_media, programming, gaming и т.д.)"""
+        """Filter by site categories (social_media, programming, gaming, etc.)"""
         return [r for r in results if r.category in categories]
 
     @staticmethod
@@ -48,7 +48,7 @@ class ResultFilter:
         results: List[SearchResult],
         min_priority: int = 5,
     ) -> List[SearchResult]:
-        """Фильтр по минимальному приоритету платформы"""
+        """Filter by minimum platform priority"""
         return [r for r in results if r.priority >= min_priority]
 
     @staticmethod
@@ -56,7 +56,7 @@ class ResultFilter:
         results: List[SearchResult],
         min_confidence: float = 0.60,
     ) -> List[SearchResult]:
-        """Фильтр по минимальному уровню доверия"""
+        """Filter by minimum confidence level"""
         return [r for r in results if r.confidence >= min_confidence]
 
     @staticmethod
@@ -64,29 +64,29 @@ class ResultFilter:
         results: List[SearchResult],
         status_codes: List[int],
     ) -> List[SearchResult]:
-        """Фильтр по HTTP статус кодам"""
+        """Filter by HTTP status codes"""
         return [r for r in results if r.status_code in status_codes]
 
     @staticmethod
     def sort_by_priority(results: List[SearchResult]) -> List[SearchResult]:
-        """Сортировка по приоритету платформы (убывание)"""
+        """Sort by platform priority (descending)"""
         return sorted(results, key=lambda r: r.priority, reverse=True)
 
     @staticmethod
     def sort_by_confidence(results: List[SearchResult]) -> List[SearchResult]:
-        """Сортировка по уровню доверия (убывание)"""
+        """Sort by confidence level (descending)"""
         return sorted(results, key=lambda r: r.confidence, reverse=True)
 
     @staticmethod
     def sort_by_site_name(results: List[SearchResult]) -> List[SearchResult]:
-        """Сортировка по названию сайта (А-Я)"""
+        """Sort by site name (A-Z)"""
         return sorted(results, key=lambda r: r.site)
 
     @staticmethod
     def group_by_category(
         results: List[SearchResult],
     ) -> dict:
-        """Группировка результатов по категориям"""
+        """Group results by category"""
         grouped: Dict[str, List[SearchResult]] = {}
         for result in results:
             category = result.category or "other"
@@ -97,7 +97,7 @@ class ResultFilter:
 
     @staticmethod
     def get_top_n(results: List[SearchResult], n: int = 10) -> List[SearchResult]:
-        """Получить топ N результатов по приоритету и доверию"""
+        """Get top N results by priority and confidence"""
         sorted_results = sorted(
             results,
             key=lambda r: (r.priority, r.confidence),
@@ -110,12 +110,12 @@ class ResultFilter:
         results: List[SearchResult],
         filter_func: Callable[[SearchResult], bool],
     ) -> List[SearchResult]:
-        """Применить кастомный фильтр (функция)"""
+        """Apply custom filter (function)"""
         return [r for r in results if filter_func(r)]
 
     @staticmethod
     def get_statistics(results: List[SearchResult]) -> dict:
-        """Получить статистику по результатам"""
+        """Get statistics for results"""
         found = [r for r in results if r.found]
         not_found = [r for r in results if not r.found]
 

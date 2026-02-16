@@ -1,5 +1,5 @@
 """
-Performance Analytics Module - Анализ производительности поиска
+Performance Analytics Module - Search performance analysis
 """
 
 import asyncio
@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 
 @dataclass
 class SearchMetrics:
-    """Метрики одного поиска"""
+    """Metrics for a single search"""
 
     username: str
     total_sites: int
@@ -26,7 +26,7 @@ class SearchMetrics:
 
 
 class PerformanceAnalytics:
-    """Анализирует производительность поиска"""
+    """Analyzes search performance"""
 
     def __init__(self):
         self.searches: List[SearchMetrics] = []
@@ -36,11 +36,11 @@ class PerformanceAnalytics:
 
     def start_search(self, username: str, total_sites: int) -> None:
         """
-        Начать отслеживание поиска
+        Start tracking a search
 
         Args:
-            username: Юзернейм
-            total_sites: Общее количество сайтов
+            username: Username
+            total_sites: Total number of sites
         """
         self.current_search_start = time.time()
         self.current_search_data = {
@@ -56,14 +56,14 @@ class PerformanceAnalytics:
         failed_count: int = 0,
     ) -> SearchMetrics:
         """
-        Завершить отслеживание поиска
+        End tracking a search
 
         Args:
-            found_count: Количество найденных профилей
-            failed_count: Количество ошибок
+            found_count: Number of found profiles
+            failed_count: Number of errors
 
         Returns:
-            Метрики поиска
+            Search metrics
         """
         if not self.current_search_start or not self.current_search_data:
             raise RuntimeError("No active search")
@@ -97,10 +97,10 @@ class PerformanceAnalytics:
 
     def get_average_performance(self) -> Dict:
         """
-        Получить среднюю производительность
+        Get average performance
 
         Returns:
-            Словарь с средними значениями
+            Dictionary with average values
         """
         if not self.searches:
             return {}
@@ -122,17 +122,17 @@ class PerformanceAnalytics:
 
     def get_bottlenecks(self) -> List[Dict]:
         """
-        Найти узкие места в производительности
+        Find performance bottlenecks
 
         Returns:
-            Список узких мест с рекомендациями
+            List of bottlenecks with recommendations
         """
         if not self.searches:
             return []
 
         bottlenecks = []
 
-        # Медленные поиски
+        # Slow searches
         avg_duration = sum(s.duration_seconds for s in self.searches) / len(self.searches)
         slow_searches = [s for s in self.searches if s.duration_seconds > avg_duration * 2]
 
@@ -141,12 +141,12 @@ class PerformanceAnalytics:
                 {
                     "type": "slow_search",
                     "count": len(slow_searches),
-                    "recommendation": "Рассмотрите использование параллельных запросов",
+                    "recommendation": "Consider using parallel requests",
                     "examples": [s.username for s in slow_searches[:3]],
                 }
             )
 
-        # Много ошибок
+        # High failure rate
         avg_failures = sum(s.failed_count for s in self.searches) / len(self.searches)
         high_failure = [s for s in self.searches if s.failed_count > avg_failures * 2]
 
@@ -155,19 +155,19 @@ class PerformanceAnalytics:
                 {
                     "type": "high_failure_rate",
                     "count": len(high_failure),
-                    "recommendation": "Добавьте прокси или увеличьте паузу между запросами",
+                    "recommendation": "Add proxies or increase delay between requests",
                     "examples": [s.username for s in high_failure[:3]],
                 }
             )
 
-        # Низкая скорость обработки
+        # Low processing speed
         slow_speed = [s for s in self.searches if s.sites_per_second < 1]
         if slow_speed:
             bottlenecks.append(
                 {
                     "type": "slow_processing",
                     "count": len(slow_speed),
-                    "recommendation": "Оптимизируйте сетевые запросы или используйте кэширование",
+                    "recommendation": "Optimize network requests or use caching",
                     "examples": [s.username for s in slow_speed[:3]],
                 }
             )
@@ -176,10 +176,10 @@ class PerformanceAnalytics:
 
     def get_optimization_suggestions(self) -> List[str]:
         """
-        Получить рекомендации по оптимизации
+        Get optimization recommendations
 
         Returns:
-            Список рекомендаций
+            List of recommendations
         """
         suggestions: List[str] = []
 
@@ -188,30 +188,30 @@ class PerformanceAnalytics:
 
         avg_performance = self.get_average_performance()
 
-        # Медленная обработка
+        # Slow processing
         if avg_performance.get("average_sites_per_second", 0) < 2:
-            suggestions.append("Увеличьте параллельность запросов (batch_size)")
+            suggestions.append("Increase request parallelism (batch_size)")
 
-        # Низкий процент успеха
+        # Low success rate
         if avg_performance.get("average_success_rate", 0) < 0.5:
-            suggestions.append("Используйте прокси для увеличения успешности")
+            suggestions.append("Use proxies to increase success rate")
 
-        # Много ошибок
+        # High failure count
         if avg_performance.get("total_failed", 0) > avg_performance.get("total_found", 0):
-            suggestions.append("Включите rate limiting для снижения блокировок")
+            suggestions.append("Enable rate limiting to reduce blocks")
 
-        # Долгие поиски
+        # Long searches
         if avg_performance.get("average_duration", 0) > 30:
-            suggestions.append("Используйте асинхронные операции для параллельной обработки")
+            suggestions.append("Use async operations for parallel processing")
 
         return suggestions
 
     def get_detailed_report(self) -> Dict:
         """
-        Получить детальный отчёт по производительности
+        Get detailed performance report
 
         Returns:
-            Подробный отчёт
+            Detailed report
         """
         return {
             "total_searches": len(self.searches),
@@ -223,13 +223,13 @@ class PerformanceAnalytics:
 
     def predict_search_duration(self, num_sites: int) -> float:
         """
-        Предсказать длительность поиска на основе истории
+        Predict search duration based on history
 
         Args:
-            num_sites: Количество сайтов для поиска
+            num_sites: Number of sites to search
 
         Returns:
-            Предсказанная длительность в секундах
+            Predicted duration in seconds
         """
         if not self.searches:
             return num_sites * 0.5  # По умолчанию 0.5 сек/сайт
@@ -239,14 +239,14 @@ class PerformanceAnalytics:
 
     def compare_searches(self, username1: str, username2: str) -> Dict:
         """
-        Сравнить производительность двух поисков
+        Compare performance of two searches
 
         Args:
-            username1: Первый юзернейм
-            username2: Второй юзернейм
+            username1: First username
+            username2: Second username
 
         Returns:
-            Сравнительный анализ
+            Comparative analysis
         """
         search1 = next((s for s in self.searches if s.username == username1), None)
         search2 = next((s for s in self.searches if s.username == username2), None)
@@ -266,10 +266,10 @@ class PerformanceAnalytics:
 
     def export_metrics_json(self) -> str:
         """
-        Экспортировать метрики в JSON формат
+        Export metrics to JSON format
 
         Returns:
-            JSON строка с метриками
+            JSON string with metrics
         """
         import json
 

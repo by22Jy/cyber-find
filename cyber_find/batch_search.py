@@ -1,5 +1,5 @@
 """
-Batch Search Module - Поиск по нескольким юзернеймам одновременно
+Batch Search Module - Search for multiple usernames simultaneously
 """
 
 import asyncio
@@ -14,7 +14,7 @@ logger = logging.getLogger("cyberfind")
 
 
 class BatchSearch:
-    """Batch поиск для нескольких юзернеймов с оптимизацией"""
+    """Batch search for multiple usernames with optimization"""
 
     def __init__(self, max_concurrent: int = 10):
         self.max_concurrent = max_concurrent
@@ -27,15 +27,15 @@ class BatchSearch:
         mode: str = "standard",
     ) -> Dict[str, List[SearchResult]]:
         """
-        Массовый поиск для нескольких юзернеймов
+        Batch search for multiple usernames
 
         Args:
-            usernames: Список юзернеймов
-            sites_file: Файл со списком сайтов
-            mode: Режим поиска (standard, deep, stealth, aggressive)
+            usernames: List of usernames
+            sites_file: File with site list
+            mode: Search mode (standard, deep, stealth, aggressive)
 
         Returns:
-            Dict с результатами поиска для каждого юзернейма
+            Dict with search results for each username
         """
         from .core import SearchMode
 
@@ -71,7 +71,7 @@ class BatchSearch:
         usernames: List[str],
         site_name: str,
     ) -> Dict[str, bool]:
-        """Быстрый поиск на одном конкретном сайте для всех юзернеймов"""
+        """Quick search on a specific site for all usernames"""
         results = {}
         cf = CyberFind()
 
@@ -107,7 +107,7 @@ class BatchSearch:
         username: str,
         site_names: List[str],
     ) -> Dict[str, bool]:
-        """Поиск одного юзернейма на нескольких сайтах параллельно"""
+        """Search for one username on multiple sites in parallel"""
         results = {}
         cf = CyberFind()
 

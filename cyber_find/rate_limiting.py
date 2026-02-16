@@ -1,5 +1,5 @@
 """
-Rate Limiting Module - Управление частотой запросов
+Rate Limiting Module - Request rate management
 """
 
 import asyncio
@@ -9,15 +9,15 @@ from typing import Dict, Optional
 
 
 class RateLimitStrategy(Enum):
-    """Стратегии ограничения частоты"""
+    """Rate limiting strategies"""
 
-    FIXED = "fixed"  # Фиксированная задержка
-    LINEAR = "linear"  # Линейное увеличение
-    EXPONENTIAL = "exponential"  # Экспоненциальное увеличение
+    FIXED = "fixed"  # Fixed delay
+    LINEAR = "linear"  # Linear increase
+    EXPONENTIAL = "exponential"  # Exponential increase
 
 
 class RateLimiter:
-    """Управляет частотой запросов для избежания бана"""
+    """Manages request rate to avoid bans"""
 
     def __init__(
         self,
@@ -26,12 +26,12 @@ class RateLimiter:
         strategy: RateLimitStrategy = RateLimitStrategy.FIXED,
     ):
         """
-        Инициализировать rate limiter
+        Initialize rate limiter
 
         Args:
-            requests_per_second: Максимум запросов в секунду
-            burst_size: Размер всплеска (макс одновременных запросов)
-            strategy: Стратегия ограничения
+            requests_per_second: Maximum requests per second
+            burst_size: Burst size (max concurrent requests)
+            strategy: Rate limiting strategy
         """
         self.requests_per_second = requests_per_second
         self.burst_size = burst_size
@@ -48,10 +48,10 @@ class RateLimiter:
 
     async def acquire(self, domain: str = "default") -> None:
         """
-        Получить разрешение на запрос
+        Acquire permission for request
 
         Args:
-            domain: Домен для которого нужно ограничение
+            domain: Domain requiring rate limiting
         """
         self._refill_tokens()
 
@@ -64,7 +64,7 @@ class RateLimiter:
         self.request_count[domain] = self.request_count.get(domain, 0) + 1
 
     def _refill_tokens(self) -> None:
-        """Пополнить токены (token bucket алгоритм)"""
+        """Refill tokens (token bucket algorithm)"""
         now = time.time()
         elapsed = now - self.last_refill
         tokens_to_add = elapsed * self.requests_per_second
@@ -74,13 +74,13 @@ class RateLimiter:
 
     def get_wait_time(self, domain: str = "default") -> float:
         """
-        Получить время ожидания перед следующим запросом
+        Get wait time before next request
 
         Args:
-            domain: Домен
+            domain: Domain
 
         Returns:
-            Время ожидания в секундах
+            Wait time in seconds
         """
         if domain not in self.last_request_time:
             return 0.0
@@ -100,12 +100,12 @@ class RateLimiter:
         strategy: Optional[RateLimitStrategy] = None,
     ) -> None:
         """
-        Экспоненциальная задержка для повторных попыток
+        Exponential backoff for retry attempts
 
         Args:
-            attempt: Номер попытки (начиная с 1)
-            max_retries: Максимум повторных попыток
-            strategy: Стратегия (если None, используется стандартная)
+            attempt: Attempt number (starting from 1)
+            max_retries: Maximum retry attempts
+            strategy: Strategy (if None, uses default)
         """
         if attempt > max_retries:
             raise Exception(f"Exceeded max retries ({max_retries})")
@@ -122,7 +122,7 @@ class RateLimiter:
         else:
             wait_time = 2
 
-        # Добавить небольшую случайность (jitter)
+        # Add small randomness (jitter)
         import random
 
         jitter = random.uniform(0, 0.1 * wait_time)
@@ -131,35 +131,35 @@ class RateLimiter:
         await asyncio.sleep(total_wait)
 
     def report_success(self, domain: str = "default") -> None:
-        """Зафиксировать успешный запрос"""
+        """Record successful request"""
         self.failure_count[domain] = 0
 
     def report_failure(self, domain: str = "default") -> None:
-        """Зафиксировать ошибку"""
+        """Record error"""
         self.failure_count[domain] = self.failure_count.get(domain, 0) + 1
 
     def should_backoff(self, domain: str = "default", threshold: int = 3) -> bool:
         """
-        Нужно ли делать backoff на основе количества ошибок
+        Determine if backoff is needed based on error count
 
         Args:
-            domain: Домен
-            threshold: Порог ошибок для backoff
+            domain: Domain
+            threshold: Error threshold for backoff
 
         Returns:
-            True если нужен backoff
+            True if backoff is needed
         """
         return self.failure_count.get(domain, 0) >= threshold
 
     def get_adaptive_delay(self, domain: str = "default") -> float:
         """
-        Получить адаптивную задержку на основе истории ошибок
+        Get adaptive delay based on error history
 
         Args:
-            domain: Домен
+            domain: Domain
 
         Returns:
-            Рекомендуемая задержка в секундах
+            Recommended delay in seconds
         """
         failures = self.failure_count.get(domain, 0)
         base_delay = 1 / self.requests_per_second
@@ -168,13 +168,13 @@ class RateLimiter:
         return base_delay * (1.5**failures)
 
     def reset_domain(self, domain: str) -> None:
-        """Сбросить статистику для домена"""
+        """Reset statistics for domain"""
         self.last_request_time.pop(domain, None)
         self.request_count.pop(domain, None)
         self.failure_count.pop(domain, None)
 
     def get_stats(self) -> Dict:
-        """Получить статистику"""
+        """Get statistics"""
         return {
             "requests_per_second": self.requests_per_second,
             "current_tokens": self.tokens,
@@ -191,11 +191,11 @@ class RateLimiter:
 
     async def wait_until_ready(self, requests: int = 1, domain: str = "default") -> None:
         """
-        Ждать пока будет достаточно токенов для N запросов
+        Wait until enough tokens are available for N requests
 
         Args:
-            requests: Количество запросов
-            domain: Домен
+            requests: Number of requests
+            domain: Domain
         """
         for _ in range(requests):
             await self.acquire(domain)

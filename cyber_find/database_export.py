@@ -1,5 +1,5 @@
 """
-Database Export Module - Сохранение результатов в базу данных
+Database Export Module - Save results to database
 """
 
 import json
@@ -11,14 +11,14 @@ from .models import SearchResult
 
 
 class DatabaseExporter:
-    """Экспорт результатов поиска в SQLite БД"""
+    """Export search results to SQLite database"""
 
     def __init__(self, db_path: str = "cyberfind_results.db"):
         self.db_path = db_path
         self.init_database()
 
     def init_database(self):
-        """Инициализация БД со схемой"""
+        """Initialize database with schema"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
@@ -67,11 +67,11 @@ class DatabaseExporter:
         mode: str = "standard",
         search_time: float = 0.0,
     ) -> Optional[int]:
-        """Сохранить результаты поиска в БД"""
+        """Save search results to database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
-            # Обновить/создать запись пользователя
+            # Update/create user record
             cursor.execute(
                 """
                 INSERT INTO users (username, first_search, last_search, total_searches)
@@ -83,7 +83,7 @@ class DatabaseExporter:
                 (username, datetime.now(), datetime.now()),
             )
 
-            # Сохранить поиск
+            # Save search
             cursor.execute(
                 """
                 INSERT INTO searches (username, mode, total_results, search_time)
@@ -93,7 +93,7 @@ class DatabaseExporter:
             )
             search_id = cursor.lastrowid
 
-            # Сохранить результаты
+            # Save results
             found_count = 0
             for result in results:
                 cursor.execute(
@@ -114,7 +114,7 @@ class DatabaseExporter:
                 if result.found:
                     found_count += 1
 
-            # Обновить счётчик найденных аккаунтов
+            # Update found accounts counter
             cursor.execute(
                 """
                 UPDATE users SET total_accounts_found = total_accounts_found + ?
@@ -127,7 +127,7 @@ class DatabaseExporter:
             return search_id
 
     def get_user_profile(self, username: str) -> Optional[Dict[str, Any]]:
-        """Получить профиль пользователя со всей статистикой"""
+        """Get user profile with all statistics"""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
@@ -157,7 +157,7 @@ class DatabaseExporter:
             }
 
     def get_search_results(self, search_id: int) -> List[Dict[str, Any]]:
-        """Получить результаты конкретного поиска"""
+        """Get results of a specific search"""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
@@ -180,7 +180,7 @@ class DatabaseExporter:
             ]
 
     def export_to_csv(self, username: str, output_file: str):
-        """Экспортировать результаты в CSV"""
+        """Export results to CSV"""
         import csv
 
         profile = self.get_user_profile(username)

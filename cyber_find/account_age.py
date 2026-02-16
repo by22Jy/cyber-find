@@ -1,5 +1,5 @@
 """
-Account Age Detection Module - Определение возраста аккаунта
+Account Age Detection Module - Account age detection
 """
 
 from datetime import datetime
@@ -9,18 +9,18 @@ from .models import SearchResult
 
 
 class AccountAgeDetector:
-    """Определяет возраст аккаунта на основе доступных данных"""
+    """Determines account age based on available data"""
 
     @staticmethod
     def estimate_account_age(result: SearchResult) -> Optional[Dict]:
         """
-        Оценить возраст аккаунта на основе метаданных
+        Estimate account age based on metadata
 
         Args:
-            result: Результат поиска с метаданными
+            result: Search result with metadata
 
         Returns:
-            Словарь с информацией о возрасте аккаунта
+            Dictionary with account age information
         """
         if not result.metadata:
             return None
@@ -33,7 +33,7 @@ class AccountAgeDetector:
         if creation_date:
             try:
                 if isinstance(creation_date, str):
-                    # Попытка парсить различные форматы
+                    # Try parsing various formats
                     for fmt in [
                         "%Y-%m-%d",
                         "%Y-%m-%dT%H:%M:%S",
@@ -63,7 +63,7 @@ class AccountAgeDetector:
 
     @staticmethod
     def _classify_age(days: int) -> str:
-        """Классифицировать возраст аккаунта"""
+        """Classify account age"""
         if days < 30:
             return "very_new"
         elif days < 90:
@@ -78,10 +78,10 @@ class AccountAgeDetector:
     @staticmethod
     def detect_suspicious_activity(result: SearchResult) -> Dict:
         """
-        Обнаружить подозрительную активность
+        Detect suspicious activity
 
         Returns:
-            Словарь с индикаторами подозрительной активности
+            Dictionary with suspicious activity indicators
         """
         if not result.metadata:
             return {"suspicious": False, "indicators": []}
@@ -89,30 +89,30 @@ class AccountAgeDetector:
         indicators = []
         metadata = result.metadata
 
-        # Очень новый аккаунт
+        # Very new account
         age_info = AccountAgeDetector.estimate_account_age(result)
         if age_info and age_info["status"] == "very_new":
             indicators.append("account_very_new")
 
-        # Нет аватара/фото
+        # No avatar/photo
         if not metadata.get("avatar_url") or not metadata.get("has_avatar"):
             indicators.append("no_avatar")
 
-        # Минимальное количество постов
+        # Minimal post count
         post_count = metadata.get("post_count", 0)
         if isinstance(post_count, (int, float)) and post_count < 5:
             indicators.append("few_posts")
 
-        # Минимальное количество фолловеров
+        # Minimal follower count
         followers = metadata.get("followers", 0)
         if isinstance(followers, (int, float)) and followers < 10:
             indicators.append("few_followers")
 
-        # Пустое описание профиля
+        # Empty profile bio
         if not metadata.get("bio") or len(str(metadata.get("bio", ""))) < 3:
             indicators.append("empty_bio")
 
-        # Профиль приватный
+        # Private profile
         if metadata.get("is_private"):
             indicators.append("private_profile")
 
@@ -130,13 +130,13 @@ class AccountAgeDetector:
         results_by_date: Dict[str, SearchResult],
     ) -> Dict:
         """
-        Анализировать временную шкалу аккаунта
+        Analyze account timeline
 
         Args:
-            results_by_date: Результаты поиска с датами
+            results_by_date: Search results with dates
 
         Returns:
-            Анализ активности во времени
+            Time-based activity analysis
         """
         if not results_by_date:
             return {}
@@ -170,13 +170,13 @@ class AccountAgeDetector:
     @staticmethod
     def compare_account_ages(accounts: Dict[str, SearchResult]) -> Dict:
         """
-        Сравнить возраст нескольких аккаунтов
+        Compare ages of multiple accounts
 
         Args:
-            accounts: Словарь аккаунтов с их результатами
+            accounts: Dictionary of accounts with their results
 
         Returns:
-            Сравнительный анализ
+            Comparative analysis
         """
         ages = {}
         for name, result in accounts.items():
@@ -187,7 +187,7 @@ class AccountAgeDetector:
         if not ages:
             return {}
 
-        # Отсортировать по возрасту
+        # Sort by age
         sorted_ages = sorted(ages.items(), key=lambda x: x[1]["age_days"])
 
         return {

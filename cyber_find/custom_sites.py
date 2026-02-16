@@ -1,5 +1,5 @@
 """
-Custom Site Lists Module - Поддержка пользовательских списков сайтов
+Custom Site Lists Module - Support for custom site lists
 """
 
 import os
@@ -7,14 +7,14 @@ from typing import Dict, List, Optional
 
 
 class CustomSiteListManager:
-    """Управляет пользовательскими списками сайтов"""
+    """Manages custom site lists"""
 
     def __init__(self, default_sites_dir: str = "sites"):
         """
-        Инициализировать менеджер
+        Initialize manager
 
         Args:
-            default_sites_dir: Директория со встроенными списками сайтов
+            default_sites_dir: Directory with built-in site lists
         """
         self.default_sites_dir = default_sites_dir
         self.custom_lists: Dict[str, List[Dict]] = {}
@@ -22,13 +22,13 @@ class CustomSiteListManager:
 
     def load_site_list(self, file_path: str) -> List[Dict]:
         """
-        Загрузить список сайтов из файла
+        Load site list from file
 
         Args:
-            file_path: Путь к файлу
+            file_path: Path to file
 
         Returns:
-            Список сайтов в формате [{"name": "", "url": "", "category": "", "priority": ""}]
+            List of sites in format [{"name": "", "url": "", "category": "", "priority": ""}]
         """
         sites: List[Dict[str, str]] = []
 
@@ -58,14 +58,14 @@ class CustomSiteListManager:
 
     def load_custom_list(self, list_name: str, file_path: str) -> int:
         """
-        Загрузить пользовательский список сайтов
+        Load custom site list
 
         Args:
-            list_name: Имя списка
-            file_path: Путь к файлу
+            list_name: List name
+            file_path: Path to file
 
         Returns:
-            Количество загруженных сайтов
+            Number of loaded sites
         """
         sites = self.load_site_list(file_path)
         self.custom_lists[list_name] = sites
@@ -78,15 +78,15 @@ class CustomSiteListManager:
         output_file: Optional[str] = None,
     ) -> int:
         """
-        Создать новый пользовательский список
+        Create new custom list
 
         Args:
-            list_name: Имя списка
-            sites: Список сайтов
-            output_file: Опционально сохранить в файл
+            list_name: List name
+            sites: List of sites
+            output_file: Optionally save to file
 
         Returns:
-            Количество сайтов в списке
+            Number of sites in list
         """
         self.custom_lists[list_name] = sites
 
@@ -97,11 +97,11 @@ class CustomSiteListManager:
 
     def save_list_to_file(self, file_path: str, sites: List[Dict]) -> None:
         """
-        Сохранить список сайтов в файл
+        Save site list to file
 
         Args:
-            file_path: Путь к файлу
-            sites: Список сайтов
+            file_path: Path to file
+            sites: List of sites
         """
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
@@ -116,14 +116,14 @@ class CustomSiteListManager:
         remove_duplicates: bool = True,
     ) -> List[Dict]:
         """
-        Объединить несколько списков
+        Merge multiple lists
 
         Args:
-            list_names: Имена списков для объединения
-            remove_duplicates: Удалить дубликаты по URL
+            list_names: List names to merge
+            remove_duplicates: Remove duplicates by URL
 
         Returns:
-            Объединённый список
+            Merged list
         """
         merged = []
         seen_urls = set()
@@ -148,14 +148,14 @@ class CustomSiteListManager:
         category: str,
     ) -> List[Dict]:
         """
-        Отфильтровать сайты по категории
+        Filter sites by category
 
         Args:
-            list_name: Имя списка
-            category: Категория
+            list_name: List name
+            category: Category
 
         Returns:
-            Отфильтрованный список
+            Filtered list
         """
         sites = self.custom_lists.get(list_name, [])
         return [s for s in sites if s.get("category") == category]
@@ -167,15 +167,15 @@ class CustomSiteListManager:
         max_priority: int = 10,
     ) -> List[Dict]:
         """
-        Отфильтровать сайты по приоритету
+        Filter sites by priority
 
         Args:
-            list_name: Имя списка
-            min_priority: Минимальный приоритет
-            max_priority: Максимальный приоритет
+            list_name: List name
+            min_priority: Minimum priority
+            max_priority: Maximum priority
 
         Returns:
-            Отфильтрованный список
+            Filtered list
         """
         sites = self.custom_lists.get(list_name, [])
 
@@ -193,11 +193,11 @@ class CustomSiteListManager:
         site: Dict,
     ) -> None:
         """
-        Добавить сайт в список
+        Add site to list
 
         Args:
-            list_name: Имя списка
-            site: Информация о сайте
+            list_name: List name
+            site: Site information
         """
         if list_name not in self.custom_lists:
             self.custom_lists[list_name] = []
@@ -210,14 +210,14 @@ class CustomSiteListManager:
         site_url: str,
     ) -> bool:
         """
-        Удалить сайт из списка
+        Remove site from list
 
         Args:
-            list_name: Имя списка
-            site_url: URL сайта
+            list_name: List name
+            site_url: Site URL
 
         Returns:
-            True если сайт найден и удалён
+            True if site found and removed
         """
         if list_name not in self.custom_lists:
             return False
@@ -232,13 +232,13 @@ class CustomSiteListManager:
 
     def get_list_info(self, list_name: str) -> Dict:
         """
-        Получить информацию о списке
+        Get list information
 
         Args:
-            list_name: Имя списка
+            list_name: List name
 
         Returns:
-            Информация о списке
+            List information
         """
         sites = self.custom_lists.get(list_name, [])
 
@@ -256,19 +256,19 @@ class CustomSiteListManager:
 
     def list_all_lists(self) -> List[str]:
         """
-        Получить имена всех загруженных списков
+        Get names of all loaded lists
 
         Returns:
-            Список имён
+            List of names
         """
         return list(self.custom_lists.keys())
 
     def export_list_stats(self) -> Dict:
         """
-        Экспортировать статистику всех списков
+        Export statistics for all lists
 
         Returns:
-            Статистика по каждому списку
+            Statistics for each list
         """
         stats = {}
 

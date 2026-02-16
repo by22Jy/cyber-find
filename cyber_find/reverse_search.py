@@ -1,5 +1,5 @@
 """
-Reverse Username Search Module - Поиск по частичному совпадению и паттернам
+Reverse Username Search Module - Search by partial match and patterns
 """
 
 import re
@@ -9,7 +9,7 @@ from .models import SearchResult
 
 
 class ReverseSearch:
-    """Обратный поиск - по частичному совпадению и паттернам"""
+    """Reverse search - by partial match and patterns"""
 
     @staticmethod
     def search_by_partial_match(
@@ -17,14 +17,14 @@ class ReverseSearch:
         all_results: List[SearchResult],
     ) -> List[SearchResult]:
         """
-        Поиск по частичному совпадению юзернейма
+        Search by partial username match
 
         Args:
-            username_pattern: Часть юзернейма (регулярное выражение)
-            all_results: Все результаты поиска
+            username_pattern: Partial username (regex pattern)
+            all_results: All search results
 
         Returns:
-            Отфильтрованные результаты
+            Filtered results
         """
         pattern = re.compile(username_pattern, re.IGNORECASE)
         return [r for r in all_results if pattern.search(r.username or "")]
@@ -34,7 +34,7 @@ class ReverseSearch:
         domain: str,
         all_results: List[SearchResult],
     ) -> List[SearchResult]:
-        """Поиск по домену email'а"""
+        """Search by email domain"""
         return [r for r in all_results if r.metadata and r.metadata.get("email_domain") == domain]
 
     @staticmethod
@@ -44,15 +44,15 @@ class ReverseSearch:
         threshold: float = 0.8,
     ) -> List[str]:
         """
-        Найти похожие юзернеймы (похожесть Левенштейна)
+        Find similar usernames (Levenshtein similarity)
 
         Args:
-            username: Исходный юзернейм
-            all_usernames: Все доступные юзернеймы
-            threshold: Порог похожести (0.8 = 80%)
+            username: Original username
+            all_usernames: All available usernames
+            threshold: Similarity threshold (0.8 = 80%)
 
         Returns:
-            Список похожих юзернеймов
+            List of similar usernames
         """
         from difflib import SequenceMatcher
 
@@ -68,7 +68,7 @@ class ReverseSearch:
         url_pattern: str,
         all_results: List[SearchResult],
     ) -> List[SearchResult]:
-        """Поиск по паттерну URL профиля"""
+        """Search by profile URL pattern"""
         pattern = re.compile(url_pattern, re.IGNORECASE)
         return [r for r in all_results if pattern.search(r.url or "")]
 
@@ -78,8 +78,8 @@ class ReverseSearch:
         all_results: Dict[str, List[SearchResult]],
     ) -> Dict[str, List[SearchResult]]:
         """
-        Найти кросс-ссылки между разными юзернеймами
-        (может помочь найти альты одного человека)
+        Find cross-references between different usernames
+        (can help find alternate accounts of the same person)
         """
         cross_refs: Dict[str, List[SearchResult]] = {}
 
@@ -100,7 +100,7 @@ class ReverseSearch:
         pattern: str,
         all_results: List[SearchResult],
     ) -> List[SearchResult]:
-        """Поиск по паттерну в метаданных профиля"""
+        """Search by pattern in profile metadata"""
         regex = re.compile(pattern, re.IGNORECASE)
         results = []
 
@@ -116,22 +116,22 @@ class ReverseSearch:
     def find_phone_variations(
         phone: str,
     ) -> List[str]:
-        """Генерировать вариации номера телефона для поиска"""
+        """Generate phone number variations for search"""
         # Удалить все нецифровые символы
         digits = re.sub(r"\D", "", phone)
 
         variations = [digits]
 
-        # Добавить вариации с разными форматами
-        if len(digits) == 11:  # Россия +7
+        # Add variations with different formats
+        if len(digits) == 11:  # Russia +7
             variations.extend(
                 [
-                    digits[1:],  # Без страны
-                    f"+7{digits[1:]}",  # С плюсом
-                    f"8{digits[1:]}",  # С 8
+                    digits[1:],  # Without country code
+                    f"+7{digits[1:]}",  # With plus sign
+                    f"8{digits[1:]}",  # With 8 prefix
                 ]
             )
-        elif len(digits) == 10:  # США
+        elif len(digits) == 10:  # USA
             variations.extend(
                 [
                     f"+1{digits}",
@@ -145,17 +145,17 @@ class ReverseSearch:
     def find_email_variations(
         email: str,
     ) -> List[str]:
-        """Генерировать вариации email для поиска"""
+        """Generate email variations for search"""
         if "@" not in email:
             return [email]
 
         username, domain = email.split("@", 1)
         variations = [email, username]
 
-        # Добавить вариации без точек
+        # Add variations without dots
         variations.append(username.replace(".", ""))
 
-        # Добавить вариации с точками в разных местах
+        # Add variations with dots in different positions
         if "." in username:
             variations.append(username.replace(".", ""))
 
