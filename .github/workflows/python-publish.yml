@@ -8,17 +8,28 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # ← обязательно для Trusted Publishing
+      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4  # ← стабильная версия
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.10"
+          cache: "pip"
+      
       - name: Install build tools
-        run: python -m pip install --upgrade build
+        run: python -m pip install --upgrade build twine
+      
       - name: Build package
         run: python -m build
+      
+      - name: Verify package
+        run: twine check dist/*
+      
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          attestations: true  # ← включаем аттестации (опционально, но рекомендуется)
+          # password НЕ указываем → включается Trusted Publishing
