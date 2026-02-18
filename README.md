@@ -1,7 +1,7 @@
 # 🕵️ CyberFind - Advanced OSINT Search Tool
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.3.3-blue?style=for-the-badge&logo=github" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.3.4-blue?style=for-the-badge&logo=github" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.9+-green?style=for-the-badge&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge" alt="Platform">
   <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge&logo=opensourceinitiative" alt="License">
@@ -151,7 +151,7 @@ cyberfind username --format html -o report
 cyberfind username --format sqlite
 ```
 
-### 🧪 Advanced Search (v0.3.3) - CLI (Conceptual)
+### 🧪 Advanced Search (v0.3.4) - CLI (Conceptual)
 *Note: Direct CLI integration for advanced features might require specific implementation in `cyberfind_cli.py`. Currently, they are primarily accessible via the Python API.*
 
 ## 📋 Available Site Lists
@@ -355,7 +355,7 @@ The GUI provides:
 ```bash
 $ cyberfind john_doe --list quick
 
-🔍 CyberFind v0.3.3
+🔍 CyberFind v0.3.4
 Searching for: john_doe
 📋 Using built-in list: quick (25 sites)
 
